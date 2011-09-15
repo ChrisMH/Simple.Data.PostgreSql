@@ -1,0 +1,7 @@
+obj
+bin
+deploy
+*.csproj.user
+*.suo
+*.cache
+*.nupkg

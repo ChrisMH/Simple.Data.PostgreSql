@@ -1,26 +1,26 @@
 ﻿using System;
 using System.Configuration;
 using System.Data.Common;
+using Npgsql;
 
 namespace Simple.Data.PostgreSqlTest
 {
   public static class DatabaseUtility
   {
 
-    public static void CreateDatabase()
+    public static void CreateDatabase(string connectionStringName)
     {
-      DestroyDatabase();
+      if(DatabaseExists(connectionStringName))
+      {
+        DestroyDatabase(connectionStringName);
+      }
 
-      var connectionString = new DbConnectionStringBuilder { ConnectionString = ConfigurationManager.ConnectionStrings["Test"].ConnectionString };
-      var database = connectionString["database"];
-      connectionString["database"] = "postgres";
-
-      var conn = new Npgsql.NpgsqlConnection(connectionString.ConnectionString);
+      var conn = GetSuperuserConnection(connectionStringName);
       try
       {
         conn.Open();
         var cmd = conn.CreateCommand();
-        cmd.CommandText = String.Format("CREATE DATABASE {0}", database);
+        cmd.CommandText = String.Format("CREATE DATABASE {0}", GetConnectionString(connectionStringName)["database"]);
         cmd.ExecuteNonQuery();
       }
       finally
@@ -28,8 +28,7 @@ namespace Simple.Data.PostgreSqlTest
         conn.Close();
       }
 
-      connectionString["database"] = database;
-      conn = new Npgsql.NpgsqlConnection(connectionString.ConnectionString);
+      conn = GetConnection(connectionStringName);
       try
       {
         conn.Open();
@@ -58,24 +57,65 @@ namespace Simple.Data.PostgreSqlTest
       }
     }
     
-    public static void DestroyDatabase()
+    public static void DestroyDatabase(string connectionStringName)
     {     
-      var connectionString = new DbConnectionStringBuilder { ConnectionString = ConfigurationManager.ConnectionStrings["Test"].ConnectionString };
-      var database = connectionString["database"];
-      connectionString["database"] = "postgres";
+      if(!DatabaseExists(connectionStringName))
+      {
+        return;
+      }
 
-      var conn = new Npgsql.NpgsqlConnection(connectionString.ConnectionString);
+      var conn = GetSuperuserConnection(connectionStringName);
       try
       {
         conn.Open();
         var cmd = conn.CreateCommand();
-        cmd.CommandText = String.Format("DROP DATABASE {0}", database);
+        cmd.CommandText = String.Format("DROP DATABASE {0}", GetConnectionString(connectionStringName)["database"]);
         cmd.ExecuteNonQuery();
       }
       finally
       {
         conn.Close();
       }
+    }
+
+    public static bool DatabaseExists(string connectionStringName)
+    {
+      var conn = GetSuperuserConnection(connectionStringName);
+      try
+      {
+        conn.Open();
+
+        var cmd = conn.CreateCommand();
+        cmd.CommandText = string.Format("SELECT COUNT(*) FROM pg_database WHERE datname='{0}'", GetConnectionString(connectionStringName)["database"]);
+
+        long count = Convert.ToInt64(cmd.ExecuteScalar());
+
+        return count > 0;
+      }
+      finally
+      {
+        conn.Close();
+      }
+    }
+
+    public static DbConnection GetConnection(string connectionStringName)
+    {
+      var connectionString = GetConnectionString(connectionStringName);
+
+      return new NpgsqlConnection(connectionString.ConnectionString);
+    }
+
+    public static DbConnection GetSuperuserConnection(string connectionStringName)
+    {
+      var connectionString = GetConnectionString(connectionStringName);
+      connectionString["database"] = "postgres";
+
+      return new NpgsqlConnection(connectionString.ConnectionString);
+    }
+
+    public static DbConnectionStringBuilder GetConnectionString(string connectionStringName)
+    {
+      return new DbConnectionStringBuilder { ConnectionString = ConfigurationManager.ConnectionStrings[connectionStringName].ConnectionString };
     }
   }
 }

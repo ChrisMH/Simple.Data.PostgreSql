@@ -1,32 +1,30 @@
-﻿using NUnit.Framework;
+﻿using System;
+using Xunit;
 
 namespace Simple.Data.PostgreSqlTest
 {
-  [TestFixture]
-  public class DatabaseOpenerTests
+  public class DatabaseOpenerTests : IDisposable
   {
-    [SetUp]
-    public void SetUp()
+    public DatabaseOpenerTests()
     {
-      DatabaseUtility.CreateDatabase();
+      DatabaseUtility.CreateDatabase("Test");
     }
 
-    [TearDown]
-    public void TearDown()
+    public void Dispose()
     {
-      //DatabaseUtility.DestroyDatabase();
+      //DatabaseUtility.DestroyDatabase("Test");
     }
 
-    [Test]
+    [Fact]
     public void OpenNamedConnectionTest()
     {
       var db = Database.OpenNamedConnection("Test");
-      Assert.IsNotNull(db);
+      Assert.NotNull(db);
       var user = db.Users.FindById(1);
-      Assert.AreEqual(1, user.Id);
+      Assert.Equal(1, user.Id);
     }
 
-    [Test]
+    [Fact]
     public void TestProviderIsSqlProvider()
     {
       //var provider = new ProviderHelper().GetProviderByConnectionString(Properties.Settings.Default.ConnectionString);
@@ -34,7 +32,7 @@ namespace Simple.Data.PostgreSqlTest
       Assert.True(false);
     }
 
-    [Test]
+    [Fact]
     public void TestProviderIsSqlProviderFromOpen()
     {
       //Database db = DatabaseHelper.Open();
@@ -43,7 +41,7 @@ namespace Simple.Data.PostgreSqlTest
       Assert.True(false);
     }
 
-    [Test]
+    [Fact]
     public void TestProviderIsSqlProviderFromOpenConnection()
     {
       //Database db = Database.OpenConnection(Properties.Settings.Default.ConnectionString);

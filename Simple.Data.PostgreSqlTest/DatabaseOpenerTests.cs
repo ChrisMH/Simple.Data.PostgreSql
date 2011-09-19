@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Configuration;
+using Simple.Data.Ado;
+using Simple.Data.PostgreSql;
 using Xunit;
+using Simple.Data.PostgreSql;
 
 namespace Simple.Data.PostgreSqlTest
 {
@@ -27,9 +31,8 @@ namespace Simple.Data.PostgreSqlTest
     [Fact]
     public void TestProviderIsSqlProvider()
     {
-      //var provider = new ProviderHelper().GetProviderByConnectionString(Properties.Settings.Default.ConnectionString);
-      //Assert.IsInstanceOf(typeof(SqlConnectionProvider), provider);
-      Assert.True(false);
+      var provider = new ProviderHelper().GetProviderByConnectionString(ConfigurationManager.ConnectionStrings["Test"].ConnectionString);
+      Assert.True(provider is PostgreSqlConnectionProvider);
     }
 
     [Fact]

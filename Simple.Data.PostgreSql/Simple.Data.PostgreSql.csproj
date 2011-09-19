@@ -50,6 +50,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DbTypeLookup.cs" />
+    <Compile Include="NpgsqlColumn.cs" />
+    <Compile Include="NpgsqlDbParameterFactory.cs" />
     <Compile Include="PostgreSqlConnectionProvider.cs" />
     <Compile Include="PostgreSqlSchemaProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

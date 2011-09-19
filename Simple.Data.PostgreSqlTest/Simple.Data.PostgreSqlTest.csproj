@@ -40,6 +40,7 @@
       <HintPath>..\lib\Npgsql.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -54,6 +55,7 @@
   <ItemGroup>
     <Compile Include="DatabaseOpenerTests.cs" />
     <Compile Include="DatabaseUtility.cs" />
+    <Compile Include="PostgreSqlSchemaTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -75,6 +77,9 @@
       <Project>{148CEE80-2E84-4ABD-B5AB-20415B2BBD21}</Project>
       <Name>Simple.Data</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Test.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

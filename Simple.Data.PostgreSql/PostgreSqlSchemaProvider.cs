@@ -49,11 +49,11 @@ namespace Simple.Data.PostgreSql
         {
           while (rdr.Read())
           {
-            yield return new Column(rdr.GetString(0),
-                                    table,
-                                    IsIdentityColumn(rdr.IsDBNull(1) ? null : rdr.GetString(1), rdr.GetString(2), rdr.GetString(3)),
-                                    DbTypeLookup.GetDbType(rdr.GetString(3)),
-                                    rdr.IsDBNull(4) ? 0 : rdr.GetInt32(4));
+            yield return new NpgsqlColumn(rdr.GetString(0),
+                                          table,
+                                          IsIdentityColumn(rdr.IsDBNull(1) ? null : rdr.GetString(1), rdr.GetString(2), rdr.GetString(3)),
+                                          DbTypeLookup.GetDbType(rdr.GetString(3)),
+                                          rdr.IsDBNull(4) ? 0 : rdr.GetInt32(4));
           }
         }
       }
@@ -86,23 +86,19 @@ namespace Simple.Data.PostgreSql
 
     public string QuoteObjectName(string unquotedName)
     {
-      if (unquotedName.StartsWith("\""))
-      {
-        return unquotedName;
-      }
-      return String.Format("\"{0}\"", unquotedName);
+      if (String.IsNullOrEmpty(unquotedName)) throw new ArgumentNullException("unquotedName");
+      return unquotedName.StartsWith("\"") ? unquotedName : String.Format("\"{0}\"", unquotedName);
     }
 
     public string NameParameter(string baseName)
     {
-      // TODO: Implement this method
-      throw new NotImplementedException();
+      if (String.IsNullOrEmpty(baseName)) throw new ArgumentNullException("baseName");
+      return baseName.StartsWith("@") ? baseName : "@" + baseName;
     }
 
     internal bool IsIdentityColumn(string columnDefault, string isNullable, string dataType)
     {
-      if (String.IsNullOrEmpty(columnDefault)
-          || !columnDefault.ToLowerInvariant().Contains("nextval"))
+      if (String.IsNullOrEmpty(columnDefault) || !columnDefault.ToLowerInvariant().Contains("nextval"))
       {
         return false;
       }

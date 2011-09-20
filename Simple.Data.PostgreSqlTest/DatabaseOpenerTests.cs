@@ -16,7 +16,16 @@ namespace Simple.Data.PostgreSqlTest
 
     public void Dispose()
     {
-      //DatabaseUtility.DestroyDatabase("Test");
+      DatabaseUtility.DestroyDatabase("Test");
+    }
+
+    [Fact]
+    public void OpenDefaultConnectionTest()
+    {
+      //var db = Database.Open();
+      //Assert.NotNull(db);
+      //var user = db.Public.Users.FindById(1);
+      //Assert.Equal(1, user.Id);
     }
 
     [Fact]
@@ -24,7 +33,7 @@ namespace Simple.Data.PostgreSqlTest
     {
       var db = Database.OpenNamedConnection("Test");
       Assert.NotNull(db);
-      var user = db.Users.FindById(1);
+      var user = db.Public.Users.FindById(1);
       Assert.Equal(1, user.Id);
     }
 
@@ -38,19 +47,17 @@ namespace Simple.Data.PostgreSqlTest
     [Fact]
     public void TestProviderIsSqlProviderFromOpen()
     {
-      //Database db = DatabaseHelper.Open();
-      //Assert.IsInstanceOf(typeof(AdoAdapter), db.GetAdapter());
-      //Assert.IsInstanceOf(typeof(SqlConnectionProvider), ((AdoAdapter)db.GetAdapter()).ConnectionProvider);
-      Assert.True(false);
+      var db = Database.Open();
+      Assert.True(db.GetAdapter() is AdoAdapter);
+      Assert.True(((AdoAdapter)db.GetAdapter()).ConnectionProvider is PostgreSqlConnectionProvider);
     }
 
     [Fact]
     public void TestProviderIsSqlProviderFromOpenConnection()
     {
-      //Database db = Database.OpenConnection(Properties.Settings.Default.ConnectionString);
-      //Assert.IsInstanceOf(typeof(AdoAdapter), db.GetAdapter());
-      //Assert.IsInstanceOf(typeof(SqlConnectionProvider), ((AdoAdapter)db.GetAdapter()).ConnectionProvider);
-      Assert.True(false);
+      var db = Database.OpenConnection(ConfigurationManager.ConnectionStrings["Test"].ConnectionString);
+      Assert.True(db.GetAdapter() is AdoAdapter);
+      Assert.True(((AdoAdapter)db.GetAdapter()).ConnectionProvider is PostgreSqlConnectionProvider);
     }
   }
 }

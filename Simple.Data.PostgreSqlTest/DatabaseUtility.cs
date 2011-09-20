@@ -17,7 +17,8 @@ namespace Simple.Data.PostgreSqlTest
       var connectionString = GetConnectionString(connectionStringName);
       var suConnectionString = GetSuperuserConnectionString(connectionStringName);
 
-      using(var conn = new NpgsqlConnection(suConnectionString.ConnectionString))
+      var conn = new NpgsqlConnection(suConnectionString.ConnectionString);
+      try
       {
         conn.Open();
         var cmd = conn.CreateCommand();
@@ -29,9 +30,14 @@ namespace Simple.Data.PostgreSqlTest
                                         connectionString["user name"], connectionString["password"]);
         cmd.ExecuteNonQuery();
       }
+      finally
+      {
+        conn.Close();
+      }
 
       suConnectionString["database"] = connectionString["database"];
-      using(var conn = new NpgsqlConnection(suConnectionString.ConnectionString))
+      conn = new NpgsqlConnection(suConnectionString.ConnectionString);
+      try
       {
         conn.Open();
         var cmd = conn.CreateCommand();
@@ -49,6 +55,10 @@ namespace Simple.Data.PostgreSqlTest
         cmd.CommandText = testSql.ReadToEnd();
         cmd.ExecuteNonQuery();
       }
+      finally
+      {
+        conn.Close();
+      }
     }
     
     public static void DestroyDatabase(string connectionStringName)
@@ -56,7 +66,8 @@ namespace Simple.Data.PostgreSqlTest
       var connectionString = GetConnectionString(connectionStringName);
       var suConnectionString = GetSuperuserConnectionString(connectionStringName);
 
-      using(var conn = new NpgsqlConnection(suConnectionString.ConnectionString))
+      var conn = new NpgsqlConnection(suConnectionString.ConnectionString);
+      try
       {
         conn.Open();
         var cmd = conn.CreateCommand();
@@ -66,8 +77,10 @@ namespace Simple.Data.PostgreSqlTest
 
         cmd.CommandText = String.Format("DROP ROLE IF EXISTS {0}", connectionString["user name"]);
         cmd.ExecuteNonQuery();
-
-
+      }
+      finally
+      {
+        conn.Close();
       }
     }
     /*

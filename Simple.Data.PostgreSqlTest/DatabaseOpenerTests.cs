@@ -22,10 +22,10 @@ namespace Simple.Data.PostgreSqlTest
     [Fact]
     public void OpenDefaultConnectionTest()
     {
-      //var db = Database.Open();
-      //Assert.NotNull(db);
-      //var user = db.Public.Users.FindById(1);
-      //Assert.Equal(1, user.Id);
+      var db = Database.Open();
+      Assert.NotNull(db);
+      var user = db.Public.Users.FindById(1);
+      Assert.Equal(1, user.Id);
     }
 
     [Fact]

@@ -13,6 +13,7 @@ namespace Simple.Data.PostgreSql
 
     private static readonly Dictionary<string, NpgsqlDbType> DbTypeMap = new Dictionary<string, NpgsqlDbType>
                                                                      {
+                                                                       // TODO: NpgsqlDbType.Array
                                                                        {"smallint", NpgsqlDbType.Smallint},
                                                                        {"integer", NpgsqlDbType.Integer},
                                                                        {"bigint", NpgsqlDbType.Bigint},
@@ -49,7 +50,6 @@ namespace Simple.Data.PostgreSql
                                                                        {"bit varying", NpgsqlDbType.Bit},
                                                                        {"uuid", NpgsqlDbType.Uuid},
                                                                        {"oid", NpgsqlDbType.Oidvector} // TODO: not sure about this one
-                                                                       // TODO: arrays?
                                                                      };
   }
 }

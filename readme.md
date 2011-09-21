@@ -1,5 +1,5 @@
 # Simple.Data.PostgreSql
-An adapter to PostgreSql database for Simple.Data
+An adapter to PostgreSql databases for Simple.Data
 
 # Testing
 The default tests assume a database cluster installed at localhost:5432.

@@ -30,26 +30,18 @@ namespace Simple.Data.PostgreSql
 
     public bool SupportsCompoundStatements
     {
-      get
-      {
-        // TODO: Implement this property getter
-        throw new NotImplementedException();
-      }
+      get { return true; }
     }
 
     public string GetIdentityFunction()
     {
-      // TODO: Implement this method
-      throw new NotImplementedException();
+      // There is no global identity function in PostgreSql
+      throw new InvalidOperationException("PostgreSql does not have a global identity function");
     }
 
     public bool SupportsStoredProcedures
     {
-      get
-      {
-        // TODO: Implement this property getter
-        throw new NotImplementedException();
-      }
+      get { return true; }
     }
 
     public IProcedureExecutor GetProcedureExecutor(AdoAdapter adapter, ObjectName procedureName)

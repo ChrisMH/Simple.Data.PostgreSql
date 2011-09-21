@@ -18,7 +18,7 @@ namespace Simple.Data.PostgreSqlTest
     public void Dispose()
     {
       DatabaseUtility.DestroyDatabase("Test");
-    } 
+    }
 
     [Fact] 
     public void CanGetTables()
@@ -29,7 +29,6 @@ namespace Simple.Data.PostgreSqlTest
       var result = schema.GetTables().Where(s => s.ActualName == "users").SingleOrDefault();
 
       Assert.NotNull(result);
-      
     }
 
     [Fact]

@@ -25,6 +25,7 @@ namespace Simple.Data.PostgreSqlTest
       var user = db.Public.Users.Insert(Name: "Ford", Password: "hoopy", Age: 29);
 
       Assert.NotNull(user);
+      Assert.NotEqual(0, user.Id);
       Assert.Equal("Ford", user.Name);
       Assert.Equal("hoopy", user.Password);
       Assert.Equal(29, user.Age);
@@ -40,6 +41,7 @@ namespace Simple.Data.PostgreSqlTest
       var actual = db.Users.Insert(user);
 
       Assert.NotNull(user);
+      Assert.NotEqual(0, actual.Id);
       Assert.Equal("Zaphod", actual.Name);
       Assert.Equal("zarquon", actual.Password);
       Assert.Equal(42, actual.Age);
@@ -51,10 +53,10 @@ namespace Simple.Data.PostgreSqlTest
       var db = Database.Open();
 
       var users = new[]
-                            {
-                                new User { Name = "Slartibartfast", Password = "bistromathics", Age = 777 },
-                                new User { Name = "Wowbagger", Password = "teatime", Age = int.MaxValue }
-                            };
+                  {
+                    new User { Name = "Slartibartfast", Password = "bistromathics", Age = 777 },
+                    new User { Name = "Wowbagger", Password = "teatime", Age = int.MaxValue }
+                  };
 
       IList<User> actuals = db.Users.Insert(users).ToList<User>();
 
@@ -118,39 +120,37 @@ namespace Simple.Data.PostgreSqlTest
       Assert.Equal("teatime", actuals[1].Password);
       Assert.Equal(int.MaxValue, actuals[1].Age);
     }
-
     /* TODO: Implement test for ByteA
     [Fact]
     public void TestWithImageColumn()
     {
-      var db = Database.Open();
-      try
-      {
-        var image = GetImage.Image;
-        db.Images.Insert(Id: 1, TheImage: image);
-        var img = (DbImage)db.Images.FindById(1);
-        Assert.IsTrue(image.SequenceEqual(img.TheImage));
-      }
-      finally
-      {
-        db.Images.DeleteById(1);
-      }
+    var db = Database.Open();
+    try
+    {
+    var image = GetImage.Image;
+    db.Images.Insert(Id: 1, TheImage: image);
+    var img = (DbImage)db.Images.FindById(1);
+    Assert.IsTrue(image.SequenceEqual(img.TheImage));
     }
-
+    finally
+    {
+    db.Images.DeleteById(1);
+    }
+    }
     [Fact]
     public void TestInsertWithVarBinaryMaxColumn()
     {
-      var db = Database.Open();
-      var image = GetImage.Image;
-      var blob = new Blob
-      {
-        Id = 1,
-        Data = image
-      };
-      db.Blobs.Insert(blob);
-      blob = db.Blobs.FindById(1);
-      Assert.IsTrue(image.SequenceEqual(blob.Data));
+    var db = Database.Open();
+    var image = GetImage.Image;
+    var blob = new Blob
+    {
+    Id = 1,
+    Data = image
+    };
+    db.Blobs.Insert(blob);
+    blob = db.Blobs.FindById(1);
+    Assert.IsTrue(image.SequenceEqual(blob.Data));
     }
-     */
+    */
   }
 }

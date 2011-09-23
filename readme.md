@@ -6,16 +6,16 @@ The adapter makes use of the Npgsql open source database adapter.
 
 To use this adapter, you will need to add the provider name to your app.config or web.config file:
 
-  <system.data>
-    <DbProviderFactories>
-      <add name="Npgsql Data Provider"
-           invariant="Npgsql"
-           support="FF"
-           description=".Net Framework Data Provider for Postgresql Server"
-           type="Npgsql.NpgsqlFactory, Npgsql" />
-    </DbProviderFactories>
-  </system.data>
-
+<pre>&lt;system.data&gt;
+  &lt;DbProviderFactories&gt;
+    &lt;add name="Npgsql Data Provider"
+         invariant="Npgsql"
+         support="FF"
+         description=".Net Framework Data Provider for Postgresql Server"
+         type="Npgsql.NpgsqlFactory, Npgsql" /&gt;
+  &lt;/DbProviderFactories&gt;
+&lt;/system.data&gt;
+</pre>
   
 # Testing
 The default tests assume a database cluster installed at localhost:5432.

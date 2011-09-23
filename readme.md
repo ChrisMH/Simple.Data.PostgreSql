@@ -16,6 +16,7 @@ To use this adapter, you will need to add the provider name to your app.config o
     </DbProviderFactories>
   </system.data>
 
+  
 # Testing
 The default tests assume a database cluster installed at localhost:5432.
 Tests assume that the superuser account is named 'postgres' with password 'postgres' and that there is a default database named 'postgres'.  If your system is not set up like that, all these settings can be changed in the app.config file.

@@ -1,0 +1,5 @@
+﻿SELECT column_name, column_default, is_nullable, character_maximum_length,
+       CASE WHEN data_type='USER-DEFINED' THEN udt_name ELSE trim(both '\"' from data_type) END AS data_type
+FROM information_schema.columns
+WHERE table_schema='{0}'
+  AND table_name='{1}'

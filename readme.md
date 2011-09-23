@@ -1,7 +1,22 @@
 # Simple.Data.PostgreSql
 An adapter to PostgreSql databases for Simple.Data
 
+# Use
+The adapter makes use of the Npgsql open source database adapter. 
+
+To use this adapter, you will need to add the provider name to your app.config or web.config file:
+
+  <system.data>
+    <DbProviderFactories>
+      <add name="Npgsql Data Provider"
+           invariant="Npgsql"
+           support="FF"
+           description=".Net Framework Data Provider for Postgresql Server"
+           type="Npgsql.NpgsqlFactory, Npgsql" />
+    </DbProviderFactories>
+  </system.data>
+
 # Testing
 The default tests assume a database cluster installed at localhost:5432.
-The superuser account is used to create and delete a test database during testing.  It assume user id 'postgres' and password 'postgres', which is how I have my development database configured.  If yours is different, change the appropriate settings in app.config to run the unit tests.
+Tests assume that the superuser account is named 'postgres' with password 'postgres' and that there is a default database named 'postgres'.  If your system is not set up like that, all these settings can be changed in the app.config file.
 

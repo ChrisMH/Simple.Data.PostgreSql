@@ -1,148 +1,121 @@
-﻿CREATE TABLE users (
+
+CREATE TABLE users (
   id serial NOT NULL,
   name varchar(100) NOT NULL,
   password varchar(100) NOT NULL,
-  age integer NOT NULL,
-  CONSTRAINT users_pkey
-    PRIMARY KEY (id)
+  age integer NOT NULL
 ) WITH (OIDS = FALSE);
 
+ALTER TABLE users
+  ADD CONSTRAINT pk_users
+  PRIMARY KEY (id);
+  
 INSERT INTO users (name, password, age) VALUES ('Bob', 'Bob', 32);
 INSERT INTO users (name, password, age) VALUES ('Charlie', 'Charlie', 49);
 INSERT INTO users (name, password, age) VALUES ('Dave', 'Dave', 12);
 
+
+
+CREATE TABLE customers
+(
+  id serial NOT NULL,
+  name varchar(100) NOT NULL,
+  address varchar(200)
+) WITH (OIDS=FALSE);
+
+ALTER TABLE customers
+  ADD CONSTRAINT pk_customers
+  PRIMARY KEY (id);
+  
+INSERT INTO customers (name, address) VALUES ('Test', '100 Road');
+
+	
+	
 CREATE TABLE orders (
-  order_id serial NOT NULL,
+  id serial NOT NULL,
   order_date timestamp NOT NULL,
-  customer_id integer NOT NULL,
-  CONSTRAINT orders_pkey
-    PRIMARY KEY (order_id)
+  customer_id integer NOT NULL
 ) WITH (OIDS = FALSE);
 
+ALTER TABLE orders
+  ADD CONSTRAINT pk_orders
+  PRIMARY KEY (id);
+
+ALTER TABLE orders
+  ADD CONSTRAINT fk_orders_customers_customer_id
+  FOREIGN KEY (customer_id) REFERENCES customers (id)
+  ON DELETE NO ACTION ON UPDATE NO ACTION;
+  
+INSERT INTO orders (order_date, customer_id) VALUES ('20101010 00:00:00.000', 1);
+
+	
+	
+CREATE TABLE items (
+  id serial NOT NULL,
+  name varchar(100) NOT NULL,
+  price money NOT NULL
+) WITH (OIDS=FALSE);
+
+ALTER TABLE items
+  ADD CONSTRAINT pk_items
+  PRIMARY KEY (id);
+
+
+INSERT INTO items (name, price) VALUES ('Widget', '4.5000'::money);
+
+	
+	
 CREATE TABLE order_items (
-  order_item_id serial NOT NULL,
+  id serial NOT NULL,
   order_id integer NOT NULL,
   item_id integer NOT NULL,
-  quantity integer  NOT NULL,
-  CONSTRAINT order_items_pkey
-    PRIMARY KEY (order_item_id)
+  quantity integer  NOT NULL
 ) WITH (OIDS = FALSE);
 
+ALTER TABLE order_items
+  ADD CONSTRAINT pk_order_items
+  PRIMARY KEY (id);
+
+ALTER TABLE order_items
+  ADD CONSTRAINT fk_order_items_item_id
+  FOREIGN KEY (item_id) REFERENCES items (id)
+  ON DELETE NO ACTION ON UPDATE NO ACTION;
+  
+ALTER TABLE order_items
+  ADD CONSTRAINT fk_order_items_order_id
+  FOREIGN KEY (order_id) REFERENCES orders (id)
+  ON DELETE NO ACTION ON UPDATE NO ACTION;
+  		
+INSERT INTO order_items (order_id, item_id, quantity) VALUES (1, 1, 10);
+	
+	
+	
+CREATE VIEW view_customers AS
+  SELECT name, address, id
+  FROM customers
+  WHERE name LIKE '%e%';
+	
+
+CREATE OR REPLACE FUNCTION public.get_customers()
+RETURNS SETOF public.customers AS
+$$
+SELECT * FROM customers ORDER BY id
+$$
+LANGUAGE 'sql'
+VOLATILE;
+
+CREATE OR REPLACE FUNCTION public.get_customer_orders
+(
+  IN integer
+)
+RETURNS SETOF public.orders AS
+$$
+SELECT * FROM public.orders WHERE id=$1
+$$
+LANGUAGE 'sql'
+VOLATILE;
+
 /*
-    CREATE TABLE [dbo].[Images](
-	    [Id] [int] NOT NULL,
-	    [TheImage] [image] NOT NULL
-    );
-
-    ALTER TABLE [dbo].[Images]
-		ADD CONSTRAINT [PK_Images] PRIMARY KEY CLUSTERED ([Id] ASC) WITH (ALLOW_PAGE_LOCKS = ON, ALLOW_ROW_LOCKS = ON, PAD_INDEX = OFF, IGNORE_DUP_KEY = OFF, STATISTICS_NORECOMPUTE = OFF);
-
-	CREATE TABLE [dbo].[Items] (
-		[ItemId] INT            IDENTITY (1, 1) NOT NULL,
-		[Name]   NVARCHAR (100) NOT NULL,
-		[Price]  MONEY          NOT NULL
-	);
-
-	ALTER TABLE [dbo].[Items]
-		ADD CONSTRAINT [PK_Items] PRIMARY KEY CLUSTERED ([ItemId] ASC) WITH (ALLOW_PAGE_LOCKS = ON, ALLOW_ROW_LOCKS = ON, PAD_INDEX = OFF, IGNORE_DUP_KEY = OFF, STATISTICS_NORECOMPUTE = OFF);
-
-	CREATE TABLE [dbo].[Customers] (
-		[CustomerId] INT            IDENTITY (1, 1) NOT NULL,
-		[Name]       NVARCHAR (100) NOT NULL,
-		[Address]    NVARCHAR (200) NULL
-	);
-
-	ALTER TABLE [dbo].[Customers]
-		ADD CONSTRAINT [PK_Customers] PRIMARY KEY CLUSTERED ([CustomerId] ASC) WITH (ALLOW_PAGE_LOCKS = ON, ALLOW_ROW_LOCKS = ON, PAD_INDEX = OFF, IGNORE_DUP_KEY = OFF, STATISTICS_NORECOMPUTE = OFF);
-	    
-	CREATE TABLE [dbo].[PagingTest] ([Id] int not null, [Dummy] int);
-
-	CREATE TABLE [dbo].[Blobs](
-		[Id] [int] NOT NULL,
-		[Data] [varbinary](max) NULL
-	)
-
-	ALTER TABLE [dbo].[Blobs]
-		ADD CONSTRAINT [PK_Blobs] PRIMARY KEY CLUSTERED ([Id] ASC)	
-
-	CREATE TABLE [dbo].[EnumTest](
-		[Id] [int] IDENTITY (1, 1) NOT NULL,
-		[Flag] [int] NOT NULL
-	)
-
-	ALTER TABLE [dbo].[EnumTest]
-		ADD CONSTRAINT [PK_EnumTest] PRIMARY KEY CLUSTERED ([Id] ASC)	
-
-	BEGIN TRANSACTION
-	SET IDENTITY_INSERT [dbo].[Customers] ON
-	INSERT INTO [dbo].[Customers] ([CustomerId], [Name], [Address]) VALUES (1, N'Test', N'100 Road')
-	SET IDENTITY_INSERT [dbo].[Customers] OFF
-	SET IDENTITY_INSERT [dbo].[Orders] ON
-	INSERT INTO [dbo].[Orders] ([OrderId], [OrderDate], [CustomerId]) VALUES (1, '20101010 00:00:00.000', 1)
-	SET IDENTITY_INSERT [dbo].[Orders] OFF
-	SET IDENTITY_INSERT [dbo].[Items] ON
-	INSERT INTO [dbo].[Items] ([ItemId], [Name], [Price]) VALUES (1, N'Widget', 4.5000)
-	SET IDENTITY_INSERT [dbo].[Items] OFF
-	SET IDENTITY_INSERT [dbo].[OrderItems] ON
-	INSERT INTO [dbo].[OrderItems] ([OrderItemId], [OrderId], [ItemId], [Quantity]) VALUES (1, 1, 1, 10)
-	SET IDENTITY_INSERT [dbo].[OrderItems] OFF
-	SET IDENTITY_INSERT [dbo].[Users] ON
-	INSERT INTO [dbo].[Users] ([Id], [Name], [Password], [Age]) VALUES (1,'Bob','Bob',32)
-	INSERT INTO [dbo].[Users] ([Id], [Name], [Password], [Age]) VALUES (2,'Charlie','Charlie',49)
-	INSERT INTO [dbo].[Users] ([Id], [Name], [Password], [Age]) VALUES (3,'Dave','Dave',12)
-	SET IDENTITY_INSERT [dbo].[Users] OFF
-	
-	DECLARE @PagingId AS INT
-	SET @PagingId = 1
-	WHILE @PagingId <= 100
-	BEGIN
-		INSERT INTO [dbo].[PagingTest] ([Id]) VALUES (@PagingId)
-		SET @PagingId = @PagingId + 1
-	END
-	
-	COMMIT TRANSACTION
-
-	ALTER TABLE [dbo].[Orders] WITH NOCHECK
-		ADD CONSTRAINT [FK_Orders_Customers] FOREIGN KEY ([CustomerId]) REFERENCES [dbo].[Customers] ([CustomerId]) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-	ALTER TABLE [dbo].[OrderItems] WITH NOCHECK
-		ADD CONSTRAINT [FK_OrderItems_Items] FOREIGN KEY ([ItemId]) REFERENCES [dbo].[Items] ([ItemId]) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-	ALTER TABLE [dbo].[OrderItems] WITH NOCHECK
-		ADD CONSTRAINT [FK_OrderItems_Orders] FOREIGN KEY ([OrderId]) REFERENCES [dbo].[Orders] ([OrderId]) ON DELETE NO ACTION ON UPDATE NO ACTION;
-END
-GO
-
-EXEC [dbo].[TestReset]
-GO
-
-CREATE VIEW [dbo].[VwCustomers]
-    AS
-        SELECT     Name, Address, CustomerId
-        FROM         dbo.Customers
-        WHERE     (Name LIKE '%e%')
-    
-GO
-
-CREATE TABLE [dbo].[SchemaTable] ([Id] int not null, [Description] nvarchar(100) not null);
-GO
-INSERT INTO [dbo].[SchemaTable] VALUES (1, 'Pass')
-GO
-
-CREATE SCHEMA [test] AUTHORIZATION [dbo]
-GO
-
-CREATE TABLE [test].[SchemaTable] ([Id] int not null, [Description] nvarchar(100) not null);
-GO
-
-CREATE PROCEDURE [dbo].[GetCustomers]
-AS
-BEGIN
-    SET NOCOUNT ON;
-    SELECT * FROM Customers
-    ORDER BY CustomerId
-END
-GO
 CREATE PROCEDURE [dbo].[GetCustomerAndOrders] (@CustomerId int)
 AS
 BEGIN
@@ -170,6 +143,113 @@ CREATE FUNCTION [dbo].[VarcharAndReturnInt] (@AValue varchar(50)) RETURNS INT AS
   RETURN 42
 END
 GO
+*/
+
+
+CREATE TABLE enum_test
+(
+  id serial NOT NULL,
+  flag integer NOT NULL
+) WITH (OIDS=FALSE);
+
+ALTER TABLE enum_test
+  ADD CONSTRAINT pk_enum_test
+  PRIMARY KEY (id);
+
+
+CREATE TABLE schema_table 
+(
+  id integer NOT NULL, 
+  description varchar(100) NOT NULL
+) WITH (OIDS=FALSE);
+
+INSERT INTO schema_table VALUES (1, 'Pass');
+
+
+
+CREATE SCHEMA test;
+
+CREATE TABLE test.schema_table 
+(
+  id integer NOT NULL, 
+  description varchar(100) NOT NULL
+) WITH (OIDS=FALSE);
+
+INSERT INTO test.schema_table VALUES (1, 'Pass');
+
+
+
+CREATE TABLE paging_test
+(
+  id integer NOT NULL,
+  dummy integer
+) WITH (OIDS=FALSE);
+
+
+CREATE TABLE no_primary_key_test
+(
+  id serial NOT NULL,
+  dummy varchar NOT NULL
+) WITH (OIDS=FALSE);
+
+
+CREATE TABLE blobs
+(
+  id serial NOT NULL,
+  data bytea
+) WITH (OIDS=FALSE);
+
+ALTER TABLE blobs
+  ADD CONSTRAINT pk_blobs
+  PRIMARY KEY (id);
+	
+/*
+    CREATE TABLE [dbo].[Images](
+	    [Id] [int] NOT NULL,
+	    [TheImage] [image] NOT NULL
+    );
+
+    ALTER TABLE [dbo].[Images]
+		ADD CONSTRAINT [PK_Images] PRIMARY KEY CLUSTERED ([Id] ASC) WITH (ALLOW_PAGE_LOCKS = ON, ALLOW_ROW_LOCKS = ON, PAD_INDEX = OFF, IGNORE_DUP_KEY = OFF, STATISTICS_NORECOMPUTE = OFF);
+
+
+
+
+	BEGIN TRANSACTION
+	
+	DECLARE @PagingId AS INT
+	SET @PagingId = 1
+	WHILE @PagingId <= 100
+	BEGIN
+		INSERT INTO [dbo].[PagingTest] ([Id]) VALUES (@PagingId)
+		SET @PagingId = @PagingId + 1
+	END
+	
+	COMMIT TRANSACTION
+
+END
+GO
+
+EXEC [dbo].[TestReset]
+GO
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 CREATE TABLE [dbo].[GroupTestMaster] (
 		[Id]       INT            IDENTITY (1, 1) NOT NULL,
 		[Name]     NVARCHAR (100) NOT NULL
@@ -199,4 +279,6 @@ INSERT INTO [dbo].[GroupTestDetail] VALUES ('2001-1-1',3,1)
 INSERT INTO [dbo].[GroupTestDetail] VALUES ('2010-1-1',2,2)
 INSERT INTO [dbo].[GroupTestDetail] VALUES ('2011-1-1',3,2)
 */
+
+
 

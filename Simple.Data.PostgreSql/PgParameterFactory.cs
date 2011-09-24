@@ -9,11 +9,11 @@ using Simple.Data.PostgreSql;
 namespace Simple.Data.PostgreSql
 {
   [Export(typeof (IDbParameterFactory))]
-  public class NpgsqlDbParameterFactory : IDbParameterFactory
+  public class PgParameterFactory : IDbParameterFactory
   {
     public IDbDataParameter CreateParameter(string name, Column column)
     {
-      var npgsqlColumn = (NpgsqlColumn) column;
+      var npgsqlColumn = (PgColumn) column;
       return new NpgsqlParameter(name, npgsqlColumn.NpgsqlDbType, column.MaxLength, column.ActualName);
     }
 

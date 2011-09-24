@@ -9,7 +9,7 @@ namespace Simple.Data.PostgreSql
 {
   [Export(typeof(IConnectionProvider))]
   [Export("Npgsql", typeof(IConnectionProvider))]
-  public class PostgreSqlConnectionProvider : IConnectionProvider
+  public class PgConnectionProvider : IConnectionProvider
   {
     public void SetConnectionString(string connectionString)
     {
@@ -23,7 +23,7 @@ namespace Simple.Data.PostgreSql
 
     public ISchemaProvider GetSchemaProvider()
     {
-      return new PostgreSqlSchemaProvider(this);
+      return new PgSchemaProvider(this);
     }
 
     public string ConnectionString { get; private set; }

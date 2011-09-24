@@ -13,7 +13,7 @@ using Simple.Data.Extensions;
 namespace Simple.Data.PostgreSql
 {
   [Export(typeof(ICustomInserter))]
-  public class PostgreSqlCustomInserter : ICustomInserter
+  public class PgCustomInserter : ICustomInserter
   {
     public IDictionary<string, object> Insert(AdoAdapter adapter, string tableName, IDictionary<string, object> data, IDbTransaction transaction)
     {
@@ -55,7 +55,7 @@ namespace Simple.Data.PostgreSql
     {
       for (var idx = 0 ; idx < insertColumns.Length ; idx++)
       {
-        var parameter = new NpgsqlParameter(String.Concat("@p", idx.ToString()), ((NpgsqlColumn)insertColumns[idx]).NpgsqlDbType);
+        var parameter = new NpgsqlParameter(String.Concat("@p", idx.ToString()), ((PgColumn)insertColumns[idx]).NpgsqlDbType);
         parameter.Value = insertData[idx];
         cmd.Parameters.Add(parameter);
       }

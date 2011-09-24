@@ -10,9 +10,9 @@ using Simple.Data.Ado.Schema;
 
 namespace Simple.Data.PostgreSql
 {
-  internal class PostgreSqlSchemaProvider : ISchemaProvider
+  internal class PgSchemaProvider : ISchemaProvider
   {
-    public PostgreSqlSchemaProvider(IConnectionProvider connectionProvider)
+    public PgSchemaProvider(IConnectionProvider connectionProvider)
     {
       ConnectionProvider = connectionProvider;
     }
@@ -34,7 +34,7 @@ namespace Simple.Data.PostgreSql
       
       return SelectToDataTable(String.Format(Properties.Resource.ColumnsQuery, table.Schema, table.ActualName))
         .AsEnumerable()
-        .Select(column => new NpgsqlColumn(column["column_name"].ToString(),
+        .Select(column => new PgColumn(column["column_name"].ToString(),
                                            table,
                                            IsIdentityColumn(column["column_default"].ToString(), column["is_nullable"].ToString(), column["data_type"].ToString()),
                                            TypeResolver.GetDbType(column["data_type"].ToString()),

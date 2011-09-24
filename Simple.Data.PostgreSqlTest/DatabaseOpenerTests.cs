@@ -41,7 +41,7 @@ namespace Simple.Data.PostgreSqlTest
     public void TestProviderIsSqlProvider()
     {
       var provider = new ProviderHelper().GetProviderByConnectionString(ConfigurationManager.ConnectionStrings["Test"].ConnectionString);
-      Assert.True(provider is PostgreSqlConnectionProvider);
+      Assert.True(provider is PgConnectionProvider);
     }
 
     [Fact]
@@ -49,7 +49,7 @@ namespace Simple.Data.PostgreSqlTest
     {
       var db = Database.Open();
       Assert.True(db.GetAdapter() is AdoAdapter);
-      Assert.True(((AdoAdapter)db.GetAdapter()).ConnectionProvider is PostgreSqlConnectionProvider);
+      Assert.True(((AdoAdapter)db.GetAdapter()).ConnectionProvider is PgConnectionProvider);
     }
 
     [Fact]
@@ -57,7 +57,7 @@ namespace Simple.Data.PostgreSqlTest
     {
       var db = Database.OpenConnection(ConfigurationManager.ConnectionStrings["Test"].ConnectionString);
       Assert.True(db.GetAdapter() is AdoAdapter);
-      Assert.True(((AdoAdapter)db.GetAdapter()).ConnectionProvider is PostgreSqlConnectionProvider);
+      Assert.True(((AdoAdapter)db.GetAdapter()).ConnectionProvider is PgConnectionProvider);
     }
   }
 }

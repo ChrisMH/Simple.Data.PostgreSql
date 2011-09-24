@@ -10,9 +10,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Data.Ado", "..\Simple.Data\Simple.Data.Ado\Simple.Data.Ado.csproj", "{ECC2D7DB-EC7F-44B6-B09F-5B471C629685}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Readme", "Readme", "{3E328BC9-062F-409E-9440-CE148D2EA726}"
-	ProjectSection(SolutionItems) = preProject
-		readme.md = readme.md
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

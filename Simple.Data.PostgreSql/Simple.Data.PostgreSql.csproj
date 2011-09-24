@@ -49,17 +49,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PgBulkInserter.cs" />
     <Compile Include="Properties\Resource.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
     <Compile Include="TypeResolver.cs" />
-    <Compile Include="NpgsqlColumn.cs" />
-    <Compile Include="NpgsqlDbParameterFactory.cs" />
-    <Compile Include="PostgreSqlConnectionProvider.cs" />
-    <Compile Include="PostgreSqlCustomInserter.cs" />
-    <Compile Include="PostgreSqlSchemaProvider.cs" />
+    <Compile Include="PgColumn.cs" />
+    <Compile Include="PgParameterFactory.cs" />
+    <Compile Include="PgConnectionProvider.cs" />
+    <Compile Include="PgCustomInserter.cs" />
+    <Compile Include="PgSchemaProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

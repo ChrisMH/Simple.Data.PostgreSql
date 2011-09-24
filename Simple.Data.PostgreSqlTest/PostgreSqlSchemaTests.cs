@@ -64,19 +64,19 @@ namespace Simple.Data.PostgreSqlTest
 
       var table = schema.GetTables().Where(s => s.ActualName == "users").Single();
 
-      var column = (NpgsqlColumn) schema.GetColumns(table).Where(p => p.ActualName == "id").Single();
+      var column = (PgColumn) schema.GetColumns(table).Where(p => p.ActualName == "id").Single();
       Assert.True(column.IsIdentity);
       Assert.Equal(NpgsqlDbType.Integer, column.NpgsqlDbType);
 
-      column = (NpgsqlColumn) schema.GetColumns(table).Where(p => p.ActualName == "name").Single();
+      column = (PgColumn) schema.GetColumns(table).Where(p => p.ActualName == "name").Single();
       Assert.False(column.IsIdentity);
       Assert.Equal(NpgsqlDbType.Varchar, column.NpgsqlDbType);
 
-      column = (NpgsqlColumn) schema.GetColumns(table).Where(p => p.ActualName == "password").Single();
+      column = (PgColumn) schema.GetColumns(table).Where(p => p.ActualName == "password").Single();
       Assert.False(column.IsIdentity);
       Assert.Equal(NpgsqlDbType.Varchar, column.NpgsqlDbType);
 
-      column = (NpgsqlColumn) schema.GetColumns(table).Where(p => p.ActualName == "age").Single();
+      column = (PgColumn) schema.GetColumns(table).Where(p => p.ActualName == "age").Single();
       Assert.False(column.IsIdentity);
       Assert.Equal(NpgsqlDbType.Integer, column.NpgsqlDbType);
     }
@@ -89,13 +89,13 @@ namespace Simple.Data.PostgreSqlTest
 
       var table = schema.GetTables().Where(s => s.ActualName == "view_customers").Single();
 
-      var column = (NpgsqlColumn) schema.GetColumns(table).Where(p => p.ActualName == "name").Single();
+      var column = (PgColumn) schema.GetColumns(table).Where(p => p.ActualName == "name").Single();
       Assert.Equal(NpgsqlDbType.Varchar, column.NpgsqlDbType);
 
-      column = (NpgsqlColumn) schema.GetColumns(table).Where(p => p.ActualName == "address").Single();
+      column = (PgColumn) schema.GetColumns(table).Where(p => p.ActualName == "address").Single();
       Assert.Equal(NpgsqlDbType.Varchar, column.NpgsqlDbType);
 
-      column = (NpgsqlColumn) schema.GetColumns(table).Where(p => p.ActualName == "id").Single();
+      column = (PgColumn) schema.GetColumns(table).Where(p => p.ActualName == "id").Single();
       Assert.Equal(NpgsqlDbType.Integer, column.NpgsqlDbType);
     }
 

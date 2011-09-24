@@ -34,7 +34,7 @@ namespace Simple.Data.SqlTest
       Assert.Equal("Test", customer.Name);
       foreach (var order in customer.Orders)
       {
-        Assert.Equal(1, order.OrderId);
+        Assert.Equal(1, order.Id);
       }
     }
   }

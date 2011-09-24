@@ -30,39 +30,28 @@ namespace Simple.Data.PostgreSql
       var insertSql = string.Format("INSERT INTO {0} ({1}) VALUES({2}) RETURNING *;", table.QualifiedName, columnsSql, valuesSql);
       if (transaction != null)
       {
-        var cmd = transaction.Connection.CreateCommand();
-        cmd.Transaction = transaction;
-
-        cmd.CommandText = insertSql;
-        CreateParameters(cmd, insertColumns, insertData.Values.ToArray());
-
-        return TryExecuteSingletonQuery(cmd);
+        using(var cmd = transaction.Connection.CreateCommand())
+        {
+          cmd.Transaction = transaction;
+          cmd.CommandText = insertSql;
+          return ExecuteInsert(cmd, insertColumns, insertData.Values.ToArray());
+        }
       }
 
       using (var conn = adapter.ConnectionProvider.CreateConnection())
       {
         conn.Open();
-        var cmd = conn.CreateCommand();
-        
-        cmd.CommandText = insertSql;
-        CreateParameters(cmd, insertColumns, insertData.Values.ToArray());
-
-        return TryExecuteSingletonQuery(cmd);
+        using(var cmd = conn.CreateCommand())
+        {
+          cmd.CommandText = insertSql;
+          return ExecuteInsert(cmd, insertColumns, insertData.Values.ToArray());
+        }
       }
     }
-
-    private void CreateParameters(IDbCommand cmd, Column[] insertColumns, object[] insertData)
+    
+    private IDictionary<string, object> ExecuteInsert(IDbCommand cmd, Column[] insertColumns, object[] insertData)
     {
-      for (var idx = 0 ; idx < insertColumns.Length ; idx++)
-      {
-        var parameter = new NpgsqlParameter(String.Concat("@p", idx.ToString()), ((PgColumn)insertColumns[idx]).NpgsqlDbType);
-        parameter.Value = insertData[idx];
-        cmd.Parameters.Add(parameter);
-      }
-    }
-
-    private IDictionary<string, object> TryExecuteSingletonQuery(IDbCommand cmd)
-    {
+      AddCommandParameters(cmd, insertColumns, insertData);
       cmd.WriteTrace();
       try
       {
@@ -80,6 +69,17 @@ namespace Simple.Data.PostgreSql
       }
 
       return null;
+    }
+
+    private void AddCommandParameters(IDbCommand cmd, Column[] insertColumns, object[] insertData)
+    {
+      cmd.Parameters.Clear();
+      for (var idx = 0; idx < insertColumns.Length; idx++)
+      {
+        var parameter = new NpgsqlParameter(String.Concat("@p", idx.ToString()), ((PgColumn)insertColumns[idx]).NpgsqlDbType);
+        parameter.Value = insertData[idx];
+        cmd.Parameters.Add(parameter);
+      }
     }
   }
 }

@@ -129,7 +129,7 @@ namespace Simple.Data.SqlTest
     public void TestFindOnAView()
     {
       var db = Database.Open();
-      var u = db.ViewCustomers.FindByCustomerId(1);
+      var u = db.ViewCustomers.FindById(1);
       Assert.NotNull(u);
     }
 

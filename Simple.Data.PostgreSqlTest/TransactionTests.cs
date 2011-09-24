@@ -27,7 +27,7 @@ namespace Simple.Data.SqlTest
         try
         {
           var order = tx.Orders.Insert(CustomerId: 1, OrderDate: DateTime.Today);
-          tx.OrderItems.Insert(OrderId: order.OrderId, ItemId: 1, Quantity: 3);
+          tx.OrderItems.Insert(OrderId: order.Id, ItemId: 1, Quantity: 3);
           tx.Commit();
         }
         catch
@@ -48,7 +48,7 @@ namespace Simple.Data.SqlTest
       using (var tx = db.BeginTransaction())
       {
         var order = tx.Orders.Insert(CustomerId: 1, OrderDate: DateTime.Today);
-        tx.OrderItems.Insert(OrderId: order.OrderId, ItemId: 1, Quantity: 3);
+        tx.OrderItems.Insert(OrderId: order.Id, ItemId: 1, Quantity: 3);
         tx.Rollback();
       }
       Assert.Equal(1, db.Orders.All().ToList().Count);

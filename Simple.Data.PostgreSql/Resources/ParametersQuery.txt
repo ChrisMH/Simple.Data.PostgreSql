@@ -1,0 +1,4 @@
+﻿SELECT parameter_name, data_type, parameter_mode, ordinal_position
+FROM information_schema.parameters
+WHERE specific_schema='{0}' AND specific_name='{1}'
+ORDER BY ordinal_position

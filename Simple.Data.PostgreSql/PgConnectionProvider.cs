@@ -46,8 +46,7 @@ namespace Simple.Data.PostgreSql
 
     public IProcedureExecutor GetProcedureExecutor(AdoAdapter adapter, ObjectName procedureName)
     {
-      // TODO: Implement this method
-      throw new NotImplementedException();
+      return new PgProcedureExecutor(adapter, procedureName);
     }
   }
 }

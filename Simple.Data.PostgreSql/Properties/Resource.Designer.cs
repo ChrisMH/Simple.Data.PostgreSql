@@ -89,6 +89,15 @@ namespace Simple.Data.PostgreSql.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string ParametersQuery {
+            get {
+                return ResourceManager.GetString("ParametersQuery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SELECT kcu.column_name 
         ///FROM information_schema.table_constraints as tc
         ///JOIN information_schema.key_column_usage as kcu
@@ -103,6 +112,26 @@ namespace Simple.Data.PostgreSql.Properties {
         internal static string PrimaryKeyQuery {
             get {
                 return ResourceManager.GetString("PrimaryKeyQuery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string StoredProceduresQuery {
+            get {
+                return ResourceManager.GetString("StoredProceduresQuery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SELECT table_name, table_schema, table_type 
+        ///FROM information_schema.tables
+        ///.
+        /// </summary>
+        internal static string TablesQuery {
+            get {
+                return ResourceManager.GetString("TablesQuery", resourceCulture);
             }
         }
     }

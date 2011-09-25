@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="PgBulkInserter.cs" />
+    <Compile Include="PgProcedureExecutor.cs" />
     <Compile Include="Properties\Resource.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -83,6 +84,11 @@
   <ItemGroup>
     <None Include="Resources\ColumnsQuery.txt" />
     <None Include="Resources\PrimaryKeyQuery.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\ParametersQuery.txt" />
+    <Content Include="Resources\StoredProceduresQuery.txt" />
+    <Content Include="Resources\TablesQuery.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

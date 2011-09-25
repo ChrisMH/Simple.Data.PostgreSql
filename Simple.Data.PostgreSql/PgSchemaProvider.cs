@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace Simple.Data.PostgreSql
 
     public IEnumerable<Table> GetTables()
     {
-      return SelectToDataTable("SELECT table_name, table_schema, table_type FROM information_schema.tables")
+      return SelectToDataTable(Properties.Resource.TablesQuery)
         .AsEnumerable()
         .Select(table => new Table(table["table_name"].ToString(),
                                    table["table_schema"].ToString(),
@@ -43,7 +44,7 @@ namespace Simple.Data.PostgreSql
 
     public IEnumerable<Procedure> GetStoredProcedures()
     {
-      return SelectToDataTable("SELECT routine_name, specific_name, routine_schema FROM information_schema.routines")
+      return SelectToDataTable(Properties.Resource.StoredProceduresQuery)
         .AsEnumerable()
         .Select(proc => new Procedure(proc["routine_name"].ToString(), proc["specific_name"].ToString(), proc["routine_schema"].ToString()));
     }
@@ -52,24 +53,26 @@ namespace Simple.Data.PostgreSql
     {
       if (storedProcedure == null) throw new ArgumentNullException("storedProcedure");
 
-      // TODO: This isn't going to work for overloaded stored procedures 
-      // Npgsql uses the pg_proc table to lookup names.  The pg_proc table doesn't contain the specific (i.e., overloaded)
-      // name.  Will probably have to use the information schema directly.
-      using (var conn = ConnectionProvider.CreateConnection())
+      return SelectToDataTable(String.Format(Properties.Resource.ParametersQuery, storedProcedure.Schema, storedProcedure.SpecificName))
+        .AsEnumerable()
+        .Select(row => new Parameter(
+                         Convert.IsDBNull(row["parameter_name"]) ? String.Format("parameter{0:d2}", Convert.ToInt32(row["ordinal_position"])) : row["parameter_name"].ToString(),
+                         TypeResolver.GetClrType(row["data_type"].ToString()),
+                         GetParameterDirection(row["parameter_mode"].ToString())));
+    }
+
+    private ParameterDirection GetParameterDirection(string parameterMode)
+    {
+      switch(parameterMode)
       {
-        conn.Open();
-        using (var cmd = (NpgsqlCommand) conn.CreateCommand())
-        {
-          cmd.CommandType = CommandType.StoredProcedure;
-          cmd.CommandText = storedProcedure.Name;
-
-          NpgsqlCommandBuilder.DeriveParameters(cmd);
-
-          foreach (NpgsqlParameter parameter in cmd.Parameters)
-          {
-            yield return new Parameter(parameter.ParameterName, TypeResolver.GetClrType(parameter.NpgsqlDbType.ToString()), parameter.Direction);
-          }
-        }
+        case "IN":
+          return ParameterDirection.Input;
+        case "OUT":
+          return ParameterDirection.Output;
+        case "INOUT":
+          return ParameterDirection.InputOutput;
+        default:
+          throw new SimpleDataException(String.Format("Unknown parameter mode: {0}", parameterMode));
       }
     }
 

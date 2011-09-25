@@ -115,6 +115,24 @@ $$
 LANGUAGE 'sql'
 VOLATILE;
 
+CREATE OR REPLACE FUNCTION public.test_overload(IN integer)
+RETURNS integer AS
+$$
+BEGIN
+  RETURN $1;
+END;
+$$
+LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE FUNCTION public.test_overload(IN integer, IN integer)
+RETURNS integer AS
+$$
+BEGIN
+  RETURN $1 + $2;
+END;
+$$
+LANGUAGE 'plpgsql';
+
 /*
 CREATE PROCEDURE [dbo].[GetCustomerAndOrders] (@CustomerId int)
 AS
@@ -279,6 +297,7 @@ INSERT INTO [dbo].[GroupTestDetail] VALUES ('2001-1-1',3,1)
 INSERT INTO [dbo].[GroupTestDetail] VALUES ('2010-1-1',2,2)
 INSERT INTO [dbo].[GroupTestDetail] VALUES ('2011-1-1',3,2)
 */
+
 
 
 

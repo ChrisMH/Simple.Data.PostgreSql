@@ -71,6 +71,8 @@ namespace Simple.Data.PostgreSql
           return ParameterDirection.Output;
         case "INOUT":
           return ParameterDirection.InputOutput;
+        case "RETURN":
+          return ParameterDirection.ReturnValue;
         default:
           throw new SimpleDataException(String.Format("Unknown parameter mode: {0}", parameterMode));
       }

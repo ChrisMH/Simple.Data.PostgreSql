@@ -115,6 +115,19 @@ $$
 LANGUAGE 'sql'
 VOLATILE;
 
+CREATE OR REPLACE FUNCTION public.get_customer_count()
+RETURNS integer AS
+$$
+DECLARE
+  c integer;
+BEGIN
+  SELECT INTO c COUNT(*) FROM public.customers;
+  RETURN c;
+END;
+$$
+LANGUAGE 'plpgsql'
+VOLATILE;
+
 CREATE OR REPLACE FUNCTION public.test_overload(IN integer)
 RETURNS integer AS
 $$
@@ -142,13 +155,7 @@ BEGIN
     SELECT * FROM Orders WHERE CustomerId = @CustomerId;
 END
 GO
-CREATE PROCEDURE [dbo].[GetCustomerCount]
-AS
-BEGIN
-    SET NOCOUNT ON;
-    RETURN 1
-END
-GO
+
 CREATE PROCEDURE ReturnStrings(@Strings AS [dbo].[StringList] READONLY)
 AS
 SELECT Value FROM @Strings
@@ -203,7 +210,7 @@ CREATE TABLE paging_test
   dummy integer
 ) WITH (OIDS=FALSE);
 
-
+ 
 CREATE TABLE no_primary_key_test
 (
   id serial NOT NULL,
@@ -297,6 +304,7 @@ INSERT INTO [dbo].[GroupTestDetail] VALUES ('2001-1-1',3,1)
 INSERT INTO [dbo].[GroupTestDetail] VALUES ('2010-1-1',2,2)
 INSERT INTO [dbo].[GroupTestDetail] VALUES ('2011-1-1',3,2)
 */
+
 
 
 

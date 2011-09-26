@@ -27,7 +27,7 @@ namespace Simple.Data.SqlTest
     }
     
     [Fact]
-    public void GetCustomerOrderssTest()
+    public void GetCustomerOrdersTest()
     {
       var db = Database.Open();
       var results = db.Public.GetCustomerOrders(1);
@@ -39,8 +39,24 @@ namespace Simple.Data.SqlTest
     public void GetCustomerCountTest()
     {
       var db = Database.Open();
-      var results = db.GetCustomerCount();
+      var results = db.Public.GetCustomerCount();
       Assert.Equal(1, results.ReturnValue);
+    }
+
+    [Fact]
+    public void CallOverloadedFunction1()
+    {
+      var db = Database.Open();
+      var results = db.Public.TestOverload(1);
+      Assert.Equal(1, results.ReturnValue);
+    }
+
+    [Fact]
+    public void CallOverloadedFunction2()
+    {
+      var db = Database.Open();
+      var results = db.Public.TestOverload(1, 1);
+      Assert.Equal(2, results.ReturnValue);
     }
 
     //[Fact]

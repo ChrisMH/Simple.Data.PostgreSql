@@ -1,46 +1,44 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Dynamic;
-using System.Linq;
-using System.Text;
-using Simple.Data.PostgreSqlTest;
-using Xunit;
+using NUnit.Framework;
 
-namespace Simple.Data.SqlFact
+namespace Simple.Data.PostgreSqlTest
 {
-  public class ConversionTests : IDisposable
+  public class ConversionTests
   {
-    public ConversionTests()
+    [SetUp]
+    public void SetUp()
     {
       DatabaseUtility.CreateDatabase("Test");
     }
 
-    public void Dispose()
+    [TearDown]
+    public void TearDown()
     {
       DatabaseUtility.DestroyDatabase("Test");
     }
 
 
-    [Fact]
+    [Test]
     public void WeirdTypeGetsConvertedToInt()
     {
       var weirdValue = new WeirdType(1);
       var db = Database.Open();
       var user = db.Users.FindById(weirdValue);
-      Assert.Equal(1, user.Id);
+      Assert.AreEqual(1, user.Id);
     }
 
-    [Fact]
+    [Test]
     public void WeirdTypeUsedInQueryGetsConvertedToInt()
     {
       var weirdValue = new WeirdType(1);
       var db = Database.Open();
       var user = db.Users.QueryById(weirdValue).FirstOrDefault();
-      Assert.NotNull(user);
-      Assert.Equal(1, user.Id);
+      Assert.IsNotNull(user);
+      Assert.AreEqual(1, user.Id);
     }
 
-    [Fact]
+    [Test]
     public void InsertingWeirdTypesFromExpando()
     {
       dynamic expando = new ExpandoObject();
@@ -52,9 +50,9 @@ namespace Simple.Data.SqlFact
       var db = Database.Open();
       var user = db.Users.Insert(expando);
       Assert.True(user.id is int);
-      Assert.Equal("Oddball", user.Name);
-      Assert.Equal("Fish", user.Password);
-      Assert.Equal(3, user.Age);
+      Assert.AreEqual("Oddball", user.Name);
+      Assert.AreEqual("Fish", user.Password);
+      Assert.AreEqual(3, user.Age);
     }
   }
 

@@ -128,47 +128,26 @@ $$
 LANGUAGE 'plpgsql'
 VOLATILE;
 
-CREATE OR REPLACE FUNCTION public.test_overload(IN integer)
-RETURNS integer AS
+
+
+
+CREATE OR REPLACE FUNCTION public.get_customers_and_orders (IN integer)
+RETURNS SETOF refcursor AS
 $$
+DECLARE
+  ref1 refcursor;
+  ref2 refcursor;
 BEGIN
-  RETURN $1;
+  OPEN ref1 FOR SELECT * FROM public.customers WHERE id=$1;
+  RETURN NEXT ref1;
+
+  OPEN ref2 FOR SELECT * FROm public.orders WHERE customer_id=$1;
+  RETURN NEXT ref2;
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION public.test_overload(IN integer, IN integer)
-RETURNS integer AS
-$$
-BEGIN
-  RETURN $1 + $2;
-END;
-$$
-LANGUAGE 'plpgsql';
 
-/*
-CREATE PROCEDURE [dbo].[GetCustomerAndOrders] (@CustomerId int)
-AS
-BEGIN
-    SET NOCOUNT ON;
-    SELECT * FROM Customers WHERE CustomerId = @CustomerId;
-    SELECT * FROM Orders WHERE CustomerId = @CustomerId;
-END
-GO
-
-CREATE PROCEDURE ReturnStrings(@Strings AS [dbo].[StringList] READONLY)
-AS
-SELECT Value FROM @Strings
-GO
-CREATE FUNCTION [dbo].[VarcharAndReturnInt] (@AValue varchar(50)) RETURNS INT AS BEGIN
-  IF ISNUMERIC(@AValue) = 1
-  BEGIN
-    RETURN cast (@AValue  as int)
-  END
-  RETURN 42
-END
-GO
-*/
 
 
 CREATE TABLE enum_test
@@ -228,6 +207,65 @@ ALTER TABLE blobs
   ADD CONSTRAINT pk_blobs
   PRIMARY KEY (id);
 	
+	
+CREATE OR REPLACE FUNCTION public.test_overload(IN integer)
+RETURNS integer AS
+$$
+BEGIN
+  RETURN $1;
+END;
+$$
+LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE FUNCTION public.test_overload(IN integer, IN integer)
+RETURNS integer AS
+$$
+BEGIN
+  RETURN $1 + $2;
+END;
+$$
+LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION public.test_return(doubleMe integer)
+RETURNS integer AS
+$$
+BEGIN
+  return 2 * doubleMe;
+END;
+$$
+LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION public.test_out(doubleMe integer, OUT doubled integer )
+RETURNS integer AS
+$$
+BEGIN
+  doubled = 2 * doubleMe;
+END;
+$$
+LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION public.test_inout(INOUT doubleMe integer)
+RETURNS integer AS
+$$
+BEGIN
+  doubleMe = 2 * doubleMe;
+END;
+$$
+LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION public.test_multiple_out(startingValue integer, OUT doubled integer, OUT tripled integer, OUT quadrupled integer)
+RETURNS record AS
+$$
+BEGIN
+  doubled = 2 * startingValue;
+  tripled = 3 * startingValue;
+  quadrupled = 4 * startingValue;
+END;
+$$
+LANGUAGE plpgsql;
+
+
 /*
     CREATE TABLE [dbo].[Images](
 	    [Id] [int] NOT NULL,
@@ -259,8 +297,18 @@ EXEC [dbo].[TestReset]
 GO
 
 
-
-
+CREATE PROCEDURE ReturnStrings(@Strings AS [dbo].[StringList] READONLY)
+AS
+SELECT Value FROM @Strings
+GO
+CREATE FUNCTION [dbo].[VarcharAndReturnInt] (@AValue varchar(50)) RETURNS INT AS BEGIN
+  IF ISNUMERIC(@AValue) = 1
+  BEGIN
+    RETURN cast (@AValue  as int)
+  END
+  RETURN 42
+END
+GO
 
 
 
@@ -304,6 +352,7 @@ INSERT INTO [dbo].[GroupTestDetail] VALUES ('2001-1-1',3,1)
 INSERT INTO [dbo].[GroupTestDetail] VALUES ('2010-1-1',2,2)
 INSERT INTO [dbo].[GroupTestDetail] VALUES ('2011-1-1',3,2)
 */
+
 
 
 

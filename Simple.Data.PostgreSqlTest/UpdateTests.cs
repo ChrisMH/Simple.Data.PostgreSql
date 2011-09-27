@@ -1,35 +1,36 @@
 ﻿using System.Dynamic;
-using Simple.Data.PostgreSqlTest;
-using Xunit;
+using NUnit.Framework;
 
-namespace Simple.Data.SqlTest
+namespace Simple.Data.PostgreSqlTest
 {
   public class UpdateTests
   {
-    public UpdateTests()
+    [SetUp]
+    public void SetUp()
     {
       DatabaseUtility.CreateDatabase("Test");
     }
 
-    public void Dispose()
+    [TearDown]
+    public void TearDown()
     {
       DatabaseUtility.DestroyDatabase("Test");
     }
 
-    [Fact]
+    [Test]
     public void TestUpdateWithNamedArguments()
     {
       var db = Database.Open();
 
       db.Users.UpdateById(Id: 1, Name: "Ford", Password: "hoopy", Age: 29);
       var user = db.Users.FindById(1);
-      Assert.NotNull(user);
-      Assert.Equal("Ford", user.Name);
-      Assert.Equal("hoopy", user.Password);
-      Assert.Equal(29, user.Age);
+      Assert.IsNotNull(user);
+      Assert.AreEqual("Ford", user.Name);
+      Assert.AreEqual("hoopy", user.Password);
+      Assert.AreEqual(29, user.Age);
     }
 
-    [Fact]
+    [Test]
     public void TestUpdateWithStaticTypeObject()
     {
       var db = Database.Open();
@@ -40,13 +41,13 @@ namespace Simple.Data.SqlTest
 
       User actual = db.Users.FindById(2);
 
-      Assert.NotNull(user);
-      Assert.Equal("Zaphod", actual.Name);
-      Assert.Equal("zarquon", actual.Password);
-      Assert.Equal(42, actual.Age);
+      Assert.IsNotNull(user);
+      Assert.AreEqual("Zaphod", actual.Name);
+      Assert.AreEqual("zarquon", actual.Password);
+      Assert.AreEqual(42, actual.Age);
     }
 
-    [Fact]
+    [Test]
     public void TestUpdateWithDynamicTypeObject()
     {
       var db = Database.Open();
@@ -61,14 +62,14 @@ namespace Simple.Data.SqlTest
 
       var actual = db.Users.FindById(3);
 
-      Assert.NotNull(user);
-      Assert.Equal("Marvin", actual.Name);
-      Assert.Equal("diodes", actual.Password);
-      Assert.Equal(42000000, actual.Age);
+      Assert.IsNotNull(user);
+      Assert.AreEqual("Marvin", actual.Name);
+      Assert.AreEqual("diodes", actual.Password);
+      Assert.AreEqual(42000000, actual.Age);
     }
 
     /* TODO
-    [Fact]
+    [Test]
     public void TestUpdateWithVarBinaryMaxColumn()
     {
       var db = Database.Open();

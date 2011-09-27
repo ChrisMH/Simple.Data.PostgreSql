@@ -2,35 +2,37 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Xunit;
+using NUnit.Framework;
 
 namespace Simple.Data.PostgreSqlTest
 {
-  public class EnumTest : IDisposable
+  public class EnumTest
   {
-    public EnumTest()
+    [SetUp]
+    public void SetUp()
     {
       DatabaseUtility.CreateDatabase("Test");
     }
 
-    public void Dispose()
+    [TearDown]
+    public void TearDown()
     {
       DatabaseUtility.DestroyDatabase("Test");
     }
 
-    [Fact]
+    [Test]
     public void ConvertsBetweenEnumAndInt()
     {
       var db = Database.Open();
       EnumTestClass actual = db.EnumTest.Insert(Flag: TestFlag.One);
-      Assert.Equal(TestFlag.One, actual.Flag);
+      Assert.AreEqual(TestFlag.One, actual.Flag);
 
       actual.Flag = TestFlag.Three;
 
       db.EnumTest.Update(actual);
 
       actual = db.EnumTest.FindById(actual.Id);
-      Assert.Equal(TestFlag.Three, actual.Flag);
+      Assert.AreEqual(TestFlag.Three, actual.Flag);
     }
   }
 

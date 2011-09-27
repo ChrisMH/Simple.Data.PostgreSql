@@ -26,7 +26,7 @@ namespace Simple.Data.PostgreSql
 
     private static readonly Dictionary<string, TypeEntry> TypeMap = new Dictionary<string, TypeEntry>
                                                                            {
-                                                                             {"ARRAY", new TypeEntry(NpgsqlDbType.Array, null)},
+                                                                             //{"ARRAY", new TypeEntry(NpgsqlDbType.Array, null)},
                                                                              {"bigint", new TypeEntry(NpgsqlDbType.Bigint, typeof(long))},
                                                                              {"bit", new TypeEntry(NpgsqlDbType.Bit, null)},
                                                                              {"bit varying", new TypeEntry(NpgsqlDbType.Bit, null)},

@@ -1,40 +1,41 @@
 ﻿using System;
-using Simple.Data.PostgreSqlTest;
-using Xunit;
+using NUnit.Framework;
 
-namespace Simple.Data.SqlTest
+namespace Simple.Data.PostgreSqlTest
 {
   public class NaturalJoinTest
   {
-    public NaturalJoinTest()
+    [SetUp]
+    public void SetUp()
     {
       DatabaseUtility.CreateDatabase("Test");
     }
 
-    public void Dispose()
+    [TearDown]
+    public void TearDown()
     {
       DatabaseUtility.DestroyDatabase("Test");
     }
 
-    [Fact]
+    [Test]
     public void CustomerDotOrdersDotOrderDateShouldReturnOneRow()
     {
       var db = Database.Open();
       var row = db.Customers.Find(db.Customers.Orders.OrderDate == new DateTime(2010, 10, 10));
-      Assert.NotNull(row);
-      Assert.Equal("Test", row.Name);
+      Assert.IsNotNull(row);
+      Assert.AreEqual("Test", row.Name);
     }
 
-    [Fact]
+    [Test]
     public void CustomerDotOrdersDotOrderItemsDotItemDotNameShouldReturnOneRow()
     {
       var db = Database.Open();
       var customer = db.Customers.Find(db.Customers.Orders.OrderItems.Item.Name == "Widget");
-      Assert.NotNull(customer);
-      Assert.Equal("Test", customer.Name);
+      Assert.IsNotNull(customer);
+      Assert.AreEqual("Test", customer.Name);
       foreach (var order in customer.Orders)
       {
-        Assert.Equal(1, order.Id);
+        Assert.AreEqual(1, order.Id);
       }
     }
   }

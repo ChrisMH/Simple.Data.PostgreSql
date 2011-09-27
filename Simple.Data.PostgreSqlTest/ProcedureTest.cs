@@ -1,65 +1,75 @@
 ﻿using System.Data;
-using System.Diagnostics;
-using Simple.Data.PostgreSqlTest;
-using Xunit;
+using NUnit.Framework;
 
-namespace Simple.Data.SqlTest
+namespace Simple.Data.PostgreSqlTest
 {
   public class ProcedureTest
   {
-    public ProcedureTest()
+    [SetUp]
+    public void SetUp()
     {
       DatabaseUtility.CreateDatabase("Test");
     }
 
-    public void Dispose()
+    [TearDown]
+    public void TearDown()
     {
       DatabaseUtility.DestroyDatabase("Test");
     }
 
-    [Fact]
+    
+    [Test]
+    public void TestReturn()
+    {
+      var db = Database.Open();
+      var result = db.Public.TestReturn(2);
+      Assert.AreEqual(4, result.ReturnValue);
+    }
+
+
+    [Test]
     public void GetCustomersTest()
     {
       var db = Database.Open();
       var results = db.Public.GetCustomers();
       var actual = results.First();
-      Assert.Equal(1, actual.Id);
+      Assert.AreEqual(1, actual.Id);
     }
     
-    [Fact]
+    [Test]
     public void GetCustomerOrdersTest()
     {
       var db = Database.Open();
       var results = db.Public.GetCustomerOrders(1);
       var actual = results.First();
-      Assert.Equal(1, actual.Id);
+      Assert.AreEqual(1, actual.Id);
     }
 
-    [Fact]
+    [Test]
     public void GetCustomerCountTest()
     {
       var db = Database.Open();
       var results = db.Public.GetCustomerCount();
-      Assert.Equal(1, results.ReturnValue);
+      Assert.AreEqual(1, results.ReturnValue);
     }
 
-    [Fact]
+    [Test]
     public void CallOverloadedFunction1()
     {
       var db = Database.Open();
       var results = db.Public.TestOverload(1);
-      Assert.Equal(1, results.ReturnValue);
+      Assert.AreEqual(1, results.ReturnValue);
     }
 
-    [Fact]
+    [Test]
     public void CallOverloadedFunction2()
     {
       var db = Database.Open();
       var results = db.Public.TestOverload(1, 1);
-      Assert.Equal(2, results.ReturnValue);
+      Assert.AreEqual(2, results.ReturnValue);
     }
 
-    //[Fact]
+    //[Test]
     //public void GetCustomerCountSecondCallExecutesNonQueryTest()
     //{
     //  var listener = new TestTraceListener();
@@ -72,44 +82,44 @@ namespace Simple.Data.SqlTest
     //  Trace.Listeners.Remove(listener);
     //}
 
-    [Fact]
+    [Test]
     public void GetCustomerAndOrdersTest()
     {
       var db = Database.Open();
       var results = db.GetCustomerAndOrders(1);
       var customer = results.FirstOrDefault();
-      Assert.NotNull(customer);
-      Assert.Equal(1, customer.CustomerId);
+      Assert.IsNotNull(customer);
+      Assert.AreEqual(1, customer.CustomerId);
       Assert.True(results.NextResult());
       var order = results.FirstOrDefault();
-      Assert.NotNull(order);
-      Assert.Equal(1, order.OrderId);
+      Assert.IsNotNull(order);
+      Assert.AreEqual(1, order.OrderId);
     }
 
-    [Fact]
+    [Test]
     public void GetCustomerAndOrdersStillWorksAfterZeroRecordCallTest()
     {
       var db = Database.Open();
       db.GetCustomerAndOrders(1000);
       var results = db.GetCustomerAndOrders(1);
       var customer = results.FirstOrDefault();
-      Assert.NotNull(customer);
-      Assert.Equal(1, customer.CustomerId);
+      Assert.IsNotNull(customer);
+      Assert.AreEqual(1, customer.CustomerId);
       Assert.True(results.NextResult());
       var order = results.FirstOrDefault();
-      Assert.NotNull(order);
-      Assert.Equal(1, order.OrderId);
+      Assert.IsNotNull(order);
+      Assert.AreEqual(1, order.OrderId);
     }
 
-    [Fact]
+    [Test]
     public void ScalarFunctionIsCalledCorrectly()
     {
       var db = Database.Open();
       var results = db.VarcharAndReturnInt("The answer to everything");
-      Assert.Equal(42, results.ReturnValue);
+      Assert.AreEqual(42, results.ReturnValue);
     }
 
-    [Fact]
+    [Test]
     public void CallProcedureWithDataTable()
     {
       var db = Database.Open();
@@ -121,7 +131,7 @@ namespace Simple.Data.SqlTest
 
       var actual = db.ReturnStrings(dataTable).ToScalarList<string>();
 
-      Assert.Equal(3, actual.Count);
+      Assert.AreEqual(3, actual.Count);
       Assert.Contains("One", actual);
       Assert.Contains("Two", actual);
       Assert.Contains("Three", actual);

@@ -1,37 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Dynamic;
-using Xunit;
+using NUnit.Framework;
 
 namespace Simple.Data.PostgreSqlTest
 {
-  public class InsertTests : IDisposable
+  public class InsertTests
   {
-    public InsertTests()
+    [SetUp]
+    public void SetUp()
     {
       DatabaseUtility.CreateDatabase("Test");
     }
 
-    public void Dispose()
+    [TearDown]
+    public void TearDown()
     {
       DatabaseUtility.DestroyDatabase("Test");
     }
 
-    [Fact]
+    [Test]
     public void TestInsertWithNamedArguments()
     {
       var db = Database.Open();
 
       var user = db.Public.Users.Insert(Name: "Ford", Password: "hoopy", Age: 29);
 
-      Assert.NotNull(user);
-      Assert.NotEqual(0, user.Id);
-      Assert.Equal("Ford", user.Name);
-      Assert.Equal("hoopy", user.Password);
-      Assert.Equal(29, user.Age);
+      Assert.IsNotNull(user);
+      Assert.AreNotEqual(0, user.Id);
+      Assert.AreEqual("Ford", user.Name);
+      Assert.AreEqual("hoopy", user.Password);
+      Assert.AreEqual(29, user.Age);
     }
 
-    [Fact]
+    [Test]
     public void TestInsertWithStaticTypeObject()
     {
       var db = Database.Open();
@@ -40,14 +42,14 @@ namespace Simple.Data.PostgreSqlTest
 
       var actual = db.Users.Insert(user);
 
-      Assert.NotNull(user);
-      Assert.NotEqual(0, actual.Id);
-      Assert.Equal("Zaphod", actual.Name);
-      Assert.Equal("zarquon", actual.Password);
-      Assert.Equal(42, actual.Age);
+      Assert.IsNotNull(user);
+      Assert.AreNotEqual(0, actual.Id);
+      Assert.AreEqual("Zaphod", actual.Name);
+      Assert.AreEqual("zarquon", actual.Password);
+      Assert.AreEqual(42, actual.Age);
     }
 
-    [Fact]
+    [Test]
     public void TestMultiInsertWithStaticTypeObjects()
     {
       var db = Database.Open();
@@ -60,19 +62,19 @@ namespace Simple.Data.PostgreSqlTest
 
       IList<User> actuals = db.Users.Insert(users).ToList<User>();
 
-      Assert.Equal(2, actuals.Count);
-      Assert.NotEqual(0, actuals[0].Id);
-      Assert.Equal("Slartibartfast", actuals[0].Name);
-      Assert.Equal("bistromathics", actuals[0].Password);
-      Assert.Equal(777, actuals[0].Age);
+      Assert.AreEqual(2, actuals.Count);
+      Assert.AreNotEqual(0, actuals[0].Id);
+      Assert.AreEqual("Slartibartfast", actuals[0].Name);
+      Assert.AreEqual("bistromathics", actuals[0].Password);
+      Assert.AreEqual(777, actuals[0].Age);
 
-      Assert.NotEqual(0, actuals[1].Id);
-      Assert.Equal("Wowbagger", actuals[1].Name);
-      Assert.Equal("teatime", actuals[1].Password);
-      Assert.Equal(int.MaxValue, actuals[1].Age);
+      Assert.AreNotEqual(0, actuals[1].Id);
+      Assert.AreEqual("Wowbagger", actuals[1].Name);
+      Assert.AreEqual("teatime", actuals[1].Password);
+      Assert.AreEqual(int.MaxValue, actuals[1].Age);
     }
 
-    [Fact]
+    [Test]
     public void TestInsertWithDynamicTypeObject()
     {
       var db = Database.Open();
@@ -84,13 +86,13 @@ namespace Simple.Data.PostgreSqlTest
 
       var actual = db.Users.Insert(user);
 
-      Assert.NotNull(user);
-      Assert.Equal("Marvin", actual.Name);
-      Assert.Equal("diodes", actual.Password);
-      Assert.Equal(42000000, actual.Age);
+      Assert.IsNotNull(user);
+      Assert.AreEqual("Marvin", actual.Name);
+      Assert.AreEqual("diodes", actual.Password);
+      Assert.AreEqual(42000000, actual.Age);
     }
 
-    [Fact]
+    [Test]
     public void TestMultiInsertWithDynamicTypeObjects()
     {
       var db = Database.Open();
@@ -109,19 +111,19 @@ namespace Simple.Data.PostgreSqlTest
 
       IList<dynamic> actuals = db.Users.Insert(users).ToList();
 
-      Assert.Equal(2, actuals.Count);
-      Assert.NotEqual(0, actuals[0].Id);
-      Assert.Equal("Slartibartfast", actuals[0].Name);
-      Assert.Equal("bistromathics", actuals[0].Password);
-      Assert.Equal(777, actuals[0].Age);
+      Assert.AreEqual(2, actuals.Count);
+      Assert.AreNotEqual(0, actuals[0].Id);
+      Assert.AreEqual("Slartibartfast", actuals[0].Name);
+      Assert.AreEqual("bistromathics", actuals[0].Password);
+      Assert.AreEqual(777, actuals[0].Age);
 
-      Assert.NotEqual(0, actuals[1].Id);
-      Assert.Equal("Wowbagger", actuals[1].Name);
-      Assert.Equal("teatime", actuals[1].Password);
-      Assert.Equal(int.MaxValue, actuals[1].Age);
+      Assert.AreNotEqual(0, actuals[1].Id);
+      Assert.AreEqual("Wowbagger", actuals[1].Name);
+      Assert.AreEqual("teatime", actuals[1].Password);
+      Assert.AreEqual(int.MaxValue, actuals[1].Age);
     }
     /* TODO: Implement test for ByteA
-    [Fact]
+    [Test]
     public void TestWithImageColumn()
     {
     var db = Database.Open();
@@ -137,7 +139,7 @@ namespace Simple.Data.PostgreSqlTest
     db.Images.DeleteById(1);
     }
     }
-    [Fact]
+    [Test]
     public void TestInsertWithVarBinaryMaxColumn()
     {
     var db = Database.Open();

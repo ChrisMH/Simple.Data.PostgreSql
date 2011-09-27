@@ -1,32 +1,33 @@
 ﻿using System;
-using Simple.Data.PostgreSqlTest;
-using Xunit;
+using NUnit.Framework;
 
-namespace Simple.Data.SqlTest
+namespace Simple.Data.PostgreSqlTest
 {
   public class OrderDetailTests
   {
-    public OrderDetailTests()
+    [SetUp]
+    public void SetUp()
     {
       DatabaseUtility.CreateDatabase("Test");
     }
 
-    public void Dispose()
+    [TearDown]
+    public void TearDown()
     {
       DatabaseUtility.DestroyDatabase("Test");
     }
 
-    [Fact]
+    [Test]
     public void TestOrderDetail()
     {
       var db = Database.Open();
       var order = db.Orders.FindByOrderDate(new DateTime(2010, 10, 10));
-      Assert.NotNull(order);
+      Assert.IsNotNull(order);
 
       var orderItem = order.OrderItems.FirstOrDefault();
       var item = orderItem.Item;
-      Assert.NotNull(item);
-      Assert.Equal("Widget", item.Name);
+      Assert.IsNotNull(item);
+      Assert.AreEqual("Widget", item.Name);
     }
   }
 }

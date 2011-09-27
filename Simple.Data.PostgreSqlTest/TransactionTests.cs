@@ -1,23 +1,24 @@
 ﻿using System;
-using Simple.Data.PostgreSqlTest;
-using Xunit;
+using NUnit.Framework;
 
-namespace Simple.Data.SqlTest
+namespace Simple.Data.PostgreSqlTest
 {
   public class TransactionTests
   {
-    public TransactionTests()
+    [SetUp]
+    public void SetUp()
     {
       DatabaseUtility.CreateDatabase("Test");
     }
 
-    public void Dispose()
+    [TearDown]
+    public void TearDown()
     {
       DatabaseUtility.DestroyDatabase("Test");
     }
 
 
-    [Fact]
+    [Test]
     public void TestCommit()
     {
       var db = Database.Open();
@@ -36,11 +37,11 @@ namespace Simple.Data.SqlTest
           throw;
         }
       }
-      Assert.Equal(2, db.Orders.All().ToList().Count);
-      Assert.Equal(2, db.OrderItems.All().ToList().Count);
+      Assert.AreEqual(2, db.Orders.All().ToList().Count);
+      Assert.AreEqual(2, db.OrderItems.All().ToList().Count);
     }
 
-    [Fact]
+    [Test]
     public void TestRollback()
     {
       var db = Database.Open();
@@ -51,11 +52,11 @@ namespace Simple.Data.SqlTest
         tx.OrderItems.Insert(OrderId: order.Id, ItemId: 1, Quantity: 3);
         tx.Rollback();
       }
-      Assert.Equal(1, db.Orders.All().ToList().Count);
-      Assert.Equal(1, db.OrderItems.All().ToList().Count);
+      Assert.AreEqual(1, db.Orders.All().ToList().Count);
+      Assert.AreEqual(1, db.OrderItems.All().ToList().Count);
     }
 
-    [Fact]
+    [Test]
     public void QueryInsideTransaction()
     {
       var db = Database.Open();
@@ -64,8 +65,8 @@ namespace Simple.Data.SqlTest
       {
         tx.Users.Insert(Name: "Arthur", Age: 42, Password: "Ladida");
         User u2 = tx.Users.FindByName("Arthur");
-        Assert.NotNull(u2);
-        Assert.Equal("Arthur", u2.Name);
+        Assert.IsNotNull(u2);
+        Assert.AreEqual("Arthur", u2.Name);
       }
     }
   }

@@ -1,28 +1,30 @@
 ﻿using System;
 using System.Configuration;
 using System.Data;
+using NUnit.Framework;
 using NpgsqlTypes;
 using Simple.Data.Ado;
 using Simple.Data.Ado.Schema;
 using Simple.Data.PostgreSql;
-using Xunit;
 using System.Linq;
 
 namespace Simple.Data.PostgreSqlTest
 {
   public class PostgreSqlSchemaTests
   {
-    public PostgreSqlSchemaTests()
+    [SetUp]
+    public void SetUp()
     {
       DatabaseUtility.CreateDatabase("Test");
     }
 
-    public void Dispose()
+    [TearDown]
+    public void TearDown()
     {
       DatabaseUtility.DestroyDatabase("Test");
     }
 
-    [Fact]
+    [Test]
     public void CanGetTable()
     {
       var provider = new ProviderHelper().GetProviderByConnectionString(ConfigurationManager.ConnectionStrings["Test"].ConnectionString);
@@ -30,33 +32,33 @@ namespace Simple.Data.PostgreSqlTest
 
       var result = schema.GetTables().Where(s => s.ActualName == "users").SingleOrDefault();
 
-      Assert.NotNull(result);
-      Assert.Equal(TableType.Table, result.Type);
+      Assert.IsNotNull(result);
+      Assert.AreEqual(TableType.Table, result.Type);
     }
 
-    [Fact]
+    [Test]
     public void CanGetView()
     {
       var provider = new ProviderHelper().GetProviderByConnectionString(ConfigurationManager.ConnectionStrings["Test"].ConnectionString);
       var schema = provider.GetSchemaProvider();
 
       var result = schema.GetTables().Where(s => s.ActualName == "view_customers").SingleOrDefault();
-      Assert.NotNull(result);
-      Assert.Equal(TableType.View, result.Type);
+      Assert.IsNotNull(result);
+      Assert.AreEqual(TableType.View, result.Type);
     }
 
-    [Fact]
+    [Test]
     public void CanGetStoredProcedure()
     {
       var provider = new ProviderHelper().GetProviderByConnectionString(ConfigurationManager.ConnectionStrings["Test"].ConnectionString);
       var schema = provider.GetSchemaProvider();
 
       var result = schema.GetStoredProcedures().Where(s => s.Name == "get_customers").SingleOrDefault();
-      Assert.NotNull(result);
+      Assert.IsNotNull(result);
     }
 
 
-    [Fact]
+    [Test]
     public void CanGetTableColumns()
     {
       var provider = new ProviderHelper().GetProviderByConnectionString(ConfigurationManager.ConnectionStrings["Test"].ConnectionString);
@@ -66,22 +68,22 @@ namespace Simple.Data.PostgreSqlTest
 
       var column = (PgColumn) schema.GetColumns(table).Where(p => p.ActualName == "id").Single();
       Assert.True(column.IsIdentity);
-      Assert.Equal(NpgsqlDbType.Integer, column.NpgsqlDbType);
+      Assert.AreEqual(NpgsqlDbType.Integer, column.NpgsqlDbType);
 
       column = (PgColumn) schema.GetColumns(table).Where(p => p.ActualName == "name").Single();
       Assert.False(column.IsIdentity);
-      Assert.Equal(NpgsqlDbType.Varchar, column.NpgsqlDbType);
+      Assert.AreEqual(NpgsqlDbType.Varchar, column.NpgsqlDbType);
 
       column = (PgColumn) schema.GetColumns(table).Where(p => p.ActualName == "password").Single();
       Assert.False(column.IsIdentity);
-      Assert.Equal(NpgsqlDbType.Varchar, column.NpgsqlDbType);
+      Assert.AreEqual(NpgsqlDbType.Varchar, column.NpgsqlDbType);
 
       column = (PgColumn) schema.GetColumns(table).Where(p => p.ActualName == "age").Single();
       Assert.False(column.IsIdentity);
-      Assert.Equal(NpgsqlDbType.Integer, column.NpgsqlDbType);
+      Assert.AreEqual(NpgsqlDbType.Integer, column.NpgsqlDbType);
     }
 
-    [Fact]
+    [Test]
     public void CanGetViewColumns()
     {
       var provider = new ProviderHelper().GetProviderByConnectionString(ConfigurationManager.ConnectionStrings["Test"].ConnectionString);
@@ -90,16 +92,16 @@ namespace Simple.Data.PostgreSqlTest
       var table = schema.GetTables().Where(s => s.ActualName == "view_customers").Single();
 
       var column = (PgColumn) schema.GetColumns(table).Where(p => p.ActualName == "name").Single();
-      Assert.Equal(NpgsqlDbType.Varchar, column.NpgsqlDbType);
+      Assert.AreEqual(NpgsqlDbType.Varchar, column.NpgsqlDbType);
 
       column = (PgColumn) schema.GetColumns(table).Where(p => p.ActualName == "address").Single();
-      Assert.Equal(NpgsqlDbType.Varchar, column.NpgsqlDbType);
+      Assert.AreEqual(NpgsqlDbType.Varchar, column.NpgsqlDbType);
 
       column = (PgColumn) schema.GetColumns(table).Where(p => p.ActualName == "id").Single();
-      Assert.Equal(NpgsqlDbType.Integer, column.NpgsqlDbType);
+      Assert.AreEqual(NpgsqlDbType.Integer, column.NpgsqlDbType);
     }
 
-    [Fact]
+    [Test]
     public void CanGetStoredProcedureParameters()
     {
       var provider = new ProviderHelper().GetProviderByConnectionString(ConfigurationManager.ConnectionStrings["Test"].ConnectionString);
@@ -108,12 +110,12 @@ namespace Simple.Data.PostgreSqlTest
       var proc = schema.GetStoredProcedures().Where(s => s.Name == "get_customer_orders").SingleOrDefault();
       var result = schema.GetParameters(proc);
 
-      Assert.Equal(1, result.Count());
-      Assert.Equal(typeof (int), result.First().Type);
+      Assert.AreEqual(1, result.Count());
+      Assert.AreEqual(typeof (int), result.First().Type);
     }
 
 
-    [Fact]
+    [Test]
     public void CanGetPrimaryKey()
     {
       var provider = new ProviderHelper().GetProviderByConnectionString(ConfigurationManager.ConnectionStrings["Test"].ConnectionString);
@@ -122,12 +124,12 @@ namespace Simple.Data.PostgreSqlTest
       var table = schema.GetTables().Where(s => s.ActualName == "order_items").SingleOrDefault();
       var result = schema.GetPrimaryKey(table);
 
-      Assert.NotNull(result);
-      Assert.Equal(1, result.Length);
-      Assert.Equal("id", result[0]);
+      Assert.IsNotNull(result);
+      Assert.AreEqual(1, result.Length);
+      Assert.AreEqual("id", result[0]);
     }
 
-    [Fact]
+    [Test]
     public void CanGetPrimaryKeyWhenTableHasNoPrimaryKey()
     {
       var provider = new ProviderHelper().GetProviderByConnectionString(ConfigurationManager.ConnectionStrings["Test"].ConnectionString);
@@ -136,12 +138,12 @@ namespace Simple.Data.PostgreSqlTest
       var table = schema.GetTables().Where(s => s.ActualName == "no_primary_key_test").SingleOrDefault();
       var result = schema.GetPrimaryKey(table);
 
-      Assert.NotNull(result);
-      Assert.Equal(0, result.Length);
+      Assert.IsNotNull(result);
+      Assert.AreEqual(0, result.Length);
     }
 
 
-    [Fact]
+    [Test]
     public void CanGetForeignKeys()
     {
       var provider = new ProviderHelper().GetProviderByConnectionString(ConfigurationManager.ConnectionStrings["Test"].ConnectionString);
@@ -150,32 +152,32 @@ namespace Simple.Data.PostgreSqlTest
       var table = schema.GetTables().Where(s => s.ActualName == "order_items").SingleOrDefault();
       var result = schema.GetForeignKeys(table).ToList();
 
-      Assert.NotNull(result);
-      Assert.Equal(2, result.Count());
+      Assert.IsNotNull(result);
+      Assert.AreEqual(2, result.Count());
       
       var fk = result.Where(p => p.MasterTable.Name == "orders").FirstOrDefault();
-      Assert.NotNull(fk);
-      Assert.Equal("public", fk.DetailTable.Schema);
-      Assert.Equal("order_items", fk.DetailTable.Name);
-      Assert.Equal(1, fk.Columns.Length);
-      Assert.Equal("order_id", fk.Columns[0]);
+      Assert.IsNotNull(fk);
+      Assert.AreEqual("public", fk.DetailTable.Schema);
+      Assert.AreEqual("order_items", fk.DetailTable.Name);
+      Assert.AreEqual(1, fk.Columns.Length);
+      Assert.AreEqual("order_id", fk.Columns[0]);
 
-      Assert.Equal("public", fk.MasterTable.Schema);
-      Assert.Equal("orders", fk.MasterTable.Name);
-      Assert.Equal(1, fk.UniqueColumns.Length);
-      Assert.Equal("id", fk.UniqueColumns[0]);
+      Assert.AreEqual("public", fk.MasterTable.Schema);
+      Assert.AreEqual("orders", fk.MasterTable.Name);
+      Assert.AreEqual(1, fk.UniqueColumns.Length);
+      Assert.AreEqual("id", fk.UniqueColumns[0]);
 
       fk = result.Where(p => p.MasterTable.Name == "items").FirstOrDefault();
-      Assert.NotNull(fk);
-      Assert.Equal("public", fk.DetailTable.Schema);
-      Assert.Equal("order_items", fk.DetailTable.Name);
-      Assert.Equal(1, fk.Columns.Length);
-      Assert.Equal("item_id", fk.Columns[0]);
+      Assert.IsNotNull(fk);
+      Assert.AreEqual("public", fk.DetailTable.Schema);
+      Assert.AreEqual("order_items", fk.DetailTable.Name);
+      Assert.AreEqual(1, fk.Columns.Length);
+      Assert.AreEqual("item_id", fk.Columns[0]);
 
-      Assert.Equal("public", fk.MasterTable.Schema);
-      Assert.Equal("items", fk.MasterTable.Name);
-      Assert.Equal(1, fk.UniqueColumns.Length);
-      Assert.Equal("id", fk.UniqueColumns[0]);
+      Assert.AreEqual("public", fk.MasterTable.Schema);
+      Assert.AreEqual("items", fk.MasterTable.Name);
+      Assert.AreEqual(1, fk.UniqueColumns.Length);
+      Assert.AreEqual("id", fk.UniqueColumns[0]);
     }
   }
 }

@@ -25,7 +25,7 @@ namespace Simple.Data.PostgreSql
       var insertColumns = insertData.First().Keys.Select(table.FindColumn).ToArray();
 
       var columnsSql = insertColumns.Select(s => s.QuotedName).Aggregate((agg, next) => String.Concat(agg, ",", next));
-      var valuesSql = insertColumns.Select((val, idx) => "@p" + idx.ToString()).Aggregate((agg, next) => String.Concat(agg, ",", next));
+      var valuesSql = insertColumns.Select((val, idx) => ":p" + idx.ToString()).Aggregate((agg, next) => String.Concat(agg, ",", next));
 
       var insertSql = string.Format("INSERT INTO {0} ({1}) VALUES({2}) RETURNING *;", table.QualifiedName, columnsSql, valuesSql);
       if (transaction != null)
@@ -76,7 +76,7 @@ namespace Simple.Data.PostgreSql
       cmd.Parameters.Clear();
       for (var idx = 0; idx < insertColumns.Length; idx++)
       {
-        var parameter = new NpgsqlParameter(String.Concat("@p", idx.ToString()), ((PgColumn)insertColumns[idx]).NpgsqlDbType);
+        var parameter = new NpgsqlParameter(String.Concat("p", idx.ToString()), ((PgColumn)insertColumns[idx]).NpgsqlDbType);
         parameter.Value = insertData[idx];
         cmd.Parameters.Add(parameter);
       }

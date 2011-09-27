@@ -109,7 +109,7 @@ namespace Simple.Data.PostgreSql
     public string NameParameter(string baseName)
     {
       if (String.IsNullOrEmpty(baseName)) throw new ArgumentNullException("baseName");
-      return baseName.StartsWith("@") ? baseName : "@" + baseName;
+      return baseName.StartsWith(":") ? baseName : String.Concat(":", baseName);
     }
 
     private bool IsIdentityColumn(string columnDefault, string isNullable, string dataType)

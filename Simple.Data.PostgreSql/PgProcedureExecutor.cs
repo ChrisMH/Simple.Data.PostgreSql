@@ -16,17 +16,19 @@ namespace Simple.Data.PostgreSql
     public PgProcedureExecutor(AdoAdapter adapter, ObjectName procedureName)
     {
       this.adapter = adapter;
-      this.procedureName = procedureName;
-      this.executeImpl = ExecuteReader;
-    }
-
-    public IEnumerable<IEnumerable<IDictionary<string, object>>> Execute(IDictionary<string, object> suppliedParameters)
-    {
-      var procedure = DatabaseSchema.Get(adapter.ConnectionProvider, adapter.ProviderHelper).FindProcedure(procedureName);
+      executeImpl = ExecuteReader;
+      
+      procedure = DatabaseSchema.Get(adapter.ConnectionProvider, adapter.ProviderHelper).FindProcedure(procedureName);
       if (procedure == null)
       {
         throw new UnresolvableObjectException(procedureName.ToString());
       }
+
+    }
+
+    public IEnumerable<ResultSet> Execute(IDictionary<string, object> suppliedParameters)
+    {
+      // TODO: PostgreSql supports stored procedure overloading.  This does not.
       
       using (var conn = adapter.ConnectionProvider.CreateConnection())
       {
@@ -34,13 +36,12 @@ namespace Simple.Data.PostgreSql
         {
           cmd.CommandText = procedure.QualifiedName;
           cmd.CommandType = CommandType.StoredProcedure;
-          SetParameters(procedure, cmd, suppliedParameters);
+          AddCommandParameters(procedure, cmd, suppliedParameters);
           try
           {
             var result = executeImpl(cmd);
-            if (cmd.Parameters.Contains(SimpleReturnParameterName))
-              suppliedParameters[SimpleReturnParameterName] = GetParameterValue(cmd.Parameters, SimpleReturnParameterName);
-            RetrieveOutputParameterValues(procedure, cmd, suppliedParameters);
+            GetReturnValue(result, suppliedParameters);
+
             return result;
           }
           catch (DbException ex)
@@ -51,78 +52,75 @@ namespace Simple.Data.PostgreSql
       }
     }
 
-    public IEnumerable<IEnumerable<IDictionary<string, object>>> ExecuteReader(IDbCommand command)
+    private void GetReturnValue(IEnumerable<ResultSet> result, IDictionary<string, object> suppliedParameters)
     {
-      command.WriteTrace();
-      command.Connection.Open();
-      using (var reader = command.ExecuteReader())
+      if(result.Count() == 1)
       {
-        if (reader.FieldCount > 0)
+        var resultSet = result.First();
+
+      }
+    }
+
+    public IEnumerable<ResultSet> ExecuteReader(IDbCommand cmd)
+    {
+      cmd.WriteTrace();
+      cmd.Connection.Open();
+      using (var rdr = cmd.ExecuteReader())
+      {
+        if (rdr.FieldCount == 0)
         {
-          return reader.ToMultipleDictionaries();
+          // Don't call ExecuteReader for this function again.
+          executeImpl = ExecuteNonQuery;
+          return Enumerable.Empty<ResultSet>();
         }
 
-        // Don't call ExecuteReader for this function again.
-        executeImpl = ExecuteNonQuery;
-        return Enumerable.Empty<ResultSet>();
+        if (procedure.Parameters.Where(param => param.Direction == ParameterDirection.InputOutput || param.Direction == ParameterDirection.Output).Count() == 0)
+        {
+          // No output parameters
+          if (rdr.FieldCount == 1 && rdr.GetName(0) == procedure.Name)
+          {
+            // Single field matching the name of the function.  Simple return value.
+
+          }
+        }
+        return null;
       }
     }
 
-
-    private static void RetrieveOutputParameterValues(Procedure procedure, IDbCommand command, IDictionary<string, object> suppliedParameters)
+    private static IEnumerable<ResultSet> ExecuteNonQuery(IDbCommand cmd)
     {
-      foreach (var outputParameter in procedure.Parameters.Where(p => p.Direction == ParameterDirection.InputOutput || p.Direction == ParameterDirection.Output))
-      {
-        suppliedParameters[outputParameter.Name.Replace("@", "")] = GetParameterValue(command.Parameters, outputParameter.Name);
-      }
-    }
-
-    private static IEnumerable<ResultSet> ExecuteNonQuery(IDbCommand command)
-    {
-      command.WriteTrace();
+      cmd.WriteTrace();
       Trace.TraceInformation("ExecuteNonQuery", "Simple.Data.PostgreSql");
-      command.Connection.Open();
-      command.ExecuteNonQuery();
+      cmd.Connection.Open();
+      cmd.ExecuteNonQuery();
       return Enumerable.Empty<ResultSet>();
     }
 
-    private static void SetParameters(Procedure procedure, IDbCommand cmd, IDictionary<string, object> suppliedParameters)
+    private static void AddCommandParameters(Procedure procedure, IDbCommand cmd, IDictionary<string, object> suppliedParameters)
     {
-      if (procedure.Parameters.Any(p => p.Direction == ParameterDirection.ReturnValue))
-        AddReturnParameter(cmd);
-
       int i = 0;
-      foreach (var parameter in procedure.Parameters.Where(p => p.Direction != ParameterDirection.ReturnValue))
+      foreach (var parameter in procedure.Parameters.Where(param => param.Direction == ParameterDirection.Input || param.Direction == ParameterDirection.InputOutput))
       {
         object value;
-        if (!suppliedParameters.TryGetValue(parameter.Name.Replace("@", ""), out value))
+        if(!suppliedParameters.TryGetValue(parameter.Name, out value))
         {
-          suppliedParameters.TryGetValue("_" + i, out value);
+          if(!suppliedParameters.TryGetValue("_" + i, out value))
+          {
+            throw new SimpleDataException(String.Format("Could not find a value for parameter ordinal {0} named {1}", i, parameter.Name));
+          }
         }
-        var cmdParameter = new NpgsqlParameter(parameter.Name, parameter.Type);
-        cmdParameter.Value = value;
-        cmdParameter.Direction = parameter.Direction;
+
+        cmd.Parameters.Add(new NpgsqlParameter
+                             {
+                               Value = value
+                             });
         i++;
       }
     }
 
-    private static void AddReturnParameter(IDbCommand cmd)
-    {
-      var returnParameter = cmd.CreateParameter();
-      returnParameter.ParameterName = SimpleReturnParameterName;
-      returnParameter.Direction = ParameterDirection.ReturnValue;
-      cmd.Parameters.Add(returnParameter);
-    }
-
-    public static object GetParameterValue(IDataParameterCollection parameterCollection, string parameterName)
-    {
-      var parameter = parameterCollection[parameterName] as DbParameter;
-      return parameter != null ? parameter.Value : null;
-    }
-
-    private const string SimpleReturnParameterName = "@__Simple_ReturnValue";
+    
     private AdoAdapter adapter;
-    private ObjectName procedureName;
+    private Procedure procedure;
     private Func<IDbCommand, IEnumerable<ResultSet>> executeImpl;
   }
 }

@@ -1,63 +1,63 @@
-﻿using System;
-using System.Configuration;
+﻿using System.Configuration;
+using NUnit.Framework;
 using Simple.Data.Ado;
-using Simple.Data.PostgreSql;
-using Xunit;
 using Simple.Data.PostgreSql;
 
 namespace Simple.Data.PostgreSqlTest
 {
-  public class DatabaseOpenerTests : IDisposable
+  public class DatabaseOpenerTests
   {
-    public DatabaseOpenerTests()
+    [SetUp]
+    public void SetUp()
     {
       DatabaseUtility.CreateDatabase("Test");
     }
 
-    public void Dispose()
+    [TearDown]
+    public void TearDown()
     {
       DatabaseUtility.DestroyDatabase("Test");
     }
 
-    [Fact]
+    [Test]
     public void OpenDefaultConnectionTest()
     {
       var db = Database.Open();
-      Assert.NotNull(db);
+      Assert.IsNotNull(db);
       var user = db.Public.Users.FindById(1);
-      Assert.Equal(1, user.Id);
+      Assert.AreEqual(1, user.Id);
     }
 
-    [Fact]
+    [Test]
     public void OpenNamedConnectionTest()
     {
       var db = Database.OpenNamedConnection("Test");
-      Assert.NotNull(db);
+      Assert.IsNotNull(db);
       var user = db.Public.Users.FindById(1);
-      Assert.Equal(1, user.Id);
+      Assert.AreEqual(1, user.Id);
     }
 
-    [Fact]
+    [Test]
     public void TestProviderIsSqlProvider()
     {
       var provider = new ProviderHelper().GetProviderByConnectionString(ConfigurationManager.ConnectionStrings["Test"].ConnectionString);
       Assert.True(provider is PgConnectionProvider);
     }
 
-    [Fact]
+    [Test]
     public void TestProviderIsSqlProviderFromOpen()
     {
       var db = Database.Open();
       Assert.True(db.GetAdapter() is AdoAdapter);
-      Assert.True(((AdoAdapter)db.GetAdapter()).ConnectionProvider is PgConnectionProvider);
+      Assert.True(((AdoAdapter) db.GetAdapter()).ConnectionProvider is PgConnectionProvider);
     }
 
-    [Fact]
+    [Test]
     public void TestProviderIsSqlProviderFromOpenConnection()
     {
       var db = Database.OpenConnection(ConfigurationManager.ConnectionStrings["Test"].ConnectionString);
       Assert.True(db.GetAdapter() is AdoAdapter);
-      Assert.True(((AdoAdapter)db.GetAdapter()).ConnectionProvider is PgConnectionProvider);
+      Assert.True(((AdoAdapter) db.GetAdapter()).ConnectionProvider is PgConnectionProvider);
     }
   }
 }

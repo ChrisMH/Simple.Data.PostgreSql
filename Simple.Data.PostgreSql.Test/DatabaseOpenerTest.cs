@@ -1,11 +1,11 @@
 ﻿using System.Configuration;
 using NUnit.Framework;
 using Simple.Data.Ado;
-using Simple.Data.PostgreSql;
+using Simple.Data.PostgreSql.Test.Utility;
 
-namespace Simple.Data.PostgreSqlTest
+namespace Simple.Data.PostgreSql.Test
 {
-  public class DatabaseOpenerTests
+  public class DatabaseOpenerTest
   {
     [SetUp]
     public void SetUp()

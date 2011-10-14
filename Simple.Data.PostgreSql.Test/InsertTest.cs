@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Dynamic;
 using NUnit.Framework;
+using Simple.Data.PostgreSql.Test.Utility;
 
-namespace Simple.Data.PostgreSqlTest
+namespace Simple.Data.PostgreSql.Test
 {
-  public class InsertTests
+  public class InsertTest
   {
     [SetUp]
     public void SetUp()
@@ -38,7 +38,7 @@ namespace Simple.Data.PostgreSqlTest
     {
       var db = Database.Open();
 
-      var user = new User { Name = "Zaphod", Password = "zarquon", Age = 42 };
+      var user = new User {Name = "Zaphod", Password = "zarquon", Age = 42};
 
       var actual = db.Users.Insert(user);
 
@@ -55,10 +55,10 @@ namespace Simple.Data.PostgreSqlTest
       var db = Database.Open();
 
       var users = new[]
-                  {
-                    new User { Name = "Slartibartfast", Password = "bistromathics", Age = 777 },
-                    new User { Name = "Wowbagger", Password = "teatime", Age = int.MaxValue }
-                  };
+                    {
+                      new User {Name = "Slartibartfast", Password = "bistromathics", Age = 777},
+                      new User {Name = "Wowbagger", Password = "teatime", Age = int.MaxValue}
+                    };
 
       IList<User> actuals = db.Users.Insert(users).ToList<User>();
 
@@ -107,7 +107,7 @@ namespace Simple.Data.PostgreSqlTest
       user2.Password = "teatime";
       user2.Age = int.MaxValue;
 
-      var users = new[] { user1, user2 };
+      var users = new[] {user1, user2};
 
       IList<dynamic> actuals = db.Users.Insert(users).ToList();
 
@@ -122,6 +122,7 @@ namespace Simple.Data.PostgreSqlTest
       Assert.AreEqual("teatime", actuals[1].Password);
       Assert.AreEqual(int.MaxValue, actuals[1].Age);
     }
+
     /* TODO: Implement test for ByteA
     [Test]
     public void TestWithImageColumn()

@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
+﻿using NUnit.Framework;
+using Simple.Data.PostgreSql.Test.Utility;
 
-namespace Simple.Data.PostgreSqlTest
+namespace Simple.Data.PostgreSql.Test
 {
   public class EnumTest
   {
@@ -36,13 +33,13 @@ namespace Simple.Data.PostgreSqlTest
     }
   }
 
-  class EnumTestClass
+  internal class EnumTestClass
   {
     public int Id { get; set; }
     public TestFlag Flag { get; set; }
   }
 
-  enum TestFlag
+  internal enum TestFlag
   {
     None = 0,
     One = 1,

@@ -1,7 +1,8 @@
 ﻿using System;
 using NUnit.Framework;
+using Simple.Data.PostgreSql.Test.Utility;
 
-namespace Simple.Data.PostgreSqlTest
+namespace Simple.Data.PostgreSql.Test
 {
   public class NaturalJoinTest
   {

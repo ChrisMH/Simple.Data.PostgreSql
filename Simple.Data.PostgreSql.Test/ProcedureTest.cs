@@ -1,7 +1,8 @@
 ﻿using System.Data;
 using NUnit.Framework;
+using Simple.Data.PostgreSql.Test.Utility;
 
-namespace Simple.Data.PostgreSqlTest
+namespace Simple.Data.PostgreSql.Test
 {
   public class ProcedureTest
   {
@@ -17,7 +18,7 @@ namespace Simple.Data.PostgreSqlTest
       DatabaseUtility.DestroyDatabase("Test");
     }
 
-    
+
     [Test]
     public void TestReturn()
     {
@@ -35,7 +36,7 @@ namespace Simple.Data.PostgreSqlTest
       var actual = results.First();
       Assert.AreEqual(1, actual.Id);
     }
-    
+
     [Test]
     public void GetCustomerOrdersTest()
     {

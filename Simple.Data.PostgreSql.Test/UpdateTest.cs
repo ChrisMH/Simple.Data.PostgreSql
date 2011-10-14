@@ -1,9 +1,10 @@
 ﻿using System.Dynamic;
 using NUnit.Framework;
+using Simple.Data.PostgreSql.Test.Utility;
 
-namespace Simple.Data.PostgreSqlTest
+namespace Simple.Data.PostgreSql.Test
 {
-  public class UpdateTests
+  public class UpdateTest
   {
     [SetUp]
     public void SetUp()

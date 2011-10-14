@@ -8,8 +8,8 @@
     <ProjectGuid>{5B31FBF7-73F5-4B6F-886A-31818E73906E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Simple.Data.PostgreSqlTest</RootNamespace>
-    <AssemblyName>Simple.Data.PostgreSqlTest</AssemblyName>
+    <RootNamespace>Simple.Data.PostgreSql.Test</RootNamespace>
+    <AssemblyName>Simple.Data.PostgreSql.Test</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -47,14 +47,6 @@
     <Reference Include="pnunit.framework, Version=1.0.4109.34242, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.2.5.10.11092\lib\pnunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="Simple.Data, Version=0.9.6.2, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Simple.Data.Core.0.9.6.2\lib\net40\Simple.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="Simple.Data.Ado, Version=0.9.6.2, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Simple.Data.Ado.0.9.6.2\lib\net40\Simple.Data.Ado.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.configuration" />
@@ -66,16 +58,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConversionTests.cs" />
-    <Compile Include="DatabaseOpenerTests.cs" />
+    <Compile Include="ConversionTest.cs" />
+    <Compile Include="DatabaseOpenerTest.cs" />
     <Compile Include="Utility\DatabaseUtility.cs" />
-    <Compile Include="EnumTests.cs" />
-    <Compile Include="FindTests.cs" />
-    <Compile Include="InsertTests.cs" />
+    <Compile Include="EnumTest.cs" />
+    <Compile Include="FindTest.cs" />
+    <Compile Include="InsertTest.cs" />
     <Compile Include="Investigation.cs" />
     <Compile Include="NaturalJoinTest.cs" />
-    <Compile Include="OrderDetailTests.cs" />
-    <Compile Include="PostgreSqlSchemaTests.cs" />
+    <Compile Include="OrderDetailTest.cs" />
+    <Compile Include="PostgreSqlSchemaTest.cs" />
     <Compile Include="ProcedureTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resource.Designer.cs">
@@ -83,8 +75,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
-    <Compile Include="TransactionTests.cs" />
-    <Compile Include="UpdateTests.cs" />
+    <Compile Include="TransactionTest.cs" />
+    <Compile Include="UpdateTest.cs" />
     <Compile Include="User.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -93,6 +85,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Simple.Data\Simple.Data.Ado\Simple.Data.Ado.csproj">
+      <Project>{ECC2D7DB-EC7F-44B6-B09F-5B471C629685}</Project>
+      <Name>Simple.Data.Ado</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Simple.Data\Simple.Data\Simple.Data.csproj">
+      <Project>{148CEE80-2E84-4ABD-B5AB-20415B2BBD21}</Project>
+      <Name>Simple.Data</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Simple.Data.PostgreSql\Simple.Data.PostgreSql.csproj">
       <Project>{7F0FEE43-49F6-4010-B90A-DF60E49F79E5}</Project>
       <Name>Simple.Data.PostgreSql</Name>

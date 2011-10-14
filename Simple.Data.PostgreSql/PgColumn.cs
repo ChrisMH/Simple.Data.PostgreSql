@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using NpgsqlTypes;
 using Simple.Data.Ado.Schema;
 
@@ -6,27 +7,28 @@ namespace Simple.Data.PostgreSql
 {
   public class PgColumn : Column
   {
-    public PgColumn(string actualName, Table table)
+    protected PgColumn(string actualName, Table table)
       : base(actualName, table)
     {
     }
 
-    public PgColumn(string actualName, Table table, NpgsqlDbType npgsqlDbType) : base(actualName, table)
+    protected PgColumn(string actualName, Table table, NpgsqlDbType npgsqlDbType)
+      : base(actualName, table)
     {
       NpgsqlDbType = npgsqlDbType;
     }
 
-    public PgColumn(string actualName, Table table, bool isIdentity) : base(actualName, table, isIdentity)
+    protected PgColumn(string actualName, Table table, bool isIdentity) : base(actualName, table, isIdentity)
     {
     }
 
-    public PgColumn(string actualName, Table table, bool isIdentity, NpgsqlDbType npgsqlDbType, int maxLength)
-      : base(actualName, table, isIdentity, default(DbType), maxLength)
+    public PgColumn(string actualName, Table table, bool isIdentity, DbType dbType, int maxLength, NpgsqlDbType npgsqlDbType, Type clrType)
+      : base(actualName, table, isIdentity, dbType, maxLength)
     {
       NpgsqlDbType = npgsqlDbType;
+      ClrType = clrType;
     }
-
-
+    
     public override bool IsBinary
     {
       get
@@ -37,5 +39,7 @@ namespace Simple.Data.PostgreSql
     }
 
     public NpgsqlDbType NpgsqlDbType { get; private set; }
+    public Type ClrType { get; private set; }
+
   }
 }

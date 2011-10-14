@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Dynamic;
 using NUnit.Framework;
+using Simple.Data.PostgreSql.Test.Utility;
 
-namespace Simple.Data.PostgreSqlTest
+namespace Simple.Data.PostgreSql.Test
 {
-  public class ConversionTests
+  public class ConversionTest
   {
     [SetUp]
     public void SetUp()
@@ -56,7 +57,7 @@ namespace Simple.Data.PostgreSqlTest
     }
   }
 
-  class WeirdType : DynamicObject
+  internal class WeirdType : DynamicObject
   {
     private readonly object _value;
 

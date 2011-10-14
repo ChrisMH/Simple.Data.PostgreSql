@@ -1,6 +1,6 @@
-﻿namespace Simple.Data.PostgreSqlTest
+﻿namespace Simple.Data.PostgreSql.Test
 {
-  class User
+  internal class User
   {
     public int Id { get; set; }
     public string Name { get; set; }

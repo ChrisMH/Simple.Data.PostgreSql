@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using NUnit.Framework;
 using Simple.Data.SqlServer;
 
-namespace Simple.Data.SqlTest
+namespace Simple.Data.PostgreSql.Test
 {
     [TestFixture]
     public class SqlQueryPagerTest

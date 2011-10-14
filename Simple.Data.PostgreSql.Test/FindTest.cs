@@ -155,7 +155,7 @@ namespace Simple.Data.PostgreSql.Test
       var result = db.BasicTypes.FindById(1) as IDictionary<string, object>;
 
       Assert.NotNull(result);
-      
+
       Assert.True(result.ContainsKey("Id"));
       Assert.IsAssignableFrom<Int32>(result["Id"]);
 
@@ -227,7 +227,7 @@ namespace Simple.Data.PostgreSql.Test
 
       Assert.True(result.ContainsKey("TimestampField"));
       Assert.IsAssignableFrom<DateTime>(result["TimestampField"]);
-      
+
       Assert.True(result.ContainsKey("TimestampWithoutTimeZoneField"));
       Assert.IsAssignableFrom<DateTime>(result["TimestampWithoutTimeZoneField"]);
 
@@ -287,7 +287,7 @@ namespace Simple.Data.PostgreSql.Test
 
       Assert.True(result.ContainsKey("MacaddrField"));
       Assert.IsAssignableFrom<String>(result["MacaddrField"]);
-      
+
       // bit(1) is a special case.  Actual CLR type is BitString, but converts in the Npgsql driver to Boolean.
       Assert.True(result.ContainsKey("BitField"));
       Assert.IsAssignableFrom<Boolean>(result["BitField"]);
@@ -312,6 +312,39 @@ namespace Simple.Data.PostgreSql.Test
 
       Assert.True(result.ContainsKey("OidField"));
       Assert.IsAssignableFrom<Int64>(result["OidField"]);
+    }
+
+    [Test]
+    public void FindAllArrayTypes()
+    {
+      var db = Database.Open();
+      var result = db.ArrayTypes.FindById(1) as IDictionary<string, object>;
+
+      Assert.NotNull(result);
+
+      Assert.True(result.ContainsKey("IntegerArrayField"));
+      Assert.IsAssignableFrom<Int32[]>(result["IntegerArrayField"]);
+
+      Assert.True(result.ContainsKey("RealArrayField"));
+      Assert.IsAssignableFrom<Single[]>(result["RealArrayField"]);
+
+      Assert.True(result.ContainsKey("DoublePrecisionArrayField"));
+      Assert.IsAssignableFrom<Double[]>(result["DoublePrecisionArrayField"]);
+
+      Assert.True(result.ContainsKey("VarcharArrayField"));
+      Assert.IsAssignableFrom<String[]>(result["VarcharArrayField"]);
+
+      Assert.True(result.ContainsKey("IntegerMultiArrayField"));
+      Assert.IsAssignableFrom<Int32[,]>(result["IntegerMultiArrayField"]);
+
+      Assert.True(result.ContainsKey("RealMultiArrayField"));
+      Assert.IsAssignableFrom<Single[,]>(result["RealMultiArrayField"]);
+
+      Assert.True(result.ContainsKey("DoublePrecisionMultiArrayField"));
+      Assert.IsAssignableFrom<Double[,]>(result["DoublePrecisionMultiArrayField"]);
+
+      Assert.True(result.ContainsKey("VarcharMultiArrayField"));
+      Assert.IsAssignableFrom<String[,]>(result["VarcharMultiArrayField"]);
 
     }
   }

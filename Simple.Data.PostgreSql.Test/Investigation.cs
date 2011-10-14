@@ -71,11 +71,11 @@ namespace Simple.Data.PostgreSql.Test
           {
             while (rdr.Read())
             {
-              Console.WriteLine("Field Name,Pg Type Name,DbType,NpgsqlDbType,Type");
+              Console.WriteLine("Field Name;Pg Type Name;DbType;NpgsqlDbType;Type;Value");
               var values = rdr.GetValues().ToArray();
-              for(var field = 0 ; field < values.Count() ; field++)
+              for (var field = 0; field < values.Length; field++)
               {
-                Console.WriteLine("{0},{1},{2},{3},{4},{5}", rdr.GetName(field) ,rdr.GetDataTypeName(field), rdr.GetFieldDbType(field), rdr.GetFieldNpgsqlDbType(field), values[field].GetType(), values[field]);
+                Console.WriteLine("{0};{1};{2};{3};{4};{5}", rdr.GetName(field), rdr.GetDataTypeName(field), rdr.GetFieldDbType(field), rdr.GetFieldNpgsqlDbType(field), values[field].GetType(), values[field]);
               }
               Console.WriteLine();
             }
@@ -84,6 +84,31 @@ namespace Simple.Data.PostgreSql.Test
       }
     }
 
+    [Test]
+    public void QueryArrayTypes()
+    {
+      using (var conn = new NpgsqlConnection(ConfigurationManager.ConnectionStrings["Test"].ConnectionString))
+      {
+        conn.Open();
+        using (var cmd = conn.CreateCommand())
+        {
+          cmd.CommandText = "SELECT * FROM public.array_types";
+          using (var rdr = cmd.ExecuteReader())
+          {
+            while (rdr.Read())
+            {
+              Console.WriteLine("Field Name;Pg Type Name;DbType;NpgsqlDbType;Type;Value");
+              var values = rdr.GetValues().ToArray();
+              for (var field = 0; field < values.Length; field++)
+              {
+                Console.WriteLine("{0};{1};{2};{3};{4};{5}", rdr.GetName(field), rdr.GetDataTypeName(field), rdr.GetFieldDbType(field), rdr.GetFieldNpgsqlDbType(field), values[field].GetType(), values[field]);
+              }
+              Console.WriteLine();
+            }
+          }
+        }
+      }
+    }
     private void FigureOutFunctionReturn(IEnumerable<Parameter> parameters, NpgsqlDataReader rdr, string actualName)
     {
       if (parameters.Where(param => param.Direction == ParameterDirection.InputOutput || param.Direction == ParameterDirection.Output).Count() == 0)

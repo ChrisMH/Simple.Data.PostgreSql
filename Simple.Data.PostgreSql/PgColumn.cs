@@ -22,11 +22,10 @@ namespace Simple.Data.PostgreSql
     {
     }
 
-    public PgColumn(string actualName, Table table, bool isIdentity, DbType dbType, int maxLength, NpgsqlDbType npgsqlDbType, Type clrType)
+    public PgColumn(string actualName, Table table, bool isIdentity, DbType dbType, int maxLength, NpgsqlDbType npgsqlDbType)
       : base(actualName, table, isIdentity, dbType, maxLength)
     {
       NpgsqlDbType = npgsqlDbType;
-      ClrType = clrType;
     }
     
     public override bool IsBinary
@@ -39,7 +38,6 @@ namespace Simple.Data.PostgreSql
     }
 
     public NpgsqlDbType NpgsqlDbType { get; private set; }
-    public Type ClrType { get; private set; }
 
   }
 }

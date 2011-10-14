@@ -7,13 +7,11 @@ namespace Simple.Data.PostgreSql
 {
   public class TypeMap
   {
-    public static TypeEntry GetTypeEntry(string typeName)
+    public static TypeEntry GetTypeEntry(string dataType, string elementType = null)
     {
-      if (!PgTypeToTypeEntry.ContainsKey(typeName))
-      {
-        throw new ArgumentException(String.Format("Unknown pg type name: {0}", typeName));
-      }
-      return PgTypeToTypeEntry[typeName];
+      if (!PgTypeToTypeEntry.ContainsKey(dataType))throw new ArgumentException(String.Format("Unknown data type name: {0}", dataType));
+
+      return PgTypeToTypeEntry[dataType];
     }
 
     private static readonly Dictionary<string, TypeEntry> PgTypeToTypeEntry =
@@ -53,6 +51,7 @@ namespace Simple.Data.PostgreSql
           {"tsquery", new TypeEntry("tsquery", DbType.String, NpgsqlDbType.Text, typeof (String))},
           {"uuid", new TypeEntry("uuid", DbType.Guid, NpgsqlDbType.Uuid, typeof (Guid))},
           {"oid", new TypeEntry("oid", DbType.Int64, NpgsqlDbType.Bigint, typeof (Int64))},
+          {"ARRAY", new TypeEntry("ARRAY", DbType.Object, NpgsqlDbType.Array, typeof (Object))},
         };
   }
 
@@ -68,7 +67,7 @@ namespace Simple.Data.PostgreSql
 
     public string PgTypeName { get; private set; }
     public DbType DbType { get; private set; }
-    public NpgsqlDbType NpgsqlDbType { get; private set; }
+    private NpgsqlDbType NpgsqlDbType { get; set; }
     public Type ClrType { get; private set; }
   }
 }

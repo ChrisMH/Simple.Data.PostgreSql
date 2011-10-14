@@ -1,4 +1,7 @@
-﻿SELECT parameter_name, CASE WHEN data_type='USER-DEFINED' THEN udt_name ELSE trim(both '\"' from data_type) END AS data_type, parameter_mode, ordinal_position
-FROM information_schema.parameters
+﻿SELECT p.parameter_name, p.data_type, p.parameter_mode, e.data_type AS element_data_type
+FROM information_schema.parameters p
+LEFT JOIN information_schema.element_types e
+     ON ((p.specific_catalog, p.specific_schema, p.specific_name, p.dtd_identifier)
+       = (e.object_catalog, e.object_schema, e.object_name, e.collection_type_identifier))
 WHERE specific_schema='{0}' AND specific_name='{1}'
 ORDER BY ordinal_position ASC

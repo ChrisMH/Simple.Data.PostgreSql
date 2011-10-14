@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using System.Data;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using Npgsql;
 using Simple.Data.Ado;
 using Simple.Data.Ado.Schema;
@@ -32,26 +29,30 @@ namespace Simple.Data.PostgreSql
     public IEnumerable<Column> GetColumns(Table table)
     {
       if (table == null) throw new ArgumentNullException("table");
-      
+
       var columns = SelectToDataTable(String.Format(Properties.Resource.ColumnsQuery, table.Schema, table.ActualName)).AsEnumerable();
 
       var foundIdentity = false;
-      foreach(var column in columns)
+      foreach (var column in columns)
       {
         var isIdentity = !foundIdentity && IsIdentityColumn(column["column_default"].ToString(), column["is_nullable"].ToString(), column["data_type"].ToString());
-        if(isIdentity)
+        if (isIdentity)
         {
           foundIdentity = true;
         }
         var typeEntry = TypeMap.GetTypeEntry(column["data_type"].ToString());
 
-        yield return new PgColumn(column["column_name"].ToString(),
-                                  table,
-                                  isIdentity,
-                                  typeEntry.DbType,
-                                  Convert.IsDBNull(column["character_maximum_length"]) ? -1 : Convert.ToInt32(column["character_maximum_length"]),
-                                  typeEntry.NpgsqlDbType,
-                                  typeEntry.ClrType);
+        //yield return new PgColumn(column["column_name"].ToString(),
+        //                          table,
+        //                          isIdentity,
+        //                          typeEntry.DbType,
+        //                          Convert.IsDBNull(column["maximum_length"]) ? -1 : Convert.ToInt32(column["maximum_length"]),
+        //                          typeEntry.NpgsqlDbType);
+        yield return new Column(column["column_name"].ToString(),
+                                table,
+                                isIdentity,
+                                typeEntry.DbType, Convert.IsDBNull(column["maximum_length"]) ? -1 : Convert.ToInt32(column["maximum_length"])
+          );
       }
     }
 
@@ -76,7 +77,7 @@ namespace Simple.Data.PostgreSql
 
     private ParameterDirection GetParameterDirection(string parameterMode)
     {
-      switch(parameterMode)
+      switch (parameterMode)
       {
         case "IN":
           return ParameterDirection.Input;
@@ -95,7 +96,7 @@ namespace Simple.Data.PostgreSql
     {
       if (table == null) throw new ArgumentNullException("table");
 
-      return new Key(SelectToDataTable(String.Format(Properties.Resource.PrimaryKeyQuery,table.Schema, table.ActualName))
+      return new Key(SelectToDataTable(String.Format(Properties.Resource.PrimaryKeyQuery, table.Schema, table.ActualName))
                        .AsEnumerable()
                        .Select(column => column["column_name"].ToString()));
     }

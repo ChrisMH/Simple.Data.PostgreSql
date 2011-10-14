@@ -3,6 +3,6 @@ bin
 deploy
 *.csproj.user
 *.ReSharper.user
-*.suo
+*.dotCover
 *.cache
 *.nupkg

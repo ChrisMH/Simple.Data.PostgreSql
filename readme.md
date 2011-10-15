@@ -18,12 +18,18 @@ To use this adapter, you will need to add the provider name to your app.config o
 </pre>
   
 # Identity column
-PostgreSql does not support explicitly stating that a column is an identity column.  This adapter chooses the first column in the table that is not nullable,
-and that has an auto-incrementing default value (i.e., the column's default value is nextval(<some sequence>)).  This can be either handled implicitly
-using PostgreSql's serial or bigserial type or explicitly using PostgreSql's integer or bigint type and a sequence.
+PostgreSql does not support explicitly stating that a column is an identity column.  This adapter chooses the first column in the table that is not nullable, and that has an auto-incrementing default value (i.e., the column's default value is nextval(<some sequence>)).  This can be either handled implicitly using PostgreSql's serial or bigserial type or explicitly using PostgreSql's integer or bigint type and a sequence.
 
 If there are multiple auto-incrementing columns, this adapter will use the first as the identity column.
 
+# Timestamps
+.NET's DateTime does not appear to handle PostgreSql's timestamp with time zone and time with time zone types.  Either that or I don't understand how to use it properly.  In either case, I would recommend you stick to the timestamp and time (without time zone) types or results may be unexpected.
+
+I'm not sure yet whether this is a PostgreSql issue or an Npgsql issue.  More likely the latter.
+
+TODO: Investigate using Npgsql's NpgsqlTimestamp type.
+
+force it 
 # Testing
 The default tests assume a database cluster installed at localhost:5432.
 Tests assume that the superuser account is named 'postgres' with password 'postgres' and that there is a default database named 'postgres'.  If your system is not set up like that, all these settings can be changed in the app.config file.

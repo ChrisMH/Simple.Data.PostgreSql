@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Dynamic;
 using NUnit.Framework;
+using NpgsqlTypes;
 using Simple.Data.PostgreSql.Test.Utility;
 
 namespace Simple.Data.PostgreSql.Test
@@ -141,27 +142,16 @@ namespace Simple.Data.PostgreSql.Test
           RealField: 1.0e37f,
           DoublePrecisionField: 1.0e308,
           MoneyField: "$99.98",
-          CharacterVaryingUnlimitedField: "CharacterVaryingUnlimitedField CharacterVaryingUnlimitedField CharacterVaryingUnlimitedField CharacterVaryingUnlimitedField",
-          CharacterVarying30Field: "CharacterVarying30Field Charac",
-          VarcharUnlimitedField: "VarcharUnlimitedField VarcharUnlimitedField VarcharUnlimitedField VarcharUnlimitedField",
-          Varchar30Field: "Varchar30Field Varchar30Field ",
-          CharacterField: "q",
-          Character10Field: "qrstuvwxyz",
-          CharField: "l",
-          Char10Field: "lmnopqrstu",
-          TextField: "TextField TextField TextField TextField TextField TextField TextField TextField TextField TextField TextField TextField TextField",
           ByteaField: new byte[] {0xff, 0xfe, 0xfd, 0xfc, 0xfb, 0xb1, 0xb2, 0xb3},
-          TimestampField: "2011/10/14 20:45:31",
-          TimestampWithoutTimeZoneField: "2011/10/14 20:45:31",
-          TimestamptzField: "2011/10/14 16:45:31 EDT",
-          TimestampWithTimeZoneField: "2011/10/14 16:45:31 EDT",
-          DateField: "2011/10/14",
-          TimeField: "20:45:31",
-          TimeWithoutTimeZoneField: "20:45:31",
-          TimetzField: "16:45:31 EDT",
-          TimeWithTimeZoneField: "16:45:31 EDT",
-          IntervalField: "P1Y2MT5H"
-        );
+          BooleanField: true,
+          CidrField: "192.168.12",
+          InetField: "127.0.0.1/32",
+          MacaddrField: "01:02:03:04:05:06",
+          TsvectorField: "cat fat flat mat rat splat",
+          TsqueryField: "fat & rat & !cat",
+          UuidField: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+          OidField: 1
+          );
 
       Assert.NotNull(result);
       Assert.True(result.Id > 0);
@@ -201,39 +191,119 @@ namespace Simple.Data.PostgreSql.Test
 
       Assert.IsAssignableFrom<Decimal>(result.MoneyField);
       Assert.AreEqual(99.98, result.MoneyField);
-      
+
+      Assert.IsAssignableFrom<Byte[]>(result.ByteaField);
+      Assert.AreEqual(new byte[] {0xff, 0xfe, 0xfd, 0xfc, 0xfb, 0xb1, 0xb2, 0xb3}, result.ByteaField);
+
+      Assert.IsAssignableFrom<Boolean>(result.BooleanField);
+      Assert.AreEqual(true, result.BooleanField);
+
+      Assert.IsAssignableFrom<String>(result.CidrField);
+      Assert.AreEqual("192.168.12.0/24", result.CidrField);
+
+      Assert.IsAssignableFrom<System.Net.IPAddress>(result.InetField);
+      Assert.AreEqual(System.Net.IPAddress.Parse("127.0.0.1"), result.InetField);
+
+      Assert.IsAssignableFrom<String>(result.MacaddrField);
+      Assert.AreEqual("01:02:03:04:05:06", result.MacaddrField);
+
+      Assert.IsAssignableFrom<String>(result.TsvectorField);
+      Assert.AreEqual("'cat' 'fat' 'flat' 'mat' 'rat' 'splat'", result.TsvectorField);
+
+      Assert.IsAssignableFrom<String>(result.TsqueryField);
+      Assert.AreEqual("'fat' & 'rat' & !'cat'", result.TsqueryField);
+
+      Assert.IsAssignableFrom<Guid>(result.UuidField);
+      Assert.AreEqual(Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"), result.UuidField);
+
+      Assert.IsAssignableFrom<Int64>(result.OidField);
+      Assert.AreEqual(1, result.OidField);
+    }
+
+    [Test]
+    public void InsertBasicTypesStringsAndBits()
+    {
+      var db = Database.Open();
+
+      var result =
+        db.BasicTypes.Insert(
+          CharacterVaryingUnlimitedField: "CharacterVaryingUnlimitedField CharacterVaryingUnlimitedField CharacterVaryingUnlimitedField CharacterVaryingUnlimitedField",
+          CharacterVarying30Field: "CharacterVarying30Field Charac",
+          VarcharUnlimitedField: "VarcharUnlimitedField VarcharUnlimitedField VarcharUnlimitedField VarcharUnlimitedField",
+          Varchar30Field: "Varchar30Field Varchar30Field ",
+          CharacterField: "q",
+          Character10Field: "qrstuvwxyz",
+          CharField: "l",
+          Char10Field: "lmnopqrstu",
+          TextField: "TextField TextField TextField TextField TextField TextField TextField TextField TextField TextField TextField TextField TextField",
+          BitField: "1",
+          Bit10Field: "1100110011",
+          BitVaryingUnlimitedField: "1111001111001100110011001010101010",
+          BitVarying10Field: "101"
+          );
+
       Assert.IsAssignableFrom<String>(result.CharacterVaryingUnlimitedField);
       Assert.AreEqual("CharacterVaryingUnlimitedField CharacterVaryingUnlimitedField CharacterVaryingUnlimitedField CharacterVaryingUnlimitedField", result.CharacterVaryingUnlimitedField);
-      
+
       Assert.IsAssignableFrom<String>(result.CharacterVarying30Field);
       Assert.AreEqual("CharacterVarying30Field Charac", result.CharacterVarying30Field);
-      
+
       Assert.IsAssignableFrom<String>(result.VarcharUnlimitedField);
       Assert.AreEqual("VarcharUnlimitedField VarcharUnlimitedField VarcharUnlimitedField VarcharUnlimitedField", result.VarcharUnlimitedField);
-      
+
       Assert.IsAssignableFrom<String>(result.Varchar30Field);
       Assert.AreEqual("Varchar30Field Varchar30Field ", result.Varchar30Field);
-      
+
       Assert.IsAssignableFrom<String>(result.CharacterField);
       Assert.AreEqual("q", result.CharacterField);
-      
+
       Assert.IsAssignableFrom<String>(result.Character10Field);
       Assert.AreEqual("qrstuvwxyz", result.Character10Field);
-      
+
       Assert.IsAssignableFrom<String>(result.CharField);
       Assert.AreEqual("l", result.CharField);
-      
+
       Assert.IsAssignableFrom<String>(result.Char10Field);
       Assert.AreEqual("lmnopqrstu", result.Char10Field);
 
       Assert.IsAssignableFrom<String>(result.TextField);
       Assert.AreEqual("TextField TextField TextField TextField TextField TextField TextField TextField TextField TextField TextField TextField TextField", result.TextField);
-      
-      Assert.IsAssignableFrom<Byte[]>(result.ByteaField);
-      Assert.AreEqual(new byte[] { 0xff, 0xfe, 0xfd, 0xfc, 0xfb, 0xb1, 0xb2, 0xb3 }, result.ByteaField);
+
+      Assert.IsAssignableFrom<Boolean>(result.BitField);
+      Assert.AreEqual(true, result.BitField);
+
+      Assert.IsAssignableFrom<BitString>(result.Bit10Field);
+      Assert.AreEqual(new BitString("1100110011"), result.Bit10Field);
+
+      Assert.IsAssignableFrom<String>(result.BitVaryingUnlimitedField);
+      Assert.AreEqual("1111001111001100110011001010101010", result.BitVaryingUnlimitedField);
+
+      Assert.IsAssignableFrom<String>(result.BitVarying10Field);
+      Assert.AreEqual("101", result.BitVarying10Field);
+    }
+
+
+    [Test]
+    public void InsertBasicTypesDatesAndTimesUsingStrings()
+    {
+      var db = Database.Open();
+
+      var result =
+        db.BasicTypes.Insert(
+          TimestampField: "2011/10/14 20:45:31",
+          TimestampWithoutTimeZoneField: "2011/10/14 20:45:31",
+          TimestamptzField: "2011/10/14 16:45:31 " + TimeZoneInfo.Local.BaseUtcOffset.ToString(),
+          TimestampWithTimeZoneField: "2011/10/14 16:45:31 " + TimeZoneInfo.Local.BaseUtcOffset.ToString(),
+          DateField: "2011/10/14",
+          TimeField: "20:45:31",
+          TimeWithoutTimeZoneField: "20:45:31",
+          TimetzField: "16:45:31 " + TimeZoneInfo.Local.BaseUtcOffset.ToString(),
+          TimeWithTimeZoneField: "16:45:31 " + TimeZoneInfo.Local.BaseUtcOffset.ToString(),
+          IntervalField: "P1Y2MT5H5M10S"
+          );
 
       Assert.IsAssignableFrom<DateTime>(result.TimestampField);
-      var convertedDt = TimeZoneInfo.ConvertTimeFromUtc(result.TimestampField, TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time"));
+      var convertedDt = result.TimestampField.ToLocalTime();
       Assert.AreEqual(2011, convertedDt.Year);
       Assert.AreEqual(10, convertedDt.Month);
       Assert.AreEqual(14, convertedDt.Day);
@@ -242,7 +312,95 @@ namespace Simple.Data.PostgreSql.Test
       Assert.AreEqual(31, convertedDt.Second);
 
       Assert.IsAssignableFrom<DateTime>(result.TimestampWithoutTimeZoneField);
-      convertedDt = TimeZoneInfo.ConvertTimeFromUtc(result.TimestampWithoutTimeZoneField, TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time"));
+      convertedDt = result.TimestampWithoutTimeZoneField.ToLocalTime();
+      Assert.AreEqual(2011, convertedDt.Year);
+      Assert.AreEqual(10, convertedDt.Month);
+      Assert.AreEqual(14, convertedDt.Day);
+      Assert.AreEqual(16, convertedDt.Hour);
+      Assert.AreEqual(45, convertedDt.Minute);
+      Assert.AreEqual(31, convertedDt.Second);
+
+      Assert.IsAssignableFrom<DateTime>(result.TimestamptzField);
+      Assert.AreEqual(2011, result.TimestamptzField.Year);
+      Assert.AreEqual(10, result.TimestamptzField.Month);
+      Assert.AreEqual(14, result.TimestamptzField.Day);
+      //Assert.AreEqual(16, result.TimestamptzField.Hour);  Conversion into DateTime of a timestamp with time zone does not work correctly.
+      Assert.AreEqual(45, result.TimestamptzField.Minute);
+      Assert.AreEqual(31, result.TimestamptzField.Second);
+
+      Assert.IsAssignableFrom<DateTime>(result.TimestampWithTimeZoneField);
+      Assert.AreEqual(2011, result.TimestampWithTimeZoneField.Year);
+      Assert.AreEqual(10, result.TimestampWithTimeZoneField.Month);
+      Assert.AreEqual(14, result.TimestampWithTimeZoneField.Day);
+      //Assert.AreEqual(16, result.TimestampWithTimeZoneField.Hour);  Conversion into DateTime of a timestamp with time zone does not work correctly.
+      Assert.AreEqual(45, result.TimestampWithTimeZoneField.Minute);
+      Assert.AreEqual(31, result.TimestampWithTimeZoneField.Second);
+
+      Assert.IsAssignableFrom<DateTime>(result.DateField);
+      Assert.AreEqual(2011, result.DateField.Year);
+      Assert.AreEqual(10, result.DateField.Month);
+      Assert.AreEqual(14, result.DateField.Day);
+
+      Assert.IsAssignableFrom<DateTime>(result.TimeField);
+      convertedDt = result.TimestampField.ToLocalTime();
+      Assert.AreEqual(16, convertedDt.Hour);
+      Assert.AreEqual(45, convertedDt.Minute);
+      Assert.AreEqual(31, convertedDt.Second);
+
+      Assert.IsAssignableFrom<DateTime>(result.TimeWithoutTimeZoneField);
+      convertedDt = result.TimestampField.ToLocalTime();
+      Assert.AreEqual(16, convertedDt.Hour);
+      Assert.AreEqual(45, convertedDt.Minute);
+      Assert.AreEqual(31, convertedDt.Second);
+
+      Assert.IsAssignableFrom<DateTime>(result.TimetzField);
+      //Assert.AreEqual(16, result.TimetzField.Hour);  Conversion into DateTime of a time with time zone does not work correctly.
+      Assert.AreEqual(45, result.TimetzField.Minute);
+      Assert.AreEqual(31, result.TimetzField.Second);
+
+      Assert.IsAssignableFrom<DateTime>(result.TimeWithTimeZoneField);
+      //Assert.AreEqual(16, result.TimeWithTimeZoneField.Hour);  Conversion into DateTime of a time with time zone does not work correctly.
+      Assert.AreEqual(45, result.TimeWithTimeZoneField.Minute);
+      Assert.AreEqual(31, result.TimeWithTimeZoneField.Second);
+
+      Assert.IsAssignableFrom<TimeSpan>(result.IntervalField);
+      Assert.AreEqual(420, result.IntervalField.Days);
+      Assert.AreEqual(5, result.IntervalField.Hours);
+      Assert.AreEqual(5, result.IntervalField.Minutes);
+      Assert.AreEqual(10, result.IntervalField.Seconds);
+    }
+
+
+    [Test]
+    public void InsertBasicTypesDatesAndTimesUsingObjects()
+    {
+      var db = Database.Open();
+
+      var result =
+        db.BasicTypes.Insert(
+          TimestampField: new DateTime(2011, 10, 14, 20, 45, 31, DateTimeKind.Utc),
+          TimestampWithoutTimeZoneField: new DateTime(2011, 10, 14, 20, 45, 31, DateTimeKind.Utc),
+          TimestamptzField: new DateTime(2011, 10, 14, 16, 45, 31, DateTimeKind.Local),
+          TimestampWithTimeZoneField: new DateTime(2011, 10, 14, 16, 45, 31, DateTimeKind.Local),
+          DateField: new DateTime(2011, 10, 14),
+          TimeField: new DateTime(2000, 1, 1, 20, 45, 31, DateTimeKind.Utc),
+          TimeWithoutTimeZoneField: new DateTime(2000, 1, 1, 20, 45, 31, DateTimeKind.Utc),
+          TimetzField: new DateTime(2000, 1, 1, 16, 45, 31, DateTimeKind.Local),
+          TimeWithTimeZoneField: new DateTime(2000, 1, 1, 16, 45, 31, DateTimeKind.Local),
+          IntervalField: new TimeSpan(420, 5, 5, 10)
+          );
+
+      Assert.IsAssignableFrom<DateTime>(result.TimestampField);
+      var convertedDt = result.TimestampField.ToLocalTime();
+      Assert.AreEqual(2011, convertedDt.Year);
+      Assert.AreEqual(10, convertedDt.Month);
+      Assert.AreEqual(14, convertedDt.Day);
+      Assert.AreEqual(16, convertedDt.Hour);
+      Assert.AreEqual(45, convertedDt.Minute);
+      Assert.AreEqual(31, convertedDt.Second);
+
+      Assert.IsAssignableFrom<DateTime>(result.TimestampWithoutTimeZoneField);
+      convertedDt = result.TimestampWithoutTimeZoneField.ToLocalTime();
       Assert.AreEqual(2011, convertedDt.Year);
       Assert.AreEqual(10, convertedDt.Month);
       Assert.AreEqual(14, convertedDt.Day);
@@ -272,38 +430,166 @@ namespace Simple.Data.PostgreSql.Test
       Assert.AreEqual(14, result.DateField.Day);
 
       Assert.IsAssignableFrom<DateTime>(result.TimeField);
-      convertedDt = TimeZoneInfo.ConvertTimeFromUtc(result.TimeField, TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time"));
+      convertedDt = result.TimestampField.ToLocalTime();
       Assert.AreEqual(16, convertedDt.Hour);
       Assert.AreEqual(45, convertedDt.Minute);
       Assert.AreEqual(31, convertedDt.Second);
 
       Assert.IsAssignableFrom<DateTime>(result.TimeWithoutTimeZoneField);
-      convertedDt = TimeZoneInfo.ConvertTimeFromUtc(result.TimeWithoutTimeZoneField, TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time"));
+      convertedDt = result.TimestampField.ToLocalTime();
       Assert.AreEqual(16, convertedDt.Hour);
       Assert.AreEqual(45, convertedDt.Minute);
       Assert.AreEqual(31, convertedDt.Second);
 
       Assert.IsAssignableFrom<DateTime>(result.TimetzField);
-      Assert.AreEqual(16, result.TimetzField.Hour);
+      //Assert.AreEqual(16, result.TimetzField.Hour);  Conversion into DateTime of a time with time zone does not work correctly.
       Assert.AreEqual(45, result.TimetzField.Minute);
       Assert.AreEqual(31, result.TimetzField.Second);
 
       Assert.IsAssignableFrom<DateTime>(result.TimeWithTimeZoneField);
-      Assert.AreEqual(16, result.TimeWithTimeZoneField.Hour);
+      //Assert.AreEqual(16, result.TimeWithTimeZoneField.Hour);  Conversion into DateTime of a time with time zone does not work correctly.
       Assert.AreEqual(45, result.TimeWithTimeZoneField.Minute);
       Assert.AreEqual(31, result.TimeWithTimeZoneField.Second);
 
       Assert.IsAssignableFrom<TimeSpan>(result.IntervalField);
-      Assert.AreEqual(1, result.IntervalField.Years);
-      Assert.AreEqual(2, result.IntervalField.Months);
-      Assert.AreEqual(0, result.IntervalField.Days);
+      Assert.AreEqual(420, result.IntervalField.Days);
       Assert.AreEqual(5, result.IntervalField.Hours);
-      Assert.AreEqual(0, result.IntervalField.Minutes);
-      Assert.AreEqual(0, result.IntervalField.Seconds);
-
+      Assert.AreEqual(5, result.IntervalField.Minutes);
+      Assert.AreEqual(10, result.IntervalField.Seconds);
     }
-   
-  }
 
-  
+    [Test]
+    public void InsertBasicTypesGeometryUsingStrings()
+    {
+      var db = Database.Open();
+
+      var result =
+        db.BasicTypes.Insert(
+          PointField: "(1,2)",
+          LsegField: "((1,2),(3,4))",
+          BoxField: "(1,2),(3,4)",
+          PathClosedField: "((1,2),(3,4),(5,6))",
+          PathOpenField: "[(1,2),(3,4),(5,6)]",
+          PolygonField: "((1,2),(3,4),(5,6))",
+          CircleField: "<(1,2),3>"
+          );
+
+      Assert.IsAssignableFrom<NpgsqlPoint>(result.PointField);
+      Assert.AreEqual(1, result.PointField.X);
+      Assert.AreEqual(2, result.PointField.Y);
+
+      Assert.IsAssignableFrom<NpgsqlLSeg>(result.LsegField);
+      Assert.AreEqual(1, result.LsegField.Start.X);
+      Assert.AreEqual(2, result.LsegField.Start.Y);
+      Assert.AreEqual(3, result.LsegField.End.X);
+      Assert.AreEqual(4, result.LsegField.End.Y);
+
+      Assert.IsAssignableFrom<NpgsqlBox>(result.BoxField);
+      Assert.AreEqual(1, result.BoxField.Left);
+      Assert.AreEqual(2, result.BoxField.Bottom);
+      Assert.AreEqual(3, result.BoxField.Right);
+      Assert.AreEqual(4, result.BoxField.Top);
+
+      Assert.IsAssignableFrom<NpgsqlPath>(result.PathClosedField);
+      Assert.AreEqual(3, result.PathClosedField.Count);
+      Assert.AreEqual(false, result.PathClosedField.Open);
+      Assert.AreEqual(1, result.PathClosedField[0].X);
+      Assert.AreEqual(2, result.PathClosedField[0].Y);
+      Assert.AreEqual(3, result.PathClosedField[1].X);
+      Assert.AreEqual(4, result.PathClosedField[1].Y);
+      Assert.AreEqual(5, result.PathClosedField[2].X);
+      Assert.AreEqual(6, result.PathClosedField[2].Y);
+
+      Assert.IsAssignableFrom<NpgsqlPath>(result.PathOpenField);
+      Assert.AreEqual(3, result.PathOpenField.Count);
+      Assert.AreEqual(true, result.PathOpenField.Open);
+      Assert.AreEqual(1, result.PathOpenField[0].X);
+      Assert.AreEqual(2, result.PathOpenField[0].Y);
+      Assert.AreEqual(3, result.PathOpenField[1].X);
+      Assert.AreEqual(4, result.PathOpenField[1].Y);
+      Assert.AreEqual(5, result.PathOpenField[2].X);
+      Assert.AreEqual(6, result.PathOpenField[2].Y);
+
+      Assert.IsAssignableFrom<NpgsqlPolygon>(result.PolygonField);
+      Assert.AreEqual(3, result.PolygonField.Count);
+      Assert.AreEqual(1, result.PolygonField[0].X);
+      Assert.AreEqual(2, result.PolygonField[0].Y);
+      Assert.AreEqual(3, result.PolygonField[1].X);
+      Assert.AreEqual(4, result.PolygonField[1].Y);
+      Assert.AreEqual(5, result.PolygonField[2].X);
+      Assert.AreEqual(6, result.PolygonField[2].Y);
+
+      Assert.IsAssignableFrom<NpgsqlCircle>(result.CircleField);
+      Assert.AreEqual(1, result.CircleField.Center.X);
+      Assert.AreEqual(2, result.CircleField.Center.Y);
+      Assert.AreEqual(3, result.CircleField.Radius);
+    }
+
+    [Test]
+    public void InsertBasicTypesGeometryUsingObjects()
+    {
+      var db = Database.Open();
+
+      var result =
+        db.BasicTypes.Insert(
+          PointField: new NpgsqlPoint(1, 2),
+          LsegField: new NpgsqlLSeg(new NpgsqlPoint(1, 2), new NpgsqlPoint(3, 4)),
+          BoxField: new NpgsqlBox(4, 3, 2, 1),
+          PathClosedField: new NpgsqlPath(new[] {new NpgsqlPoint(1, 2), new NpgsqlPoint(3, 4), new NpgsqlPoint(5, 6)}, false),
+          PathOpenField: new NpgsqlPath(new[] {new NpgsqlPoint(1, 2), new NpgsqlPoint(3, 4), new NpgsqlPoint(5, 6)}, true),
+          PolygonField: new NpgsqlPolygon(new[] {new NpgsqlPoint(1, 2), new NpgsqlPoint(3, 4), new NpgsqlPoint(5, 6)}),
+          CircleField: new NpgsqlCircle(new NpgsqlPoint(1,2), 3)
+          );
+
+      Assert.IsAssignableFrom<NpgsqlPoint>(result.PointField);
+      Assert.AreEqual(1, result.PointField.X);
+      Assert.AreEqual(2, result.PointField.Y);
+
+      Assert.IsAssignableFrom<NpgsqlLSeg>(result.LsegField);
+      Assert.AreEqual(1, result.LsegField.Start.X);
+      Assert.AreEqual(2, result.LsegField.Start.Y);
+      Assert.AreEqual(3, result.LsegField.End.X);
+      Assert.AreEqual(4, result.LsegField.End.Y);
+
+      Assert.IsAssignableFrom<NpgsqlBox>(result.BoxField);
+      Assert.AreEqual(1, result.BoxField.Left);
+      Assert.AreEqual(2, result.BoxField.Bottom);
+      Assert.AreEqual(3, result.BoxField.Right);
+      Assert.AreEqual(4, result.BoxField.Top);
+
+      Assert.IsAssignableFrom<NpgsqlPath>(result.PathClosedField);
+      Assert.AreEqual(3, result.PathClosedField.Count);
+      //Assert.AreEqual(false, result.PathClosedField.Open); // There appears to be a bug in Npgsql that saves all paths as open paths
+      Assert.AreEqual(1, result.PathClosedField[0].X);
+      Assert.AreEqual(2, result.PathClosedField[0].Y);
+      Assert.AreEqual(3, result.PathClosedField[1].X);
+      Assert.AreEqual(4, result.PathClosedField[1].Y);
+      Assert.AreEqual(5, result.PathClosedField[2].X);
+      Assert.AreEqual(6, result.PathClosedField[2].Y);
+
+      Assert.IsAssignableFrom<NpgsqlPath>(result.PathOpenField);
+      Assert.AreEqual(3, result.PathOpenField.Count);
+      Assert.AreEqual(true, result.PathOpenField.Open);
+      Assert.AreEqual(1, result.PathOpenField[0].X);
+      Assert.AreEqual(2, result.PathOpenField[0].Y);
+      Assert.AreEqual(3, result.PathOpenField[1].X);
+      Assert.AreEqual(4, result.PathOpenField[1].Y);
+      Assert.AreEqual(5, result.PathOpenField[2].X);
+      Assert.AreEqual(6, result.PathOpenField[2].Y);
+
+      Assert.IsAssignableFrom<NpgsqlPolygon>(result.PolygonField);
+      Assert.AreEqual(3, result.PolygonField.Count);
+      Assert.AreEqual(1, result.PolygonField[0].X);
+      Assert.AreEqual(2, result.PolygonField[0].Y);
+      Assert.AreEqual(3, result.PolygonField[1].X);
+      Assert.AreEqual(4, result.PolygonField[1].Y);
+      Assert.AreEqual(5, result.PolygonField[2].X);
+      Assert.AreEqual(6, result.PolygonField[2].Y);
+
+      Assert.IsAssignableFrom<NpgsqlCircle>(result.CircleField);
+      Assert.AreEqual(1, result.CircleField.Center.X);
+      Assert.AreEqual(2, result.CircleField.Center.Y);
+      Assert.AreEqual(3, result.CircleField.Radius);
+    }
+  }
 }

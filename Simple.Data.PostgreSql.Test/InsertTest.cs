@@ -324,7 +324,7 @@ namespace Simple.Data.PostgreSql.Test
       Assert.AreEqual(2011, result.TimestamptzField.Year);
       Assert.AreEqual(10, result.TimestamptzField.Month);
       Assert.AreEqual(14, result.TimestamptzField.Day);
-      //Assert.AreEqual(16, result.TimestamptzField.Hour);  Conversion into DateTime of a timestamp with time zone does not work correctly.
+      //Assert.AreEqual(16, result.TimestamptzField.Hour);  // TODO: Conversion into DateTime of a timestamp with time zone does not work correctly.
       Assert.AreEqual(45, result.TimestamptzField.Minute);
       Assert.AreEqual(31, result.TimestamptzField.Second);
 
@@ -332,7 +332,7 @@ namespace Simple.Data.PostgreSql.Test
       Assert.AreEqual(2011, result.TimestampWithTimeZoneField.Year);
       Assert.AreEqual(10, result.TimestampWithTimeZoneField.Month);
       Assert.AreEqual(14, result.TimestampWithTimeZoneField.Day);
-      //Assert.AreEqual(16, result.TimestampWithTimeZoneField.Hour);  Conversion into DateTime of a timestamp with time zone does not work correctly.
+      //Assert.AreEqual(16, result.TimestampWithTimeZoneField.Hour);  // TODO: Conversion into DateTime of a timestamp with time zone does not work correctly.
       Assert.AreEqual(45, result.TimestampWithTimeZoneField.Minute);
       Assert.AreEqual(31, result.TimestampWithTimeZoneField.Second);
 
@@ -354,12 +354,12 @@ namespace Simple.Data.PostgreSql.Test
       Assert.AreEqual(31, convertedDt.Second);
 
       Assert.IsAssignableFrom<DateTime>(result.TimetzField);
-      //Assert.AreEqual(16, result.TimetzField.Hour);  Conversion into DateTime of a time with time zone does not work correctly.
+      //Assert.AreEqual(16, result.TimetzField.Hour);  // TODO: Conversion into DateTime of a time with time zone does not work correctly.
       Assert.AreEqual(45, result.TimetzField.Minute);
       Assert.AreEqual(31, result.TimetzField.Second);
 
       Assert.IsAssignableFrom<DateTime>(result.TimeWithTimeZoneField);
-      //Assert.AreEqual(16, result.TimeWithTimeZoneField.Hour);  Conversion into DateTime of a time with time zone does not work correctly.
+      //Assert.AreEqual(16, result.TimeWithTimeZoneField.Hour);  // TODO: Conversion into DateTime of a time with time zone does not work correctly.
       Assert.AreEqual(45, result.TimeWithTimeZoneField.Minute);
       Assert.AreEqual(31, result.TimeWithTimeZoneField.Second);
 
@@ -442,12 +442,12 @@ namespace Simple.Data.PostgreSql.Test
       Assert.AreEqual(31, convertedDt.Second);
 
       Assert.IsAssignableFrom<DateTime>(result.TimetzField);
-      //Assert.AreEqual(16, result.TimetzField.Hour);  Conversion into DateTime of a time with time zone does not work correctly.
+      //Assert.AreEqual(16, result.TimetzField.Hour);  // TODO: Conversion into DateTime of a time with time zone does not work correctly.
       Assert.AreEqual(45, result.TimetzField.Minute);
       Assert.AreEqual(31, result.TimetzField.Second);
 
       Assert.IsAssignableFrom<DateTime>(result.TimeWithTimeZoneField);
-      //Assert.AreEqual(16, result.TimeWithTimeZoneField.Hour);  Conversion into DateTime of a time with time zone does not work correctly.
+      //Assert.AreEqual(16, result.TimeWithTimeZoneField.Hour);  // TODO: Conversion into DateTime of a time with time zone does not work correctly.
       Assert.AreEqual(45, result.TimeWithTimeZoneField.Minute);
       Assert.AreEqual(31, result.TimeWithTimeZoneField.Second);
 
@@ -538,7 +538,7 @@ namespace Simple.Data.PostgreSql.Test
           PathClosedField: new NpgsqlPath(new[] {new NpgsqlPoint(1, 2), new NpgsqlPoint(3, 4), new NpgsqlPoint(5, 6)}, false),
           PathOpenField: new NpgsqlPath(new[] {new NpgsqlPoint(1, 2), new NpgsqlPoint(3, 4), new NpgsqlPoint(5, 6)}, true),
           PolygonField: new NpgsqlPolygon(new[] {new NpgsqlPoint(1, 2), new NpgsqlPoint(3, 4), new NpgsqlPoint(5, 6)}),
-          CircleField: new NpgsqlCircle(new NpgsqlPoint(1,2), 3)
+          CircleField: new NpgsqlCircle(new NpgsqlPoint(1, 2), 3)
           );
 
       Assert.IsAssignableFrom<NpgsqlPoint>(result.PointField);
@@ -559,7 +559,7 @@ namespace Simple.Data.PostgreSql.Test
 
       Assert.IsAssignableFrom<NpgsqlPath>(result.PathClosedField);
       Assert.AreEqual(3, result.PathClosedField.Count);
-      //Assert.AreEqual(false, result.PathClosedField.Open); // There appears to be a bug in Npgsql that saves all paths as open paths
+      //Assert.AreEqual(false, result.PathClosedField.Open); // TODO: There appears to be a bug in Npgsql that saves all paths as open paths
       Assert.AreEqual(1, result.PathClosedField[0].X);
       Assert.AreEqual(2, result.PathClosedField[0].Y);
       Assert.AreEqual(3, result.PathClosedField[1].X);
@@ -591,5 +591,98 @@ namespace Simple.Data.PostgreSql.Test
       Assert.AreEqual(2, result.CircleField.Center.Y);
       Assert.AreEqual(3, result.CircleField.Radius);
     }
+
+    [Test]
+    public void InsertArrayTypesWithStrings()
+    {
+      var db = Database.Open();
+
+      var result =
+        db.ArrayTypes.Insert(
+          IntegerArrayField: "{1,2,3,4,5,6}",
+          RealArrayField: "{1.1,2.2,3.3,4.4,5.5,6.6}",
+          DoublePrecisionArrayField: "{1.1,2.2,3.3,4.4,5.5,6.6}",
+          VarcharArrayField: "{one,two,three,four,five,six}",
+          IntegerMultiArrayField: "{{1,2,3,4,5,6},{1,2,3,4,5,6}}",
+          RealMultiArrayField: "{{1.1,2.2,3.3,4.4,5.5,6.6},{1.1,2.2,3.3,4.4,5.5,6.6}}",
+          DoublePrecisionMultiArrayField: "{{1.1,2.2,3.3,4.4,5.5,6.6},{1.1,2.2,3.3,4.4,5.5,6.6}}",
+          VarcharMultiArrayField: "{{one,two,three,four,five,six},{one,two,three,four,five,six}}"
+          );
+
+      Assert.NotNull(result);
+      Assert.True(result.Id > 0);
+
+      Assert.IsAssignableFrom<Int32[]>(result.IntegerArrayField);
+      Assert.AreEqual(new[] {1, 2, 3, 4, 5, 6}, result.IntegerArrayField);
+
+      Assert.IsAssignableFrom<Single[]>(result.RealArrayField);
+      Assert.AreEqual(new[] {1.1f, 2.2f, 3.3f, 4.4f, 5.5f, 6.6f}, result.RealArrayField);
+
+      Assert.IsAssignableFrom<Double[]>(result.DoublePrecisionArrayField);
+      Assert.AreEqual(new[] {1.1, 2.2, 3.3, 4.4, 5.5, 6.6}, result.DoublePrecisionArrayField);
+
+      // TODO: Simple.data converts to a SimpleList.  Why?
+      //Assert.IsAssignableFrom<String[]>(result.VarcharArrayField);
+      Assert.AreEqual(new[] {"one", "two", "three", "four", "five", "six"}, result.VarcharArrayField);
+
+      Assert.IsAssignableFrom<Int32[,]>(result.IntegerMultiArrayField);
+      Assert.AreEqual(new[,] {{1, 2, 3, 4, 5, 6}, {1, 2, 3, 4, 5, 6}}, result.IntegerMultiArrayField);
+
+      Assert.IsAssignableFrom<Single[,]>(result.RealMultiArrayField);
+      Assert.AreEqual(new[,] {{1.1f, 2.2f, 3.3f, 4.4f, 5.5f, 6.6f}, {1.1f, 2.2f, 3.3f, 4.4f, 5.5f, 6.6f}}, result.RealMultiArrayField);
+
+      Assert.IsAssignableFrom<Double[,]>(result.DoublePrecisionMultiArrayField);
+      Assert.AreEqual(new[,] {{1.1, 2.2, 3.3, 4.4, 5.5, 6.6}, {1.1, 2.2, 3.3, 4.4, 5.5, 6.6}}, result.DoublePrecisionMultiArrayField);
+
+      Assert.IsAssignableFrom<String[,]>(result.VarcharMultiArrayField);
+      Assert.AreEqual(new[,] {{"one", "two", "three", "four", "five", "six"}, {"one", "two", "three", "four", "five", "six"}}, result.VarcharMultiArrayField);
+    }
+
+
+    [Test]
+    public void InsertArrayTypesWithObjects()
+    {
+      var db = Database.Open();
+
+      var result =
+        db.ArrayTypes.Insert(
+          IntegerArrayField: new[] { 1, 2, 3, 4, 5, 6 },
+          RealArrayField: new[] { 1.1f, 2.2f, 3.3f, 4.4f, 5.5f, 6.6f },
+          DoublePrecisionArrayField: new[] { 1.1, 2.2, 3.3, 4.4, 5.5, 6.6 },
+          VarcharArrayField: new[] { "one", "two", "three", "four", "five", "six" },
+          IntegerMultiArrayField: new[,] { { 1, 2, 3, 4, 5, 6 }, { 1, 2, 3, 4, 5, 6 } },
+          RealMultiArrayField: new[,] { { 1.1f, 2.2f, 3.3f, 4.4f, 5.5f, 6.6f }, { 1.1f, 2.2f, 3.3f, 4.4f, 5.5f, 6.6f } },
+          DoublePrecisionMultiArrayField: new[,] { { 1.1, 2.2, 3.3, 4.4, 5.5, 6.6 }, { 1.1, 2.2, 3.3, 4.4, 5.5, 6.6 } },
+          VarcharMultiArrayField: new[,] { { "one", "two", "three", "four", "five", "six" }, { "one", "two", "three", "four", "five", "six" } }
+          );
+
+      Assert.NotNull(result);
+      Assert.True(result.Id > 0);
+
+      Assert.IsAssignableFrom<Int32[]>(result.IntegerArrayField);
+      Assert.AreEqual(new[] { 1, 2, 3, 4, 5, 6 }, result.IntegerArrayField);
+
+      Assert.IsAssignableFrom<Single[]>(result.RealArrayField);
+      Assert.AreEqual(new[] { 1.1f, 2.2f, 3.3f, 4.4f, 5.5f, 6.6f }, result.RealArrayField);
+
+      Assert.IsAssignableFrom<Double[]>(result.DoublePrecisionArrayField);
+      Assert.AreEqual(new[] { 1.1, 2.2, 3.3, 4.4, 5.5, 6.6 }, result.DoublePrecisionArrayField);
+
+      //Assert.IsAssignableFrom<String[]>(result.VarcharArrayField); // TODO: Simple.data converts to a SimpleList.  Why?
+      Assert.AreEqual(new[] { "one", "two", "three", "four", "five", "six" }, result.VarcharArrayField);
+
+      Assert.IsAssignableFrom<Int32[,]>(result.IntegerMultiArrayField);
+      Assert.AreEqual(new[,] { { 1, 2, 3, 4, 5, 6 }, { 1, 2, 3, 4, 5, 6 } }, result.IntegerMultiArrayField);
+
+      Assert.IsAssignableFrom<Single[,]>(result.RealMultiArrayField);
+      Assert.AreEqual(new[,] { { 1.1f, 2.2f, 3.3f, 4.4f, 5.5f, 6.6f }, { 1.1f, 2.2f, 3.3f, 4.4f, 5.5f, 6.6f } }, result.RealMultiArrayField);
+
+      Assert.IsAssignableFrom<Double[,]>(result.DoublePrecisionMultiArrayField);
+      Assert.AreEqual(new[,] { { 1.1, 2.2, 3.3, 4.4, 5.5, 6.6 }, { 1.1, 2.2, 3.3, 4.4, 5.5, 6.6 } }, result.DoublePrecisionMultiArrayField);
+
+      Assert.IsAssignableFrom<String[,]>(result.VarcharMultiArrayField);
+      Assert.AreEqual(new[,] { { "one", "two", "three", "four", "five", "six" }, { "one", "two", "three", "four", "five", "six" } }, result.VarcharMultiArrayField);
+    }
+
   }
 }

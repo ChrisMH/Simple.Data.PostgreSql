@@ -1,6 +1,7 @@
 obj
 bin
 deploy
+*.suo
 *.csproj.user
 *.ReSharper.user
 *.dotCover

@@ -7,10 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Data.PostgreSql.Test
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Readme", "Readme", "{3E328BC9-062F-409E-9440-CE148D2EA726}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Data", "..\Simple.Data\Simple.Data\Simple.Data.csproj", "{148CEE80-2E84-4ABD-B5AB-20415B2BBD21}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Data.Ado", "..\Simple.Data\Simple.Data.Ado\Simple.Data.Ado.csproj", "{ECC2D7DB-EC7F-44B6-B09F-5B471C629685}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,14 +21,6 @@ Global
 		{5B31FBF7-73F5-4B6F-886A-31818E73906E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B31FBF7-73F5-4B6F-886A-31818E73906E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B31FBF7-73F5-4B6F-886A-31818E73906E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{148CEE80-2E84-4ABD-B5AB-20415B2BBD21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{148CEE80-2E84-4ABD-B5AB-20415B2BBD21}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{148CEE80-2E84-4ABD-B5AB-20415B2BBD21}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{148CEE80-2E84-4ABD-B5AB-20415B2BBD21}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ECC2D7DB-EC7F-44B6-B09F-5B471C629685}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ECC2D7DB-EC7F-44B6-B09F-5B471C629685}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ECC2D7DB-EC7F-44B6-B09F-5B471C629685}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ECC2D7DB-EC7F-44B6-B09F-5B471C629685}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

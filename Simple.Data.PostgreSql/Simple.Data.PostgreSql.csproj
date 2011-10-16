@@ -82,14 +82,14 @@
     <None Include="Resources\PrimaryKeyQuery.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\ParametersQuery.txt" />
-    <Content Include="Resources\StoredProceduresQuery.txt" />
-    <Content Include="Resources\TablesQuery.txt" />
+    <None Include="Resources\ParametersQuery.txt" />
+    <None Include="Resources\StoredProceduresQuery.txt" />
+    <None Include="Resources\TablesQuery.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
-</PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

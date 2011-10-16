@@ -6,6 +6,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Data.PostgreSql.Test", "Simple.Data.PostgreSql.Test\Simple.Data.PostgreSql.Test.csproj", "{5B31FBF7-73F5-4B6F-886A-31818E73906E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Readme", "Readme", "{3E328BC9-062F-409E-9440-CE148D2EA726}"
+	ProjectSection(SolutionItems) = preProject
+		readme.md = readme.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

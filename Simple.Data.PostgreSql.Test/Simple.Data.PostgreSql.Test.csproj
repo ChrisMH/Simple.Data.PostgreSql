@@ -35,7 +35,6 @@
       <HintPath>..\packages\Npgsql.2.0.11\lib\Net40\Mono.Security.dll</HintPath>
     </Reference>
     <Reference Include="Npgsql, Version=2.0.11.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Npgsql.2.0.11\lib\Net40\Npgsql.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
@@ -46,6 +45,12 @@
     </Reference>
     <Reference Include="pnunit.framework, Version=1.0.4109.34242, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.2.5.10.11092\lib\pnunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Simple.Data, Version=0.9.6.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Simple.Data.Core.0.9.6.2\lib\net40\Simple.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Simple.Data.Ado, Version=0.9.6.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Simple.Data.Ado.0.9.6.2\lib\net40\Simple.Data.Ado.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -85,26 +90,18 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Simple.Data\Simple.Data.Ado\Simple.Data.Ado.csproj">
-      <Project>{ECC2D7DB-EC7F-44B6-B09F-5B471C629685}</Project>
-      <Name>Simple.Data.Ado</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Simple.Data\Simple.Data\Simple.Data.csproj">
-      <Project>{148CEE80-2E84-4ABD-B5AB-20415B2BBD21}</Project>
-      <Name>Simple.Data</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Simple.Data.PostgreSql\Simple.Data.PostgreSql.csproj">
-      <Project>{7F0FEE43-49F6-4010-B90A-DF60E49F79E5}</Project>
-      <Name>Simple.Data.PostgreSql</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Properties\Resource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Resources\Test.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Simple.Data.PostgreSql\Simple.Data.PostgreSql.csproj">
+      <Project>{7F0FEE43-49F6-4010-B90A-DF60E49F79E5}</Project>
+      <Name>Simple.Data.PostgreSql</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

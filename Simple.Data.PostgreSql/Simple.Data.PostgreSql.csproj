@@ -38,6 +38,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Npgsql.2.0.11\lib\Net40\Npgsql.dll</HintPath>
     </Reference>
+    <Reference Include="Simple.Data, Version=0.9.6.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Simple.Data.Core.0.9.6.2\lib\net40\Simple.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Simple.Data.Ado, Version=0.9.6.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Simple.Data.Ado.0.9.6.2\lib\net40\Simple.Data.Ado.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
@@ -80,17 +86,11 @@
     <Content Include="Resources\StoredProceduresQuery.txt" />
     <Content Include="Resources\TablesQuery.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Simple.Data\Simple.Data.Ado\Simple.Data.Ado.csproj">
-      <Project>{ECC2D7DB-EC7F-44B6-B09F-5B471C629685}</Project>
-      <Name>Simple.Data.Ado</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Simple.Data\Simple.Data\Simple.Data.csproj">
-      <Project>{148CEE80-2E84-4ABD-B5AB-20415B2BBD21}</Project>
-      <Name>Simple.Data</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

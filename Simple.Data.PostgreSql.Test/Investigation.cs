@@ -29,6 +29,7 @@ namespace Simple.Data.PostgreSql.Test
     [Test]
     public void TestReturn()
     {
+
       var parameters = GetParameters("public", "test_return");
 
       using (var conn = new NpgsqlConnection(ConfigurationManager.ConnectionStrings["Test"].ConnectionString))
@@ -39,20 +40,24 @@ namespace Simple.Data.PostgreSql.Test
           cmd.CommandType = CommandType.StoredProcedure;
           cmd.CommandText = "public.test_return";
 
-          cmd.Parameters.Add(new NpgsqlParameter
-                               {
-                                 NpgsqlDbType = NpgsqlDbType.Integer,
-                                 Direction = ParameterDirection.Input,
-                                 Value = 2
-                               });
+
 
           cmd.Parameters.Add(new NpgsqlParameter
+          {
+            Direction = ParameterDirection.Input,
+            Value = 2
+          });
+          cmd.Parameters.Add(new NpgsqlParameter
                                {
+                                 ParameterName = "__return",
                                  Direction = ParameterDirection.ReturnValue
                                });
+
+
+
           using (var rdr = cmd.ExecuteReader())
           {
-            FigureOutFunctionReturn(parameters, rdr, "test_return");
+            rdr.Read();
           }
         }
       }
@@ -109,6 +114,8 @@ namespace Simple.Data.PostgreSql.Test
         }
       }
     }
+
+
     private void FigureOutFunctionReturn(IEnumerable<Parameter> parameters, NpgsqlDataReader rdr, string actualName)
     {
       if (parameters.Where(param => param.Direction == ParameterDirection.InputOutput || param.Direction == ParameterDirection.Output).Count() == 0)

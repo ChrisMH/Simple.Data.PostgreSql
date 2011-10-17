@@ -30,6 +30,16 @@ namespace Simple.Data.PostgreSql.Test.Utility
 
         cmd.CommandText = Properties.Resource.Test;
         cmd.ExecuteNonQuery();
+
+        cmd.CommandText = Properties.Resource.BasicTypes;
+        cmd.ExecuteNonQuery();
+
+        cmd.CommandText = Properties.Resource.ArrayTypes;
+        cmd.ExecuteNonQuery();
+
+        cmd.CommandText = Properties.Resource.ProcedureTest;
+        cmd.ExecuteNonQuery();
+
       }
     }
 

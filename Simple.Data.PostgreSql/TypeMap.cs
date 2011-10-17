@@ -52,6 +52,7 @@ namespace Simple.Data.PostgreSql
           {"uuid", new TypeEntry("uuid", DbType.Guid, NpgsqlDbType.Uuid, typeof (Guid))},
           {"oid", new TypeEntry("oid", DbType.Int64, NpgsqlDbType.Bigint, typeof (Int64))},
           {"ARRAY", new TypeEntry("ARRAY", DbType.Object, NpgsqlDbType.Array, typeof (Object))},
+          {"USER-DEFINED", new TypeEntry("USER-DEFINED", DbType.Object, NpgsqlDbType.Bytea, typeof (Object))},
         };
   }
 

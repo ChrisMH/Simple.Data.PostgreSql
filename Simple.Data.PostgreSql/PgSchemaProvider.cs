@@ -10,6 +10,8 @@ namespace Simple.Data.PostgreSql
 {
   internal class PgSchemaProvider : ISchemaProvider
   {
+    internal const string ReturnParameterName = "__postgresql_return_value__";
+
     public PgSchemaProvider(IConnectionProvider connectionProvider)
     {
       ConnectionProvider = connectionProvider;
@@ -42,16 +44,11 @@ namespace Simple.Data.PostgreSql
         }
         var typeEntry = TypeMap.GetTypeEntry(column["data_type"].ToString());
 
-        //yield return new PgColumn(column["column_name"].ToString(),
-        //                          table,
-        //                          isIdentity,
-        //                          typeEntry.DbType,
-        //                          Convert.IsDBNull(column["maximum_length"]) ? -1 : Convert.ToInt32(column["maximum_length"]),
-        //                          typeEntry.NpgsqlDbType);
         yield return new Column(column["column_name"].ToString(),
                                 table,
                                 isIdentity,
-                                typeEntry.DbType, Convert.IsDBNull(column["maximum_length"]) ? -1 : Convert.ToInt32(column["maximum_length"])
+                                typeEntry.DbType,
+                                Convert.IsDBNull(column["maximum_length"]) ? -1 : Convert.ToInt32(column["maximum_length"])
           );
       }
     }
@@ -70,9 +67,11 @@ namespace Simple.Data.PostgreSql
       return SelectToDataTable(String.Format(Properties.Resource.ParametersQuery, storedProcedure.Schema, storedProcedure.SpecificName))
         .AsEnumerable()
         .Select(row => new Parameter(
-                         Convert.IsDBNull(row["parameter_name"]) ? String.Format("parameter{0:d2}", Convert.ToInt32(row["ordinal_position"])) : row["parameter_name"].ToString(),
+                         Convert.IsDBNull(row["parameter_name"]) ? null : row["parameter_name"].ToString(),
                          TypeMap.GetTypeEntry(row["data_type"].ToString()).ClrType,
-                         GetParameterDirection(row["parameter_mode"].ToString())));
+                         GetParameterDirection(row["parameter_mode"].ToString()),
+                         TypeMap.GetTypeEntry(row["data_type"].ToString()).DbType,
+                         Convert.IsDBNull(row["maximum_length"]) ? -1 : Convert.ToInt32(row["maximum_length"])));
     }
 
     private ParameterDirection GetParameterDirection(string parameterMode)

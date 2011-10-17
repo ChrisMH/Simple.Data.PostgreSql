@@ -472,11 +472,17 @@ namespace Simple.Data.PostgreSql.Test
       var provider = new ProviderHelper().GetProviderByConnectionString(ConfigurationManager.ConnectionStrings["Test"].ConnectionString);
       var schema = provider.GetSchemaProvider();
 
-      var proc = schema.GetStoredProcedures().Where(s => s.Name == "get_customer_orders").SingleOrDefault();
-      var result = schema.GetParameters(proc);
+      var proc = schema.GetStoredProcedures().Where(s => s.Name == "test_return").SingleOrDefault();
+      var result = schema.GetParameters(proc).ToArray();
 
-      Assert.AreEqual(1, result.Count());
-      Assert.AreEqual(typeof (int), result.First().Type);
+      Assert.AreEqual(2, result.Count());
+      Assert.AreEqual(PgSchemaProvider.ReturnParameterName, result[0].Name);
+      Assert.AreEqual(typeof(int), result[0].Type);
+      Assert.AreEqual(ParameterDirection.ReturnValue, result[0].Direction);
+
+      Assert.AreEqual("double_me", result[1].Name);
+      Assert.AreEqual(typeof(int), result[1].Type);
+      Assert.AreEqual(ParameterDirection.Input, result[1].Direction);
     }
 
 

@@ -18,6 +18,13 @@ namespace Simple.Data.PostgreSql.Test
       DatabaseUtility.DestroyDatabase("Test");
     }
 
+    [Test]
+    public void TestNoReturn()
+    {
+      var db = Database.Open();
+      var result = db.Public.TestNoReturn();
+      Assert.False(result.NextResult());
+    }
 
     [Test]
     public void TestReturn()
@@ -27,6 +34,34 @@ namespace Simple.Data.PostgreSql.Test
       Assert.AreEqual(4, result.ReturnValue);
     }
 
+    [Test]
+    public void TestReturnNoParameterNames()
+    {
+      var db = Database.Open();
+      var result = db.Public.TestReturnNoParameterNames(2);
+      Assert.AreEqual(4, result.ReturnValue);
+    }
+
+    [Test]
+    public void TestOut()
+    {
+      var db = Database.Open();
+      var result = db.Public.TestOut(2);
+
+      Assert.True(result.OutputValues.ContainsKey("doubled"));
+      Assert.AreEqual(4, result.OutputValues["doubled"]);
+    }
+
+    [Test]
+    public void TestOutNoParameterNames()
+    {
+      var db = Database.Open();
+      var result = db.Public.TestOutNoParameterNames(2);
+
+      Assert.True(result.OutputValues.ContainsKey("output0"));
+      Assert.AreEqual(4, result.OutputValues["output0"]);
+      
+    }
 
     [Test]
     public void GetCustomersTest()
@@ -54,21 +89,21 @@ namespace Simple.Data.PostgreSql.Test
       Assert.AreEqual(1, results.ReturnValue);
     }
 
-    [Test]
-    public void CallOverloadedFunction1()
-    {
-      var db = Database.Open();
-      var results = db.Public.TestOverload(1);
-      Assert.AreEqual(1, results.ReturnValue);
-    }
+    //[Test]
+    //public void CallOverloadedFunction1()
+    //{
+    //  var db = Database.Open();
+    //  var results = db.Public.TestOverload(1);
+    //  Assert.AreEqual(1, results.ReturnValue);
+    //}
 
-    [Test]
-    public void CallOverloadedFunction2()
-    {
-      var db = Database.Open();
-      var results = db.Public.TestOverload(1, 1);
-      Assert.AreEqual(2, results.ReturnValue);
-    }
+    //[Test]
+    //public void CallOverloadedFunction2()
+    //{
+    //  var db = Database.Open();
+    //  var results = db.Public.TestOverload(1, 1);
+    //  Assert.AreEqual(2, results.ReturnValue);
+    //}
 
     //[Test]
     //public void GetCustomerCountSecondCallExecutesNonQueryTest()
@@ -110,14 +145,6 @@ namespace Simple.Data.PostgreSql.Test
       var order = results.FirstOrDefault();
       Assert.IsNotNull(order);
       Assert.AreEqual(1, order.OrderId);
-    }
-
-    [Test]
-    public void ScalarFunctionIsCalledCorrectly()
-    {
-      var db = Database.Open();
-      var results = db.VarcharAndReturnInt("The answer to everything");
-      Assert.AreEqual(42, results.ReturnValue);
     }
 
     [Test]

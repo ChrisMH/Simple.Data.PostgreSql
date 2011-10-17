@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Diagnostics;
 using System.Linq;
 using Npgsql;
 using Simple.Data.Ado;
@@ -16,31 +15,52 @@ namespace Simple.Data.PostgreSql
     public PgProcedureExecutor(AdoAdapter adapter, ObjectName procedureName)
     {
       this.adapter = adapter;
-      executeImpl = ExecuteReader;
-      
+
       procedure = DatabaseSchema.Get(adapter.ConnectionProvider, adapter.ProviderHelper).FindProcedure(procedureName);
       if (procedure == null)
       {
         throw new UnresolvableObjectException(procedureName.ToString());
       }
 
+      executeReader = procedure.Parameters.Where(p => p.Direction == ParameterDirection.InputOutput ||
+                                                      p.Direction == ParameterDirection.Output ||
+                                                      p.Direction == ParameterDirection.ReturnValue).Count() > 0;
     }
 
     public IEnumerable<ResultSet> Execute(IDictionary<string, object> suppliedParameters)
     {
       // TODO: PostgreSql supports stored procedure overloading.  This does not.
-      
+
       using (var conn = adapter.ConnectionProvider.CreateConnection())
       {
+        conn.Open();
         using (var cmd = conn.CreateCommand())
         {
           cmd.CommandText = procedure.QualifiedName;
           cmd.CommandType = CommandType.StoredProcedure;
-          AddCommandParameters(procedure, cmd, suppliedParameters);
+          AddCommandParameters(cmd, suppliedParameters);
           try
           {
-            var result = executeImpl(cmd);
-            GetReturnValue(result, suppliedParameters);
+            var result = Enumerable.Empty<ResultSet>();
+
+            cmd.WriteTrace();
+            if (executeReader)
+            {
+              using (var rdr = cmd.ExecuteReader())
+              {
+                var readerAdvanced = RetrieveReturnValue(rdr, suppliedParameters);
+                readerAdvanced = RetrieveOutputParameterValues(rdr, suppliedParameters, readerAdvanced);
+
+                if (!readerAdvanced)
+                {
+                  result = rdr.ToMultipleDictionaries();
+                }
+              }
+            }
+            else
+            {
+              cmd.ExecuteNonQuery();
+            }
 
             return result;
           }
@@ -52,75 +72,103 @@ namespace Simple.Data.PostgreSql
       }
     }
 
-    private void GetReturnValue(IEnumerable<ResultSet> result, IDictionary<string, object> suppliedParameters)
-    {
-      if(result.Count() == 1)
-      {
-        var resultSet = result.First();
-
-      }
-    }
 
     public IEnumerable<ResultSet> ExecuteReader(IDbCommand cmd)
     {
-      cmd.WriteTrace();
-      cmd.Connection.Open();
-      using (var rdr = cmd.ExecuteReader())
-      {
-        if (rdr.FieldCount == 0)
-        {
-          // Don't call ExecuteReader for this function again.
-          executeImpl = ExecuteNonQuery;
-          return Enumerable.Empty<ResultSet>();
-        }
-
-        if (procedure.Parameters.Where(param => param.Direction == ParameterDirection.InputOutput || param.Direction == ParameterDirection.Output).Count() == 0)
-        {
-          // No output parameters
-          if (rdr.FieldCount == 1 && rdr.GetName(0) == procedure.Name)
-          {
-            // Single field matching the name of the function.  Simple return value.
-
-          }
-        }
-        return null;
-      }
+      // Exposed in the IProcedureExecutor, but not called externally.  Don't use this.
+      throw new NotImplementedException();
     }
 
-    private static IEnumerable<ResultSet> ExecuteNonQuery(IDbCommand cmd)
+    private void AddCommandParameters(IDbCommand cmd, IDictionary<string, object> suppliedParameters)
     {
-      cmd.WriteTrace();
-      Trace.TraceInformation("ExecuteNonQuery", "Simple.Data.PostgreSql");
-      cmd.Connection.Open();
-      cmd.ExecuteNonQuery();
-      return Enumerable.Empty<ResultSet>();
-    }
-
-    private static void AddCommandParameters(Procedure procedure, IDbCommand cmd, IDictionary<string, object> suppliedParameters)
-    {
-      int i = 0;
-      foreach (var parameter in procedure.Parameters.Where(param => param.Direction == ParameterDirection.Input || param.Direction == ParameterDirection.InputOutput))
+      foreach (var parameter in procedure.Parameters
+        .Where(param => param.Direction == ParameterDirection.Input ||
+                        param.Direction == ParameterDirection.InputOutput)
+        .Select((value, index) => new {Parameter = value, Index = index}))
       {
+        var name = parameter.Parameter.Name;
         object value;
-        if(!suppliedParameters.TryGetValue(parameter.Name, out value))
+
+        if (String.IsNullOrEmpty(name) || !suppliedParameters.TryGetValue(name, out value))
         {
-          if(!suppliedParameters.TryGetValue("_" + i, out value))
+          name = String.Concat("_", parameter.Index);
+          if (!suppliedParameters.TryGetValue(name, out value))
           {
-            throw new SimpleDataException(String.Format("Could not find a value for parameter ordinal {0} named {1}", i, parameter.Name));
+            throw new SimpleDataException(String.Format("Could not find a value for parameter index {0} named {1}", parameter.Index, parameter.Parameter.Name));
           }
         }
 
+        // No need to use parameter names here.  Position is what is important.
         cmd.Parameters.Add(new NpgsqlParameter
                              {
+                               ParameterName = name,
+                               DbType = parameter.Parameter.Dbtype,
                                Value = value
                              });
-        i++;
       }
     }
 
-    
-    private AdoAdapter adapter;
-    private Procedure procedure;
-    private Func<IDbCommand, IEnumerable<ResultSet>> executeImpl;
+    private bool RetrieveReturnValue(IDataReader rdr, IDictionary<string, object> suppliedParameters)
+    {
+      // If there is areturn value its column name will be the function name
+      var field = rdr.FindField(procedure.Name);
+      if (field >= 0)
+      {
+        if (!rdr.Read())
+        {
+          throw new Exception("Empty IDataReader");
+        }
+        suppliedParameters["__ReturnValue"] = rdr[field];
+        return true;
+      }
+      return false;
+    }
+
+    private bool RetrieveOutputParameterValues(IDataReader rdr, IDictionary<string, object> suppliedParameters, bool rdrAdvanced)
+    {
+      var index = 0;
+
+      foreach (var parameter in procedure.Parameters)
+      {
+        if (parameter.Direction != ParameterDirection.InputOutput && parameter.Direction != ParameterDirection.Output)
+        {
+          continue;
+        }
+
+        if (!rdrAdvanced)
+        {
+          if (!rdr.Read())
+          {
+            throw new Exception("Empty IDataReader");
+          }
+          rdrAdvanced = true;
+        }
+
+        var name = parameter.Name ?? String.Concat("output", index);
+        suppliedParameters[name] = rdr[index];
+        index++;
+      }
+
+      return rdrAdvanced;
+    }
+
+    private readonly AdoAdapter adapter;
+    private readonly Procedure procedure;
+    private readonly bool executeReader;
+  }
+
+  internal static class DataReaderExtensions
+  {
+    internal static int FindField(this IDataReader rdr, string fieldName)
+    {
+      for (var i = 0; i < rdr.FieldCount; i++)
+      {
+        if (rdr.GetName(i).Equals(fieldName))
+        {
+          return i;
+        }
+      }
+      return -1;
+    }
   }
 }

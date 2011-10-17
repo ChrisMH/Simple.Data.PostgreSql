@@ -76,8 +76,12 @@ namespace Simple.Data.PostgreSql
       cmd.Parameters.Clear();
       for (var idx = 0; idx < insertColumns.Length; idx++)
       {
-        var parameter = new NpgsqlParameter(String.Concat("p", idx.ToString()), ((PgColumn)insertColumns[idx]).NpgsqlDbType);
-        parameter.Value = insertData[idx];
+        var parameter = new NpgsqlParameter
+                          {
+                            ParameterName = String.Concat("p", idx.ToString()),
+                            DbType = insertColumns[idx].DbType,
+                            Value = insertData[idx]
+                          };
         cmd.Parameters.Add(parameter);
       }
     }

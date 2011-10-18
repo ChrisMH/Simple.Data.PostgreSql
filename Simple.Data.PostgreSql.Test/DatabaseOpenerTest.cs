@@ -10,13 +10,12 @@ namespace Simple.Data.PostgreSql.Test
     [SetUp]
     public void SetUp()
     {
-      DatabaseUtility.CreateDatabase("Test");
+      DatabaseUtility.SeedDatabase("Test");
     }
 
     [TearDown]
     public void TearDown()
     {
-      DatabaseUtility.DestroyDatabase("Test");
     }
 
     [Test]
@@ -24,8 +23,8 @@ namespace Simple.Data.PostgreSql.Test
     {
       var db = Database.Open();
       Assert.IsNotNull(db);
-      var user = db.Public.Users.FindById(1);
-      Assert.AreEqual(1, user.Id);
+      var user = db.Public.Users.FindByName("Bob");
+      Assert.True(user.id >= 0);
     }
 
     [Test]
@@ -33,8 +32,8 @@ namespace Simple.Data.PostgreSql.Test
     {
       var db = Database.OpenNamedConnection("Test");
       Assert.IsNotNull(db);
-      var user = db.Public.Users.FindById(1);
-      Assert.AreEqual(1, user.Id);
+      var user = db.Public.Users.FindByName("Bob");
+      Assert.True(user.id >= 0);
     }
 
     [Test]

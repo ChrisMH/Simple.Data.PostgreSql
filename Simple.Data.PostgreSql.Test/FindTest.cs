@@ -12,13 +12,12 @@ namespace Simple.Data.PostgreSql.Test
     [SetUp]
     public void SetUp()
     {
-      DatabaseUtility.CreateDatabase("Test");
+      DatabaseUtility.SeedDatabase("Test");
     }
 
     [TearDown]
     public void TearDown()
     {
-      DatabaseUtility.DestroyDatabase("Test");
     }
 
     [Test]
@@ -214,7 +213,7 @@ namespace Simple.Data.PostgreSql.Test
     public void FindAllArrayTypes()
     {
       var db = Database.Open();
-      var result = db.ArrayTypes.FindById(1);
+      var result = db.ArrayTypes.FindAll();
 
       Assert.NotNull(result);
 

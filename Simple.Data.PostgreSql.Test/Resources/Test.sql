@@ -10,12 +10,7 @@ ALTER TABLE users
   ADD CONSTRAINT pk_users
   PRIMARY KEY (id);
   
-INSERT INTO users (name, password, age) VALUES ('Bob', 'Bob', 32);
-INSERT INTO users (name, password, age) VALUES ('Charlie', 'Charlie', 49);
-INSERT INTO users (name, password, age) VALUES ('Dave', 'Dave', 12);
-
-
-
+  
 CREATE TABLE customers
 (
   id serial NOT NULL,
@@ -27,7 +22,6 @@ ALTER TABLE customers
   ADD CONSTRAINT pk_customers
   PRIMARY KEY (id);
   
-INSERT INTO customers (name, address) VALUES ('Test', '100 Road');
 
 	
 	
@@ -46,8 +40,6 @@ ALTER TABLE orders
   FOREIGN KEY (customer_id) REFERENCES customers (id)
   ON DELETE NO ACTION ON UPDATE NO ACTION;
   
-INSERT INTO orders (order_date, customer_id) VALUES ('20101010 00:00:00.000', 1);
-
 	
 	
 CREATE TABLE items (
@@ -61,7 +53,6 @@ ALTER TABLE items
   PRIMARY KEY (id);
 
 
-INSERT INTO items (name, price) VALUES ('Widget', '4.5000'::money);
 
 	
 	
@@ -85,9 +76,7 @@ ALTER TABLE order_items
   ADD CONSTRAINT fk_order_items_order_id
   FOREIGN KEY (order_id) REFERENCES orders (id)
   ON DELETE NO ACTION ON UPDATE NO ACTION;
-  		
-INSERT INTO order_items (order_id, item_id, quantity) VALUES (1, 1, 10);
-	
+  			
 	
 	
 CREATE VIEW view_customers AS
@@ -129,7 +118,7 @@ LANGUAGE 'plpgsql'
 VOLATILE;
 
 
-CREATE OR REPLACE FUNCTION public.get_customers_and_orders (IN integer)
+CREATE OR REPLACE FUNCTION public.get_customer_and_orders (IN integer)
 RETURNS SETOF refcursor AS
 $$
 DECLARE
@@ -165,7 +154,6 @@ CREATE TABLE schema_table
   description varchar(100) NOT NULL
 ) WITH (OIDS=FALSE);
 
-INSERT INTO schema_table VALUES (1, 'Pass');
 
 
 
@@ -177,7 +165,6 @@ CREATE TABLE test.schema_table
   description varchar(100) NOT NULL
 ) WITH (OIDS=FALSE);
 
-INSERT INTO test.schema_table VALUES (1, 'Pass');
 
 
 

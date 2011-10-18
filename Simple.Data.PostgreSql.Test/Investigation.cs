@@ -5,7 +5,6 @@ using System.Data;
 using System.Linq;
 using NUnit.Framework;
 using Npgsql;
-using NpgsqlTypes;
 using Simple.Data.Ado;
 using Simple.Data.Ado.Schema;
 using Simple.Data.PostgreSql.Test.Utility;
@@ -17,19 +16,17 @@ namespace Simple.Data.PostgreSql.Test
     [SetUp]
     public void SetUp()
     {
-      DatabaseUtility.CreateDatabase("Test");
+      DatabaseUtility.SeedDatabase("Test");
     }
 
     [TearDown]
     public void TearDown()
     {
-      DatabaseUtility.DestroyDatabase("Test");
     }
 
     [Test]
     public void TestReturn()
     {
-
       var parameters = GetParameters("public", "test_return");
 
       using (var conn = new NpgsqlConnection(ConfigurationManager.ConnectionStrings["Test"].ConnectionString))
@@ -41,18 +38,16 @@ namespace Simple.Data.PostgreSql.Test
           cmd.CommandText = "public.test_return";
 
 
-
           cmd.Parameters.Add(new NpgsqlParameter
-          {
-            Direction = ParameterDirection.Input,
-            Value = 2
-          });
+                               {
+                                 Direction = ParameterDirection.Input,
+                                 Value = 2
+                               });
           cmd.Parameters.Add(new NpgsqlParameter
                                {
                                  ParameterName = "__return",
                                  Direction = ParameterDirection.ReturnValue
                                });
-
 
 
           using (var rdr = cmd.ExecuteReader())
@@ -115,8 +110,38 @@ namespace Simple.Data.PostgreSql.Test
       }
     }
 
+    [Test]
+    public void TestRefcursor()
+    {
+      using (var conn = new NpgsqlConnection(ConfigurationManager.ConnectionStrings["Test"].ConnectionString))
+      {
+        conn.Open();
+        using (var trans = conn.BeginTransaction())
+        {
+          using (var cmd = conn.CreateCommand())
+          {
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandText = "public.get_customer_and_orders";
 
-    private void FigureOutFunctionReturn(IEnumerable<Parameter> parameters, NpgsqlDataReader rdr, string actualName)
+            cmd.Parameters.Add(new NpgsqlParameter
+                                 {
+                                   Direction = ParameterDirection.Input,
+                                   Value = 1
+                                 });
+
+            using (var rdr = cmd.ExecuteReader())
+            {
+              while (rdr.Read())
+              {
+                Console.WriteLine(rdr.GetValue(0));
+              }
+            }
+          }
+        }
+      }
+    }
+
+    private void FigureOutFunctionReturn (IEnumerable<Parameter> parameters, NpgsqlDataReader rdr, string actualName)
     {
       if (parameters.Where(param => param.Direction == ParameterDirection.InputOutput || param.Direction == ParameterDirection.Output).Count() == 0)
       {
@@ -129,7 +154,7 @@ namespace Simple.Data.PostgreSql.Test
       }
     }
 
-    private IEnumerable<Parameter> GetParameters(string schema, string name)
+    private IEnumerable<Parameter> GetParameters (string schema, string name)
     {
       var provider = new ProviderHelper().GetProviderByConnectionString(ConfigurationManager.ConnectionStrings["Test"].ConnectionString);
       var schemaProvider = provider.GetSchemaProvider();

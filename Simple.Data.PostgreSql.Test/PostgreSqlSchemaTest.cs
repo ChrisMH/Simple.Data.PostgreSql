@@ -15,13 +15,12 @@ namespace Simple.Data.PostgreSql.Test
     [SetUp]
     public void SetUp()
     {
-      DatabaseUtility.CreateDatabase("Test");
+      DatabaseUtility.SeedDatabase("Test");
     }
 
     [TearDown]
     public void TearDown()
     {
-      DatabaseUtility.DestroyDatabase("Test");
     }
 
     [Test]

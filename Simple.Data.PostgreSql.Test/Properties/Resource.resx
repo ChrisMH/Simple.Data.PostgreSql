@@ -124,6 +124,12 @@
   <data name="BasicTypes" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\basictypes.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="DeleteData" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\deletedata.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="InsertData" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\insertdata.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
   <data name="ProcedureTest" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\proceduretest.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>

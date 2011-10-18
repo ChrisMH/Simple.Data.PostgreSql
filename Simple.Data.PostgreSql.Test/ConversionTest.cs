@@ -10,33 +10,36 @@ namespace Simple.Data.PostgreSql.Test
     [SetUp]
     public void SetUp()
     {
-      DatabaseUtility.CreateDatabase("Test");
+      DatabaseUtility.SeedDatabase("Test");
     }
 
     [TearDown]
     public void TearDown()
     {
-      DatabaseUtility.DestroyDatabase("Test");
     }
 
 
     [Test]
     public void WeirdTypeGetsConvertedToInt()
     {
-      var weirdValue = new WeirdType(1);
       var db = Database.Open();
-      var user = db.Users.FindById(weirdValue);
-      Assert.AreEqual(1, user.Id);
+      var user = db.Users.FindByName("Bob");
+
+      var weirdValue = new WeirdType(user.Id);
+      var result = db.Users.FindById(weirdValue);
+      Assert.AreEqual(user.Id, result.Id);
     }
 
     [Test]
     public void WeirdTypeUsedInQueryGetsConvertedToInt()
     {
-      var weirdValue = new WeirdType(1);
       var db = Database.Open();
-      var user = db.Users.QueryById(weirdValue).FirstOrDefault();
-      Assert.IsNotNull(user);
-      Assert.AreEqual(1, user.Id);
+      var user = db.Users.FindByName("Bob");
+
+      var weirdValue = new WeirdType(user.Id);
+      var result = db.Users.QueryById(weirdValue).FirstOrDefault();
+      Assert.IsNotNull(result);
+      Assert.AreEqual(user.Id, result.Id);
     }
 
     [Test]

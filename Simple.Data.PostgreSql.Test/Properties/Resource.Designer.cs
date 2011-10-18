@@ -84,8 +84,7 @@ namespace Simple.Data.PostgreSql.Test.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 
-        ///CREATE TABLE public.basic_types (
+        ///   Looks up a localized string similar to CREATE TABLE public.basic_types (
         ///  id                                 serial NOT NULL,
         ///  
         ///  smallint_field                     smallint,
@@ -96,7 +95,7 @@ namespace Simple.Data.PostgreSql.Test.Properties {
         ///  numeric_unlimited_field            numeric,
         ///  numeric_10_2_field                 numeric(10,2),                    
         ///  real_field                         real,
-        ///  double_ [rest of string was truncated]&quot;;.
+        ///  double_pr [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string BasicTypes {
             get {
@@ -106,6 +105,63 @@ namespace Simple.Data.PostgreSql.Test.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to 
+        ///DELETE FROM public.items;
+        ///DELETE FROM public.orders;
+        ///DELETE FROM public.customers;
+        ///DELETE FROM public.users;
+        ///
+        ///
+        ///
+        ///DELETE FROM public.schema_table;
+        ///DELETE FROM test.schema_table;
+        ///
+        ///
+        ///
+        ///
+        ///DELETE FROM public.basic_types;
+        ///DELETE FROM public.array_types;
+        ///
+        ///.
+        /// </summary>
+        internal static string DeleteData {
+            get {
+                return ResourceManager.GetString("DeleteData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to INSERT INTO users (name, password, age) VALUES (&apos;Bob&apos;, &apos;Bob&apos;, 32);
+        ///INSERT INTO users (name, password, age) VALUES (&apos;Charlie&apos;, &apos;Charlie&apos;, 49);
+        ///INSERT INTO users (name, password, age) VALUES (&apos;Dave&apos;, &apos;Dave&apos;, 12);
+        ///
+        ///INSERT INTO customers (name, address) VALUES (&apos;Test&apos;, &apos;100 Road&apos;);
+        ///
+        ///INSERT INTO orders (order_date, customer_id) VALUES (&apos;20101010 00:00:00.000&apos;, 1);
+        ///
+        ///INSERT INTO items (name, price) VALUES (&apos;Widget&apos;, &apos;4.5000&apos;::money);
+        ///
+        ///
+        ///
+        ///
+        ///INSERT INTO schema_table VALUES (1, &apos;Pass&apos;);
+        ///INSERT INTO test.s [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string InsertData {
+            get {
+                return ResourceManager.GetString("InsertData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 
+        ///CREATE OR REPLACE FUNCTION public.test_no_return()
+        ///RETURNS void AS
+        ///$$
+        ///BEGIN
+        ///
+        ///END;
+        ///$$
+        ///LANGUAGE plpgsql;
         ///
         ///CREATE OR REPLACE FUNCTION public.test_return(double_me integer)
         ///RETURNS integer AS
@@ -126,16 +182,8 @@ namespace Simple.Data.PostgreSql.Test.Properties {
         ///LANGUAGE plpgsql;
         ///
         ///
-        ///CREATE OR REPLACE FUNCTION public.test_out(double_me integer, OUT doubled integer )
-        ///RETURNS integer AS
-        ///$$
-        ///BEGIN
-        ///  doubled = 2 * double_me;
-        ///END;
-        ///$$
-        ///LANGUAGE plpgsql;
-        ///
-        ///CREATE OR REPLACE FUNCT [rest of string was truncated]&quot;;.
+        ///CREATE OR REPLACE FUNCTION public.test_out(double_me integer, OUT doubled integer)
+        ///RET [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ProcedureTest {
             get {
@@ -156,16 +204,24 @@ namespace Simple.Data.PostgreSql.Test.Properties {
         ///  ADD CONSTRAINT pk_users
         ///  PRIMARY KEY (id);
         ///  
-        ///INSERT INTO users (name, password, age) VALUES (&apos;Bob&apos;, &apos;Bob&apos;, 32);
-        ///INSERT INTO users (name, password, age) VALUES (&apos;Charlie&apos;, &apos;Charlie&apos;, 49);
-        ///INSERT INTO users (name, password, age) VALUES (&apos;Dave&apos;, &apos;Dave&apos;, 12);
-        ///
-        ///
-        ///
+        ///  
         ///CREATE TABLE customers
         ///(
         ///  id serial NOT NULL,
-        ///  name v [rest of string was truncated]&quot;;.
+        ///  name varchar(100) NOT NULL,
+        ///  address varchar(200)
+        ///) WITH (OIDS=FALSE);
+        ///
+        ///ALTER TABLE customers
+        ///  ADD CONSTRAINT pk_customers
+        ///  PRIMARY KEY (id);
+        ///  
+        ///
+        ///	
+        ///	
+        ///CREATE TABLE orders (
+        ///  id serial NOT NULL,
+        ///  order_date [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Test {
             get {

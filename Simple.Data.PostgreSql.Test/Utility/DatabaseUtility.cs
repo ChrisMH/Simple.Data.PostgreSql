@@ -63,6 +63,23 @@ namespace Simple.Data.PostgreSql.Test.Utility
       }
     }
 
+
+    public static void SeedDatabase(string connectionStringName)
+    {
+      var connectionString = GetConnectionString(connectionStringName);
+      using (var conn = new NpgsqlConnection(connectionString.ConnectionString))
+      {
+        conn.Open();
+        var cmd = conn.CreateCommand();
+
+        cmd.CommandText = Properties.Resource.DeleteData;
+        cmd.ExecuteNonQuery();
+
+        cmd.CommandText = Properties.Resource.InsertData;
+        cmd.ExecuteNonQuery();
+
+      }
+    }
     public static DbConnectionStringBuilder GetConnectionString(string connectionStringName)
     {
       var suConnectionString = new DbConnectionStringBuilder {ConnectionString = ConfigurationManager.ConnectionStrings[connectionStringName].ConnectionString};

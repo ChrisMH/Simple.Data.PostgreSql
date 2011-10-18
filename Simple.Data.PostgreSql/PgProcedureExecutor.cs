@@ -14,31 +14,35 @@ namespace Simple.Data.PostgreSql
   {
     public PgProcedureExecutor(AdoAdapter adapter, ObjectName procedureName)
     {
-      this.adapter = adapter;
+      Adapter = adapter;
+      ProcedureName = procedureName;
 
-      procedure = DatabaseSchema.Get(adapter.ConnectionProvider, adapter.ProviderHelper).FindProcedure(procedureName);
-      if (procedure == null)
-      {
-        throw new UnresolvableObjectException(procedureName.ToString());
-      }
-
-      executeReader = procedure.Parameters.Where(p => p.Direction == ParameterDirection.InputOutput ||
-                                                      p.Direction == ParameterDirection.Output ||
-                                                      p.Direction == ParameterDirection.ReturnValue).Count() > 0;
     }
 
     public IEnumerable<ResultSet> Execute(IDictionary<string, object> suppliedParameters)
     {
       // TODO: PostgreSql supports stored procedure overloading.  This does not.
 
-      using (var conn = adapter.ConnectionProvider.CreateConnection())
+
+      var procedure = DatabaseSchema.Get(Adapter.ConnectionProvider, Adapter.ProviderHelper).FindProcedure(ProcedureName);
+      if (procedure == null)
+      {
+        throw new UnresolvableObjectException(ProcedureName.ToString());
+      }
+
+      var executeReader = procedure.Parameters.Where(p => p.Direction == ParameterDirection.InputOutput ||
+                                                      p.Direction == ParameterDirection.Output ||
+                                                      p.Direction == ParameterDirection.ReturnValue).Count() > 0;
+
+
+      using (var conn = Adapter.ConnectionProvider.CreateConnection())
       {
         conn.Open();
         using (var cmd = conn.CreateCommand())
         {
           cmd.CommandText = procedure.QualifiedName;
           cmd.CommandType = CommandType.StoredProcedure;
-          AddCommandParameters(cmd, suppliedParameters);
+          AddCommandParameters(procedure, cmd, suppliedParameters);
           try
           {
             var result = Enumerable.Empty<ResultSet>();
@@ -48,10 +52,10 @@ namespace Simple.Data.PostgreSql
             {
               using (var rdr = cmd.ExecuteReader())
               {
-                var readerAdvanced = RetrieveReturnValue(rdr, suppliedParameters);
-                readerAdvanced = RetrieveOutputParameterValues(rdr, suppliedParameters, readerAdvanced);
+                var rdrAdvanced = RetrieveReturnValue(procedure, rdr, suppliedParameters);
+                rdrAdvanced = RetrieveOutputParameterValues(procedure, rdr, suppliedParameters, rdrAdvanced);
 
-                if (!readerAdvanced)
+                if (!rdrAdvanced)
                 {
                   result = rdr.ToMultipleDictionaries();
                 }
@@ -79,7 +83,7 @@ namespace Simple.Data.PostgreSql
       throw new NotImplementedException();
     }
 
-    private void AddCommandParameters(IDbCommand cmd, IDictionary<string, object> suppliedParameters)
+    private void AddCommandParameters(Procedure procedure, IDbCommand cmd, IDictionary<string, object> suppliedParameters)
     {
       foreach (var parameter in procedure.Parameters
         .Where(param => param.Direction == ParameterDirection.Input ||
@@ -108,7 +112,7 @@ namespace Simple.Data.PostgreSql
       }
     }
 
-    private bool RetrieveReturnValue(IDataReader rdr, IDictionary<string, object> suppliedParameters)
+    private bool RetrieveReturnValue(Procedure procedure, IDataReader rdr, IDictionary<string, object> suppliedParameters)
     {
       // If there is areturn value its column name will be the function name
       var field = rdr.FindField(procedure.Name);
@@ -124,7 +128,7 @@ namespace Simple.Data.PostgreSql
       return false;
     }
 
-    private bool RetrieveOutputParameterValues(IDataReader rdr, IDictionary<string, object> suppliedParameters, bool rdrAdvanced)
+    private bool RetrieveOutputParameterValues(Procedure procedure, IDataReader rdr, IDictionary<string, object> suppliedParameters, bool rdrAdvanced)
     {
       var index = 0;
 
@@ -152,9 +156,8 @@ namespace Simple.Data.PostgreSql
       return rdrAdvanced;
     }
 
-    private readonly AdoAdapter adapter;
-    private readonly Procedure procedure;
-    private readonly bool executeReader;
+    private AdoAdapter Adapter { get; set; }
+    private ObjectName ProcedureName { get; set; }
   }
 
   internal static class DataReaderExtensions

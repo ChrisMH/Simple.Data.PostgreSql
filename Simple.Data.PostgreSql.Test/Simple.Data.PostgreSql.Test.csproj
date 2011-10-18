@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="ConversionTest.cs" />
     <Compile Include="DatabaseOpenerTest.cs" />
+    <Compile Include="GlobalTestFixtureSetUp.cs" />
     <Compile Include="Utility\DatabaseUtility.cs" />
     <Compile Include="EnumTest.cs" />
     <Compile Include="FindTest.cs" />
@@ -109,6 +110,10 @@
     <None Include="Resources\ArrayTypes.sql" />
     <None Include="Resources\BasicTypes.sql" />
     <None Include="Resources\ProcedureTest.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DeleteData.sql" />
+    <None Include="Resources\InsertData.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

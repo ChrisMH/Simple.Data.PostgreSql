@@ -34,7 +34,6 @@ namespace Simple.Data.PostgreSql.Test
     }
 
     [Test]
-    [Ignore]
     public void TestReturnNoParameterNames()
     {
       var db = Database.Open();
@@ -43,7 +42,6 @@ namespace Simple.Data.PostgreSql.Test
     }
 
     [Test]
-    [Ignore]
     public void TestOut()
     {
       var db = Database.Open();
@@ -54,7 +52,6 @@ namespace Simple.Data.PostgreSql.Test
     }
 
     [Test]
-    [Ignore]
     public void TestOutNoParameterNames()
     {
       var db = Database.Open();
@@ -65,7 +62,6 @@ namespace Simple.Data.PostgreSql.Test
     }
 
     [Test]
-    [Ignore]
     public void TestInOut()
     {
       var db = Database.Open();
@@ -76,7 +72,6 @@ namespace Simple.Data.PostgreSql.Test
     }
 
     [Test]
-    [Ignore]
     public void TestInOutParameterNames()
     {
       var db = Database.Open();
@@ -88,23 +83,21 @@ namespace Simple.Data.PostgreSql.Test
 
 
     [Test]
-    [Ignore]
     public void GetCustomersTest()
     {
       var db = Database.Open();
-      var results = db.Public.GetCustomers();
-      var actual = results.First();
-      Assert.AreEqual(1, actual.Id);
+      var results = db.Public.GetCustomers().FirstOrDefault();
+      Assert.NotNull(results);
     }
 
     [Test]
-    [Ignore]
     public void GetCustomerOrdersTest()
     {
       var db = Database.Open();
-      var results = db.Public.GetCustomerOrders(1);
-      var actual = results.First();
-      Assert.AreEqual(1, actual.Id);
+      var customer = db.Public.Customers.All().First();
+
+      var results = db.Public.GetCustomerOrders(customer.Id).FirstOrDefault();
+      Assert.NotNull(results);
     }
 
     [Test]
@@ -161,7 +154,7 @@ namespace Simple.Data.PostgreSql.Test
       var db = Database.Open();
       using(var tr = db.BeginTransaction())
       {
-        db.GetCustomerAndOrders(1000);
+        tr.GetCustomerAndOrders(1000);
         
         var results = db.Public.GetCustomerAndOrders(1);
         

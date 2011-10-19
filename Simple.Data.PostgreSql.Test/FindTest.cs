@@ -21,29 +21,21 @@ namespace Simple.Data.PostgreSql.Test
     }
 
     [Test]
-    public void TestFindById()
+    public void TestFindByName()
     {
       var db = Database.Open();
-      var user = db.Users.FindById(1);
-      Assert.AreEqual(1, user.Id);
+      var user = db.Public.Users.FindByName("Bob");
+      Assert.NotNull(user);
     }
 
     [Test]
-    public void TestFindByIdWithCast()
+    public void TestFindByNameWithCast()
     {
       var db = Database.Open();
-      var user = (User) db.Users.FindById(1);
-      Assert.AreEqual(1, user.Id);
+      var user = (User)db.Public.Users.FindByName("Bob");
+      Assert.NotNull(user);
     }
-
-    [Test]
-    public void TestFindByReturnsOne()
-    {
-      var db = Database.Open();
-      var user = (User) db.Users.FindByName("Bob");
-      Assert.AreEqual(1, user.Id);
-    }
-
+    
     [Test]
     public void TestFindAllByName()
     {
@@ -90,8 +82,8 @@ namespace Simple.Data.PostgreSql.Test
     public void TestImplicitCast()
     {
       var db = Database.Open();
-      User user = db.Users.FindById(1);
-      Assert.AreEqual(1, user.Id);
+      User user = db.Users.FindByName("Bob");
+      Assert.NotNull(user);
     }
 
     [Test]
@@ -100,7 +92,7 @@ namespace Simple.Data.PostgreSql.Test
       var db = Database.Open();
       foreach (User user in db.Users.All())
       {
-        Assert.IsNotNull(user);
+        Assert.NotNull(user);
       }
     }
 
@@ -109,12 +101,12 @@ namespace Simple.Data.PostgreSql.Test
     {
       var db = Database.Open();
 
-      var publicActual = db.Public.SchemaTable.FindById(1);
-      var testActual = db.Test.SchemaTable.FindById(1);
+      var publicActual = db.Public.SchemaTable.All().FirstOrDefault();
+      var testActual = db.Test.SchemaTable.All().FirstOrDefault();
 
-      Assert.IsNotNull(publicActual);
+      Assert.NotNull(publicActual);
       Assert.AreEqual("Pass", publicActual.Description);
-      Assert.IsNotNull(testActual);
+      Assert.NotNull(testActual);
       Assert.AreEqual("Pass", testActual.Description);
     }
 
@@ -133,8 +125,8 @@ namespace Simple.Data.PostgreSql.Test
     public void TestFindOnAView()
     {
       var db = Database.Open();
-      var u = db.ViewCustomers.FindById(1);
-      Assert.IsNotNull(u);
+      var customer = db.ViewCustomers.FindByName("Test");
+      Assert.IsNotNull(customer);
     }
 
     [Test]
@@ -151,7 +143,7 @@ namespace Simple.Data.PostgreSql.Test
     public void FindAllBasicTypes()
     {
       var db = Database.Open();
-      var result = db.BasicTypes.FindById(1);
+      var result = db.Public.BasicTypes.All().FirstOrDefault();
 
       Assert.NotNull(result);
 
@@ -213,7 +205,7 @@ namespace Simple.Data.PostgreSql.Test
     public void FindAllArrayTypes()
     {
       var db = Database.Open();
-      var result = db.ArrayTypes.FindAll();
+      var result = db.Public.ArrayTypes.All().FirstOrDefault();
 
       Assert.NotNull(result);
 

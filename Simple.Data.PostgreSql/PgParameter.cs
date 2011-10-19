@@ -11,12 +11,12 @@ namespace Simple.Data.PostgreSql
     {
     }
 
-    public PgParameter(string name, Type type, ParameterDirection direction, DbType dbtype, int size, int ordinalPosition)
-      : base(name, type, direction, dbtype, size)
+    public PgParameter(string name, Type type, ParameterDirection direction, DbType dbtype, int maxLength, Type clrType)
+      : base(name, type, direction, dbtype, maxLength)
     {
-      OrdinalPosition = ordinalPosition;
+      ClrType = clrType;
     }
 
-    public int OrdinalPosition { get; private set; }
+    public Type ClrType { get; private set; }
   }
 }

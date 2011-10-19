@@ -82,7 +82,7 @@ ALTER TABLE order_items
 CREATE VIEW view_customers AS
   SELECT name, address, id
   FROM customers
-  WHERE name LIKE '%e%';
+  ;
 	
 
 CREATE OR REPLACE FUNCTION public.get_customers()

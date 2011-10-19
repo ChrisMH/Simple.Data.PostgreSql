@@ -111,6 +111,27 @@ namespace Simple.Data.PostgreSql.Test
     }
 
     [Test]
+    public void Query()
+    {
+      using (var conn = new NpgsqlConnection(ConfigurationManager.ConnectionStrings["Test"].ConnectionString))
+      {
+        conn.Open();
+        using (var cmd = conn.CreateCommand())
+        {
+          cmd.CommandText = "SELECT * FROM public.view_customers";
+          using (var rdr = cmd.ExecuteReader())
+          {
+            while (rdr.Read())
+            {
+              Console.WriteLine(rdr.GetValue(0) + " " + rdr.GetValue(1) + " " + rdr.GetValue(2));
+            }
+          }
+        }
+      }
+    }
+
+
+    [Test]
     public void TestRefcursor()
     {
       using (var conn = new NpgsqlConnection(ConfigurationManager.ConnectionStrings["Test"].ConnectionString))

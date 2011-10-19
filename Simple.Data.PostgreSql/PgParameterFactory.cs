@@ -8,7 +8,6 @@ using Simple.Data.PostgreSql;
 
 namespace Simple.Data.PostgreSql
 {
-/*
   [Export(typeof (IDbParameterFactory))]
   public class PgParameterFactory : IDbParameterFactory
   {
@@ -23,5 +22,5 @@ namespace Simple.Data.PostgreSql
       return new NpgsqlParameter(name, dbType, maxLength);
     }
   }
- */
+ 
 }

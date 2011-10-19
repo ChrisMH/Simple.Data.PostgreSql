@@ -429,7 +429,7 @@ namespace Simple.Data.PostgreSql.Test
       //Assert.AreEqual(NpgsqlDbType.Integer, column.NpgsqlDbType);
       Assert.AreEqual(-1, column.MaxLength);
 
-      column = schema.GetColumns(table).Where(p => p.ActualName == "double_multi_precision_array_field").Single();
+      column = schema.GetColumns(table).Where(p => p.ActualName == "double_precision_multi_array_field").Single();
       Assert.False(column.IsIdentity);
       Assert.AreEqual(DbType.Object, column.DbType);
       //Assert.AreEqual(NpgsqlDbType.Integer, column.NpgsqlDbType);
@@ -475,7 +475,7 @@ namespace Simple.Data.PostgreSql.Test
       var result = schema.GetParameters(proc).ToArray();
 
       Assert.AreEqual(2, result.Count());
-      Assert.AreEqual(PgSchemaProvider.ReturnParameterName, result[0].Name);
+      Assert.AreEqual(null, result[0].Name);
       Assert.AreEqual(typeof(int), result[0].Type);
       Assert.AreEqual(ParameterDirection.ReturnValue, result[0].Direction);
 

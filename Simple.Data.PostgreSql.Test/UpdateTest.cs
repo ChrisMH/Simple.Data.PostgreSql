@@ -22,8 +22,10 @@ namespace Simple.Data.PostgreSql.Test
     {
       var db = Database.Open();
 
-      db.Users.UpdateById(Id: 1, Name: "Ford", Password: "hoopy", Age: 29);
-      var user = db.Users.FindById(1);
+      var userId = db.Users.FindByName("Bob").Id;
+
+      db.Users.UpdateById(Id: userId, Name: "Ford", Password: "hoopy", Age: 29);
+      var user = db.Users.FindById(userId);
       Assert.IsNotNull(user);
       Assert.AreEqual("Ford", user.Name);
       Assert.AreEqual("hoopy", user.Password);
@@ -35,11 +37,13 @@ namespace Simple.Data.PostgreSql.Test
     {
       var db = Database.Open();
 
-      var user = new User {Id = 2, Name = "Zaphod", Password = "zarquon", Age = 42};
+      var userId = db.Public.Users.FindByName("Charlie").Id;
+
+      var user = new User { Id = userId, Name = "Zaphod", Password = "zarquon", Age = 42 };
 
       db.Users.Update(user);
 
-      User actual = db.Users.FindById(2);
+      User actual = db.Users.FindById(userId);
 
       Assert.IsNotNull(user);
       Assert.AreEqual("Zaphod", actual.Name);
@@ -52,15 +56,17 @@ namespace Simple.Data.PostgreSql.Test
     {
       var db = Database.Open();
 
+      var userId = db.Public.Users.FindByName("Dave").Id;
+
       dynamic user = new ExpandoObject();
-      user.Id = 3;
+      user.Id = userId;
       user.Name = "Marvin";
       user.Password = "diodes";
       user.Age = 42000000;
 
       db.Users.Update(user);
 
-      var actual = db.Users.FindById(3);
+      var actual = db.Users.FindById(userId);
 
       Assert.IsNotNull(user);
       Assert.AreEqual("Marvin", actual.Name);

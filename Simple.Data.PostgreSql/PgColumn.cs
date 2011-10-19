@@ -15,29 +15,24 @@ namespace Simple.Data.PostgreSql
     protected PgColumn(string actualName, Table table, NpgsqlDbType npgsqlDbType)
       : base(actualName, table)
     {
-      NpgsqlDbType = npgsqlDbType;
     }
 
     protected PgColumn(string actualName, Table table, bool isIdentity) : base(actualName, table, isIdentity)
     {
     }
 
-    public PgColumn(string actualName, Table table, bool isIdentity, DbType dbType, int maxLength, NpgsqlDbType npgsqlDbType)
+    public PgColumn(string actualName, Table table, bool isIdentity, DbType dbType, int maxLength, Type clrType)
       : base(actualName, table, isIdentity, dbType, maxLength)
     {
-      NpgsqlDbType = npgsqlDbType;
+      ClrType = clrType;
     }
     
     public override bool IsBinary
     {
-      get
-      {
-        return NpgsqlDbType == NpgsqlDbType.Bit ||
-               NpgsqlDbType == NpgsqlDbType.Bytea;
-      }
+      get { return ClrType.Equals(typeof (Byte[])); }
     }
 
-    public NpgsqlDbType NpgsqlDbType { get; private set; }
+    public Type ClrType { get; private set; }
 
   }
 }

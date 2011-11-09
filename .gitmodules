@@ -1,0 +1,3 @@
+[submodule "dependencies/Simple.Data"]
+	path = dependencies/Simple.Data
+	url = git@github.com:ChrisMH/Simple.Data.git

@@ -1,0 +1,2 @@
+﻿SELECT routine_name, specific_name, routine_schema 
+FROM information_schema.routines

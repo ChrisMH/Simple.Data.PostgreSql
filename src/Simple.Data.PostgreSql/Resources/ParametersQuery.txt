@@ -1,0 +1,19 @@
+﻿SELECT u.*
+FROM (
+(SELECT r.specific_schema, r.specific_name, null AS parameter_name, 0 AS ordinal_position, r.data_type, null AS maximum_length,
+       'RETURN' AS parameter_mode, e.data_type AS element_data_type
+ FROM information_schema.routines r
+ LEFT JOIN information_schema.element_types e
+      ON ((r.specific_catalog, r.specific_schema, r.specific_name, r.dtd_identifier)
+        = (e.object_catalog, e.object_schema, e.object_name, e.collection_type_identifier))
+ WHERE r.data_type != 'void') 
+UNION
+(SELECT p.specific_schema, p.specific_name, p.parameter_name, p.ordinal_position, p.data_type, p.character_maximum_length AS maxium_length,
+        p.parameter_mode, e.data_type AS element_data_type
+  FROM information_schema.parameters p
+  LEFT JOIN information_schema.element_types e
+       ON ((p.specific_catalog, p.specific_schema, p.specific_name, p.dtd_identifier)
+          = (e.object_catalog, e.object_schema, e.object_name, e.collection_type_identifier)))
+) u
+WHERE u.specific_schema='{0}' AND u.specific_name='{1}'
+ORDER BY u.ordinal_position ASC

@@ -1,0 +1,9 @@
+﻿SELECT rc.constraint_name,
+       fkcu.table_schema, fkcu.table_name, fkcu.column_name, 
+       pkcu.table_schema AS master_table_schema, pkcu.table_name AS master_table_name, pkcu.column_name AS master_column_name
+FROM information_schema.referential_constraints rc
+JOIN information_schema.key_column_usage fkcu ON rc.constraint_name = fkcu.constraint_name
+JOIN information_schema.key_column_usage pkcu ON rc.unique_constraint_name = pkcu.constraint_name
+WHERE fkcu.ordinal_position = pkcu.ordinal_position
+  AND fkcu.table_schema='{0}' 
+  AND fkcu.table_name='{1}'

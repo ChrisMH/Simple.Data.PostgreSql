@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Dynamic;
 using NUnit.Framework;
 using NpgsqlTypes;
-using Simple.Data.PostgreSql.Test.Utility;
 
 namespace Simple.Data.PostgreSql.Test
 {
@@ -12,12 +11,7 @@ namespace Simple.Data.PostgreSql.Test
     [SetUp]
     public void SetUp()
     {
-      DatabaseUtility.SeedDatabase("Test");
-    }
-
-    [TearDown]
-    public void TearDown()
-    {
+      GlobalTest.Database.Seed();
     }
 
     [Test]
@@ -56,10 +50,10 @@ namespace Simple.Data.PostgreSql.Test
       var db = Database.Open();
 
       var users = new[]
-                    {
-                      new User {Name = "Slartibartfast", Password = "bistromathics", Age = 777},
-                      new User {Name = "Wowbagger", Password = "teatime", Age = int.MaxValue}
-                    };
+                  {
+                    new User {Name = "Slartibartfast", Password = "bistromathics", Age = 777},
+                    new User {Name = "Wowbagger", Password = "teatime", Age = int.MaxValue}
+                  };
 
       IList<User> actuals = db.Users.Insert(users).ToList<User>();
 
@@ -645,43 +639,42 @@ namespace Simple.Data.PostgreSql.Test
 
       var result =
         db.ArrayTypes.Insert(
-          IntegerArrayField: new[] { 1, 2, 3, 4, 5, 6 },
-          RealArrayField: new[] { 1.1f, 2.2f, 3.3f, 4.4f, 5.5f, 6.6f },
-          DoublePrecisionArrayField: new[] { 1.1, 2.2, 3.3, 4.4, 5.5, 6.6 },
-          VarcharArrayField: new[] { "one", "two", "three", "four", "five", "six" },
-          IntegerMultiArrayField: new[,] { { 1, 2, 3, 4, 5, 6 }, { 1, 2, 3, 4, 5, 6 } },
-          RealMultiArrayField: new[,] { { 1.1f, 2.2f, 3.3f, 4.4f, 5.5f, 6.6f }, { 1.1f, 2.2f, 3.3f, 4.4f, 5.5f, 6.6f } },
-          DoublePrecisionMultiArrayField: new[,] { { 1.1, 2.2, 3.3, 4.4, 5.5, 6.6 }, { 1.1, 2.2, 3.3, 4.4, 5.5, 6.6 } },
-          VarcharMultiArrayField: new[,] { { "one", "two", "three", "four", "five", "six" }, { "one", "two", "three", "four", "five", "six" } }
+          IntegerArrayField: new[] {1, 2, 3, 4, 5, 6},
+          RealArrayField: new[] {1.1f, 2.2f, 3.3f, 4.4f, 5.5f, 6.6f},
+          DoublePrecisionArrayField: new[] {1.1, 2.2, 3.3, 4.4, 5.5, 6.6},
+          VarcharArrayField: new[] {"one", "two", "three", "four", "five", "six"},
+          IntegerMultiArrayField: new[,] {{1, 2, 3, 4, 5, 6}, {1, 2, 3, 4, 5, 6}},
+          RealMultiArrayField: new[,] {{1.1f, 2.2f, 3.3f, 4.4f, 5.5f, 6.6f}, {1.1f, 2.2f, 3.3f, 4.4f, 5.5f, 6.6f}},
+          DoublePrecisionMultiArrayField: new[,] {{1.1, 2.2, 3.3, 4.4, 5.5, 6.6}, {1.1, 2.2, 3.3, 4.4, 5.5, 6.6}},
+          VarcharMultiArrayField: new[,] {{"one", "two", "three", "four", "five", "six"}, {"one", "two", "three", "four", "five", "six"}}
           );
 
       Assert.NotNull(result);
       Assert.True(result.Id > 0);
 
       Assert.IsAssignableFrom<Int32[]>(result.IntegerArrayField);
-      Assert.AreEqual(new[] { 1, 2, 3, 4, 5, 6 }, result.IntegerArrayField);
+      Assert.AreEqual(new[] {1, 2, 3, 4, 5, 6}, result.IntegerArrayField);
 
       Assert.IsAssignableFrom<Single[]>(result.RealArrayField);
-      Assert.AreEqual(new[] { 1.1f, 2.2f, 3.3f, 4.4f, 5.5f, 6.6f }, result.RealArrayField);
+      Assert.AreEqual(new[] {1.1f, 2.2f, 3.3f, 4.4f, 5.5f, 6.6f}, result.RealArrayField);
 
       Assert.IsAssignableFrom<Double[]>(result.DoublePrecisionArrayField);
-      Assert.AreEqual(new[] { 1.1, 2.2, 3.3, 4.4, 5.5, 6.6 }, result.DoublePrecisionArrayField);
+      Assert.AreEqual(new[] {1.1, 2.2, 3.3, 4.4, 5.5, 6.6}, result.DoublePrecisionArrayField);
 
       //Assert.IsAssignableFrom<String[]>(result.VarcharArrayField); // TODO: Simple.data converts to a SimpleList.  Why?
-      Assert.AreEqual(new[] { "one", "two", "three", "four", "five", "six" }, result.VarcharArrayField);
+      Assert.AreEqual(new[] {"one", "two", "three", "four", "five", "six"}, result.VarcharArrayField);
 
       Assert.IsAssignableFrom<Int32[,]>(result.IntegerMultiArrayField);
-      Assert.AreEqual(new[,] { { 1, 2, 3, 4, 5, 6 }, { 1, 2, 3, 4, 5, 6 } }, result.IntegerMultiArrayField);
+      Assert.AreEqual(new[,] {{1, 2, 3, 4, 5, 6}, {1, 2, 3, 4, 5, 6}}, result.IntegerMultiArrayField);
 
       Assert.IsAssignableFrom<Single[,]>(result.RealMultiArrayField);
-      Assert.AreEqual(new[,] { { 1.1f, 2.2f, 3.3f, 4.4f, 5.5f, 6.6f }, { 1.1f, 2.2f, 3.3f, 4.4f, 5.5f, 6.6f } }, result.RealMultiArrayField);
+      Assert.AreEqual(new[,] {{1.1f, 2.2f, 3.3f, 4.4f, 5.5f, 6.6f}, {1.1f, 2.2f, 3.3f, 4.4f, 5.5f, 6.6f}}, result.RealMultiArrayField);
 
       Assert.IsAssignableFrom<Double[,]>(result.DoublePrecisionMultiArrayField);
-      Assert.AreEqual(new[,] { { 1.1, 2.2, 3.3, 4.4, 5.5, 6.6 }, { 1.1, 2.2, 3.3, 4.4, 5.5, 6.6 } }, result.DoublePrecisionMultiArrayField);
+      Assert.AreEqual(new[,] {{1.1, 2.2, 3.3, 4.4, 5.5, 6.6}, {1.1, 2.2, 3.3, 4.4, 5.5, 6.6}}, result.DoublePrecisionMultiArrayField);
 
       Assert.IsAssignableFrom<String[,]>(result.VarcharMultiArrayField);
-      Assert.AreEqual(new[,] { { "one", "two", "three", "four", "five", "six" }, { "one", "two", "three", "four", "five", "six" } }, result.VarcharMultiArrayField);
+      Assert.AreEqual(new[,] {{"one", "two", "three", "four", "five", "six"}, {"one", "two", "three", "four", "five", "six"}}, result.VarcharMultiArrayField);
     }
-
   }
 }

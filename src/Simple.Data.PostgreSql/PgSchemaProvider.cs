@@ -122,6 +122,11 @@ namespace Simple.Data.PostgreSql
       return baseName.StartsWith(":") ? baseName : String.Concat(":", baseName);
     }
 
+    public string GetDefaultSchema()
+    {
+      return "public";
+    }
+
 
     private DataTable SelectToDataTable(string sql)
     {

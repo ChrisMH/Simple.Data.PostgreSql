@@ -1,7 +1,6 @@
 ﻿using System.Configuration;
 using NUnit.Framework;
 using Simple.Data.Ado;
-using Simple.Data.PostgreSql.Test.Utility;
 
 namespace Simple.Data.PostgreSql.Test
 {
@@ -10,12 +9,7 @@ namespace Simple.Data.PostgreSql.Test
     [SetUp]
     public void SetUp()
     {
-      DatabaseUtility.SeedDatabase("Test");
-    }
-
-    [TearDown]
-    public void TearDown()
-    {
+      GlobalTest.Database.Seed();
     }
 
     [Test]

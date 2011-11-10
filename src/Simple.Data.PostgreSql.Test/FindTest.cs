@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using NpgsqlTypes;
-using Simple.Data.PostgreSql.Test.Utility;
 
 namespace Simple.Data.PostgreSql.Test
 {
@@ -12,12 +11,7 @@ namespace Simple.Data.PostgreSql.Test
     [SetUp]
     public void SetUp()
     {
-      DatabaseUtility.SeedDatabase("Test");
-    }
-
-    [TearDown]
-    public void TearDown()
-    {
+      GlobalTest.Database.Seed();
     }
 
     [Test]
@@ -32,10 +26,10 @@ namespace Simple.Data.PostgreSql.Test
     public void TestFindByNameWithCast()
     {
       var db = Database.Open();
-      var user = (User)db.Public.Users.FindByName("Bob");
+      var user = (User) db.Public.Users.FindByName("Bob");
       Assert.NotNull(user);
     }
-    
+
     [Test]
     public void TestFindAllByName()
     {
@@ -217,7 +211,6 @@ namespace Simple.Data.PostgreSql.Test
       Assert.IsAssignableFrom<Single[,]>(result.RealMultiArrayField);
       Assert.IsAssignableFrom<Double[,]>(result.DoublePrecisionMultiArrayField);
       Assert.IsAssignableFrom<String[,]>(result.VarcharMultiArrayField);
-
     }
   }
 }

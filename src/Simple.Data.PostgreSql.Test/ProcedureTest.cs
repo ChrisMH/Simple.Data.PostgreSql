@@ -1,6 +1,5 @@
 ﻿using System.Data;
 using NUnit.Framework;
-using Simple.Data.PostgreSql.Test.Utility;
 
 namespace Simple.Data.PostgreSql.Test
 {
@@ -9,12 +8,7 @@ namespace Simple.Data.PostgreSql.Test
     [SetUp]
     public void SetUp()
     {
-      DatabaseUtility.SeedDatabase("Test");
-    }
-
-    [TearDown]
-    public void TearDown()
-    {
+      GlobalTest.Database.Seed();
     }
 
     [Test]
@@ -132,7 +126,7 @@ namespace Simple.Data.PostgreSql.Test
     public void GetCustomerAndOrdersTest()
     {
       var db = Database.Open();
-      using(var tr = db.BeginTransaction())
+      using (var tr = db.BeginTransaction())
       {
         var results = tr.Public.GetCustomerAndOrders(1);
 
@@ -140,7 +134,7 @@ namespace Simple.Data.PostgreSql.Test
         Assert.IsNotNull(customer);
         Assert.AreEqual(1, customer.CustomerId);
         Assert.True(results.NextResult());
-        
+
         var order = results.FirstOrDefault();
         Assert.IsNotNull(order);
         Assert.AreEqual(1, order.OrderId);
@@ -152,12 +146,12 @@ namespace Simple.Data.PostgreSql.Test
     public void GetCustomerAndOrdersStillWorksAfterZeroRecordCallTest()
     {
       var db = Database.Open();
-      using(var tr = db.BeginTransaction())
+      using (var tr = db.BeginTransaction())
       {
         tr.GetCustomerAndOrders(1000);
-        
+
         var results = db.Public.GetCustomerAndOrders(1);
-        
+
         var customer = results.FirstOrDefault();
         Assert.IsNotNull(customer);
         Assert.AreEqual(1, customer.CustomerId);

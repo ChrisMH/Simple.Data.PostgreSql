@@ -1,6 +1,5 @@
 ﻿using System.Dynamic;
 using NUnit.Framework;
-using Simple.Data.PostgreSql.Test.Utility;
 
 namespace Simple.Data.PostgreSql.Test
 {
@@ -9,12 +8,7 @@ namespace Simple.Data.PostgreSql.Test
     [SetUp]
     public void SetUp()
     {
-      DatabaseUtility.SeedDatabase("Test");
-    }
-
-    [TearDown]
-    public void TearDown()
-    {
+      GlobalTest.Database.Seed();
     }
 
     [Test]
@@ -39,7 +33,7 @@ namespace Simple.Data.PostgreSql.Test
 
       var userId = db.Public.Users.FindByName("Charlie").Id;
 
-      var user = new User { Id = userId, Name = "Zaphod", Password = "zarquon", Age = 42 };
+      var user = new User {Id = userId, Name = "Zaphod", Password = "zarquon", Age = 42};
 
       db.Users.Update(user);
 

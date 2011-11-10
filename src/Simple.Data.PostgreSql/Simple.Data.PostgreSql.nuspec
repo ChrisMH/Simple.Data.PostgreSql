@@ -1,17 +1,22 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>$id$</id>
+    <id>Simple.Data.PostgreSql</id>
     <version>$version$</version>
-    <title>$title$</title>
-    <authors>$author$</authors>
-    <owners>$author$</owners>
+    <title>Simple.Data.PostgreSql</title>
+    <authors>Chris Hogan</authors>
+    <owners>Chris Hogan</owners>
     <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
     <projectUrl>http://github.com/ChrisMH/Simple.Data.PostgreSql</projectUrl>
     <iconUrl>http://simplefx.org/images/simpledata100x100.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>$description$</description>
+    <description>PostgreSql adapter for Simple.Data</description>
     <copyright>Copyright 2011</copyright>
     <tags>postgres postgresql orm sql database data ado .net40</tags>
+    <dependencies>
+      <dependency id="Npgsql" version="2.0.11.0"/>
+      <dependency id="Simple.Data.Core" version="0.9.8.2"/>
+      <dependency id="Simple.Data.Ado" version="0.9.8.2"/>
+    </dependencies>
   </metadata>
 </package>

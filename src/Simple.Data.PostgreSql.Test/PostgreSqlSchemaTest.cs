@@ -1,12 +1,9 @@
-﻿using System;
-using System.Configuration;
+﻿using System.Configuration;
 using System.Data;
 using System.Linq;
 using NUnit.Framework;
-using NpgsqlTypes;
 using Simple.Data.Ado;
 using Simple.Data.Ado.Schema;
-using Simple.Data.PostgreSql.Test.Utility;
 
 namespace Simple.Data.PostgreSql.Test
 {
@@ -15,12 +12,7 @@ namespace Simple.Data.PostgreSql.Test
     [SetUp]
     public void SetUp()
     {
-      DatabaseUtility.SeedDatabase("Test");
-    }
-
-    [TearDown]
-    public void TearDown()
-    {
+      GlobalTest.Database.Seed();
     }
 
     [Test]
@@ -65,25 +57,25 @@ namespace Simple.Data.PostgreSql.Test
 
       var table = schema.GetTables().Where(s => s.ActualName == "basic_types").Single();
 
-      var column =  schema.GetColumns(table).Where(p => p.ActualName == "id").Single();
+      var column = schema.GetColumns(table).Where(p => p.ActualName == "id").Single();
       Assert.True(column.IsIdentity);
       Assert.AreEqual(DbType.Int32, column.DbType);
       //Assert.AreEqual(NpgsqlDbType.Integer, column.NpgsqlDbType);
       Assert.AreEqual(-1, column.MaxLength);
 
-      column =  schema.GetColumns(table).Where(p => p.ActualName == "smallint_field").Single();
+      column = schema.GetColumns(table).Where(p => p.ActualName == "smallint_field").Single();
       Assert.False(column.IsIdentity);
       Assert.AreEqual(DbType.Int16, column.DbType);
       //Assert.AreEqual(NpgsqlDbType.Smallint, column.NpgsqlDbType);
       Assert.AreEqual(-1, column.MaxLength);
 
-      column =  schema.GetColumns(table).Where(p => p.ActualName == "integer_field").Single();
+      column = schema.GetColumns(table).Where(p => p.ActualName == "integer_field").Single();
       Assert.False(column.IsIdentity);
       Assert.AreEqual(DbType.Int32, column.DbType);
       //Assert.AreEqual(NpgsqlDbType.Integer, column.NpgsqlDbType);
       Assert.AreEqual(-1, column.MaxLength);
 
-      column =  schema.GetColumns(table).Where(p => p.ActualName == "bigint_field").Single();
+      column = schema.GetColumns(table).Where(p => p.ActualName == "bigint_field").Single();
       Assert.False(column.IsIdentity);
       Assert.AreEqual(DbType.Int64, column.DbType);
       //Assert.AreEqual(NpgsqlDbType.Bigint, column.NpgsqlDbType);
@@ -118,7 +110,7 @@ namespace Simple.Data.PostgreSql.Test
       Assert.AreEqual(DbType.Single, column.DbType);
       //Assert.AreEqual(NpgsqlDbType.Real, column.NpgsqlDbType);
       Assert.AreEqual(-1, column.MaxLength);
-      
+
       column = schema.GetColumns(table).Where(p => p.ActualName == "double_precision_field").Single();
       Assert.False(column.IsIdentity);
       Assert.AreEqual(DbType.Double, column.DbType);
@@ -310,7 +302,7 @@ namespace Simple.Data.PostgreSql.Test
       Assert.AreEqual(DbType.Object, column.DbType);
       //Assert.AreEqual(NpgsqlDbType.Circle, column.NpgsqlDbType);
       Assert.AreEqual(-1, column.MaxLength);
-      
+
       column = schema.GetColumns(table).Where(p => p.ActualName == "cidr_field").Single();
       Assert.False(column.IsIdentity);
       Assert.AreEqual(DbType.String, column.DbType);
@@ -376,7 +368,6 @@ namespace Simple.Data.PostgreSql.Test
       Assert.AreEqual(DbType.Int64, column.DbType);
       //Assert.AreEqual(NpgsqlDbType.Bigint, column.NpgsqlDbType);
       Assert.AreEqual(-1, column.MaxLength);
-
     }
 
     [Test]
@@ -387,7 +378,7 @@ namespace Simple.Data.PostgreSql.Test
 
       var table = schema.GetTables().Where(s => s.ActualName == "array_types").Single();
 
-      var column =  schema.GetColumns(table).Where(p => p.ActualName == "id").Single();
+      var column = schema.GetColumns(table).Where(p => p.ActualName == "id").Single();
       Assert.True(column.IsIdentity);
       Assert.AreEqual(DbType.Int32, column.DbType);
       //Assert.AreEqual(NpgsqlDbType.Integer, column.NpgsqlDbType);
@@ -440,7 +431,6 @@ namespace Simple.Data.PostgreSql.Test
       Assert.AreEqual(DbType.Object, column.DbType);
       //Assert.AreEqual(NpgsqlDbType.Integer, column.NpgsqlDbType);
       Assert.AreEqual(-1, column.MaxLength);
-
     }
 
 
@@ -452,7 +442,7 @@ namespace Simple.Data.PostgreSql.Test
 
       var table = schema.GetTables().Where(s => s.ActualName == "view_customers").Single();
 
-      var column =  schema.GetColumns(table).Where(p => p.ActualName == "name").Single();
+      var column = schema.GetColumns(table).Where(p => p.ActualName == "name").Single();
       Assert.AreEqual(DbType.String, column.DbType);
       //Assert.AreEqual(NpgsqlDbType.Varchar, column.NpgsqlDbType);
 
@@ -476,11 +466,11 @@ namespace Simple.Data.PostgreSql.Test
 
       Assert.AreEqual(2, result.Count());
       Assert.AreEqual(null, result[0].Name);
-      Assert.AreEqual(typeof(int), result[0].Type);
+      Assert.AreEqual(typeof (int), result[0].Type);
       Assert.AreEqual(ParameterDirection.ReturnValue, result[0].Direction);
 
       Assert.AreEqual("double_me", result[1].Name);
-      Assert.AreEqual(typeof(int), result[1].Type);
+      Assert.AreEqual(typeof (int), result[1].Type);
       Assert.AreEqual(ParameterDirection.Input, result[1].Direction);
     }
 

@@ -20,6 +20,7 @@ namespace Simple.Data.PostgreSql.Test
       var db = Database.Open();
       var user = db.Public.Users.FindByName("Bob");
       Assert.NotNull(user);
+      Assert.AreEqual("Bob", user.Name);
     }
 
     [Test]
@@ -28,6 +29,7 @@ namespace Simple.Data.PostgreSql.Test
       var db = Database.Open();
       var user = (User) db.Public.Users.FindByName("Bob");
       Assert.NotNull(user);
+      Assert.AreEqual("Bob", user.Name);
     }
 
     [Test]
@@ -62,15 +64,14 @@ namespace Simple.Data.PostgreSql.Test
       Assert.AreEqual(3, count);
     }
 
-    /*
     [Test]
+    [Ignore("Skip does not appear to be working")]
     public void TestAllWithSkipCount()
     {
       var db = Database.Open();
       var count = db.Users.All().Skip(1).ToList().Count;
       Assert.AreEqual(2, count);
     }
-    */
 
     [Test]
     public void TestImplicitCast()

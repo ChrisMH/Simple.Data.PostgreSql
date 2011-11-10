@@ -95,7 +95,6 @@ namespace Simple.Data.PostgreSql.Test
     }
 
     [Test]
-    [Ignore]
     public void GetCustomerCountTest()
     {
       var db = Database.Open();
@@ -104,7 +103,7 @@ namespace Simple.Data.PostgreSql.Test
     }
 
     [Test]
-    [Ignore]
+    [Ignore("Overloaded functions not supported")]
     public void CallOverloadedFunction1()
     {
       var db = Database.Open();
@@ -113,7 +112,7 @@ namespace Simple.Data.PostgreSql.Test
     }
 
     [Test]
-    [Ignore]
+    [Ignore("Overloaded functions not supported")]
     public void CallOverloadedFunction2()
     {
       var db = Database.Open();
@@ -122,7 +121,7 @@ namespace Simple.Data.PostgreSql.Test
     }
 
     [Test]
-    [Ignore]
+    [Ignore("refcursor does not work")]
     public void GetCustomerAndOrdersTest()
     {
       var db = Database.Open();
@@ -142,7 +141,7 @@ namespace Simple.Data.PostgreSql.Test
     }
 
     [Test]
-    [Ignore]
+    [Ignore("refcursor does not work")]
     public void GetCustomerAndOrdersStillWorksAfterZeroRecordCallTest()
     {
       var db = Database.Open();
@@ -164,7 +163,7 @@ namespace Simple.Data.PostgreSql.Test
     }
 
     [Test]
-    [Ignore]
+    [Ignore("Not implemented")]
     public void CallProcedureWithDataTable()
     {
       var db = Database.Open();

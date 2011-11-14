@@ -1,15 +1,11 @@
-$srcPath = ".\src\"
-$buildPath = ".\build\"
-$versionFile = $srcPath + "SharedAssemblyInfo.cs"
-$nuget = ".\tools\nuget\nuget.exe"
+$srcRoot = '.\src'                     # relative to script directory
+$versionFile = 'SharedAssemblyInfo.cs' # relative to $srcRoot
+$outputPath = '.\build'                # relative to script directory
+$scriptRoot = "$home\Dropbox\Scripts"
 
-if (test-path $buildPath) { remove-item -Recurse -Force $buildPath }
-mkdir $buildPath | out-null
+. "$scriptRoot\New-Path.ps1" $outputPath
 
-get-content $versionFile | where-object { $_ -match '^\[\s*assembly:\s*AssemblyVersion\s*\(\s*\"(?<version>[\d\.]*)\"\s*\)\s*\]' } | out-null
+$version = . "$scriptRoot\Get-Version.ps1" (Join-Path $srcRoot $versionFile -Resolve)
 
-#Simple.Data.PostgreSql
-$packageName = "Simple.Data.PostgreSql"
-$packFile = $srcPath + $packageName + "\" + $packageName + ".csproj";
-&$nuget pack $packFile -Version $matches.version -Build -Properties Configuration=Release -OutputDirectory $buildPath
+. "$scriptRoot\Pack-Project.ps1" Simple.Data.PostgreSql $srcRoot $version $outputPath
 

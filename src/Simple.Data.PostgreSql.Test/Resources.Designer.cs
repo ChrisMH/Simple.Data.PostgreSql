@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Simple.Data.PostgreSql.Test.Properties {
+namespace Simple.Data.PostgreSql.Test {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Simple.Data.PostgreSql.Test.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Simple.Data.PostgreSql.Test.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Simple.Data.PostgreSql.Test.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -63,12 +63,14 @@ namespace Simple.Data.PostgreSql.Test.Properties {
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
         ///&lt;DbDescription&gt;
-        ///  &lt;ConnectionName&gt;AccountProvider&lt;/ConnectionName&gt;
-        ///  &lt;Schema type=&quot;resource&quot;&gt;Simple.Data.PostgreSql.Test.Resources.Test.sql&lt;/Schema&gt;
-        ///  &lt;Schema type=&quot;resource&quot;&gt;Simple.Data.PostgreSql.Test.Resources.BasicTypes.sql&lt;/Schema&gt;
-        ///  &lt;Schema type=&quot;resource&quot;&gt;Simple.Data.PostgreSql.Test.Resources.ArrayTypes.sql&lt;/Schema&gt;
-        ///  &lt;Schema type=&quot;resource&quot;&gt;Simple.Data.PostgreSql.Test.Resources.ProcedureTest.sql&lt;/Schema&gt;
-        ///  &lt;Seed type=&quot;resource&quot;&gt;Simple.Data.PostgreSql.Tes [rest of string was truncated]&quot;;.
+        ///  &lt;Connection&gt;
+        ///    &lt;ConnectionStringName&gt;Test&lt;/ConnectionStringName&gt;
+        ///  &lt;/Connection&gt;
+        ///  &lt;Schema type=&quot;Resource&quot;&gt;Simple.Data.PostgreSql.Test.Resources.Test.sql&lt;/Schema&gt;
+        ///  &lt;Schema type=&quot;Resource&quot;&gt;Simple.Data.PostgreSql.Test.Resources.BasicTypes.sql&lt;/Schema&gt;
+        ///  &lt;Schema type=&quot;Resource&quot;&gt;Simple.Data.PostgreSql.Test.Resources.ArrayTypes.sql&lt;/Schema&gt;
+        ///  &lt;Schema type=&quot;Resource&quot;&gt;Simple.Data.PostgreSql.Test.Resources.ProcedureTest.sql&lt;/Schema&gt;
+        ///  &lt;Seed type=&quot; [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string TestDbDescription {
             get {

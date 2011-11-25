@@ -1,10 +1,12 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <DbDescription>
-  <ConnectionName>Test</ConnectionName>
-  <Schema type="resource">Simple.Data.PostgreSql.Test.Resources.Test.sql</Schema>
-  <Schema type="resource">Simple.Data.PostgreSql.Test.Resources.BasicTypes.sql</Schema>
-  <Schema type="resource">Simple.Data.PostgreSql.Test.Resources.ArrayTypes.sql</Schema>
-  <Schema type="resource">Simple.Data.PostgreSql.Test.Resources.ProcedureTest.sql</Schema>
-  <Seed type="resource">Simple.Data.PostgreSql.Test.Resources.DeleteData.sql</Seed>
-  <Seed type="resource">Simple.Data.PostgreSql.Test.Resources.InsertData.sql</Seed>
+  <Connection>
+    <ConnectionStringName>Test</ConnectionStringName>
+  </Connection>
+  <Schema type="Resource">Simple.Data.PostgreSql.Test.Resources.Test.sql</Schema>
+  <Schema type="Resource">Simple.Data.PostgreSql.Test.Resources.BasicTypes.sql</Schema>
+  <Schema type="Resource">Simple.Data.PostgreSql.Test.Resources.ArrayTypes.sql</Schema>
+  <Schema type="Resource">Simple.Data.PostgreSql.Test.Resources.ProcedureTest.sql</Schema>
+  <Seed type="Resource">Simple.Data.PostgreSql.Test.Resources.DeleteData.sql</Seed>
+  <Seed type="Resource">Simple.Data.PostgreSql.Test.Resources.InsertData.sql</Seed>
 </DbDescription>

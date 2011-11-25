@@ -79,7 +79,6 @@ namespace Simple.Data.PostgreSql
         var parameter = new NpgsqlParameter
                           {
                             ParameterName = String.Concat("p", idx.ToString()),
-                            DbType = insertColumns[idx].DbType,
                             Value = insertData[idx]
                           };
         cmd.Parameters.Add(parameter);

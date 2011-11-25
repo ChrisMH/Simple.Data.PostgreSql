@@ -118,7 +118,22 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="TestDbDescription" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\testdbdescription.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="ColumnsQuery" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\columnsquery.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="ForeignKeysQuery" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\foreignkeysquery.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="ParametersQuery" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\parametersquery.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="PrimaryKeyQuery" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\primarykeyquery.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="StoredProceduresQuery" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\storedproceduresquery.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="TablesQuery" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\tablesquery.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
 </root>

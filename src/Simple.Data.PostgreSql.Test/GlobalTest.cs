@@ -2,8 +2,8 @@
 using System.Diagnostics;
 using System.Xml.Linq;
 using NUnit.Framework;
-using Utility.Database;
-using Utility.Database.PostgreSql;
+using Utility.Database.Management;
+using Utility.Database.Management.PostgreSql;
 
 namespace Simple.Data.PostgreSql.Test
 {
@@ -12,28 +12,16 @@ namespace Simple.Data.PostgreSql.Test
   /// Leave this class outside of any namespace so that it applies to any namespace in the assembly
   /// </summary>
   [SetUpFixture]
-  public static class GlobalTest
+  public class GlobalTest
   {
-    public static IDbCreator Database { get; private set; }
-
-    static GlobalTest()
-    {
-      try
-      {
-        Database = new PgCreator(new DbDescription(XElement.Parse(Properties.Resources.TestDbDescription)));
-      }
-      catch (Exception e)
-      {
-        Debug.WriteLine("GlobalTest.GlobalTest : {0} : {1}", e.GetType(), e.Message);
-        throw;
-      }
-    }
+    public static IDbManager Database { get; private set; }
 
     [SetUp]
-    public static void SetUp()
+    public void SetUp()
     {
       try
       {
+        Database = new PgDbManager(new PgDbDescription(XElement.Parse(Resources.TestDbDescription)));
         Database.Create();
       }
       catch (Exception e)
@@ -44,7 +32,7 @@ namespace Simple.Data.PostgreSql.Test
     }
 
     [TearDown]
-    public static void TearDown()
+    public void TearDown()
     {
       try
       {

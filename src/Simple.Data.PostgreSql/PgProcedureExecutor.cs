@@ -106,7 +106,6 @@ namespace Simple.Data.PostgreSql
         cmd.Parameters.Add(new NpgsqlParameter
                              {
                                ParameterName = name,
-                               //DbType = parameter.Parameter.Dbtype,
                                Value = value
                              });
       }

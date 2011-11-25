@@ -19,7 +19,7 @@ namespace Simple.Data.PostgreSql
 
     public IEnumerable<Table> GetTables()
     {
-      return SelectToDataTable(Properties.Resource.TablesQuery)
+      return SelectToDataTable(Resources.TablesQuery)
         .AsEnumerable()
         .Select(table => new Table(table["table_name"].ToString(),
                                    table["table_schema"].ToString(),
@@ -30,7 +30,7 @@ namespace Simple.Data.PostgreSql
     {
       if (table == null) throw new ArgumentNullException("table");
 
-      var columns = SelectToDataTable(String.Format(Properties.Resource.ColumnsQuery, table.Schema, table.ActualName)).AsEnumerable();
+      var columns = SelectToDataTable(String.Format(Resources.ColumnsQuery, table.Schema, table.ActualName)).AsEnumerable();
 
       var foundIdentity = false;
       foreach (var column in columns)
@@ -51,7 +51,7 @@ namespace Simple.Data.PostgreSql
 
     public IEnumerable<Procedure> GetStoredProcedures()
     {
-      return SelectToDataTable(Properties.Resource.StoredProceduresQuery)
+      return SelectToDataTable(Resources.StoredProceduresQuery)
         .AsEnumerable()
         .Select(proc => new Procedure(proc["routine_name"].ToString(), proc["specific_name"].ToString(), proc["routine_schema"].ToString()));
     }
@@ -60,7 +60,7 @@ namespace Simple.Data.PostgreSql
     {
       if (storedProcedure == null) throw new ArgumentNullException("storedProcedure");
 
-      return SelectToDataTable(String.Format(Properties.Resource.ParametersQuery, storedProcedure.Schema, storedProcedure.SpecificName))
+      return SelectToDataTable(String.Format(Resources.ParametersQuery, storedProcedure.Schema, storedProcedure.SpecificName))
         .AsEnumerable()
         .Select(row => new Parameter(Convert.IsDBNull(row["parameter_name"]) ? null : row["parameter_name"].ToString(),
                                        TypeMap.GetTypeEntry(row["data_type"].ToString()).ClrType,
@@ -92,7 +92,7 @@ namespace Simple.Data.PostgreSql
     {
       if (table == null) throw new ArgumentNullException("table");
 
-      return new Key(SelectToDataTable(String.Format(Properties.Resource.PrimaryKeyQuery, table.Schema, table.ActualName))
+      return new Key(SelectToDataTable(String.Format(Resources.PrimaryKeyQuery, table.Schema, table.ActualName))
                        .AsEnumerable()
                        .Select(column => column["column_name"].ToString()));
     }
@@ -101,7 +101,7 @@ namespace Simple.Data.PostgreSql
     {
       if (table == null) throw new ArgumentNullException("table");
 
-      return SelectToDataTable(String.Format(Properties.Resource.ForeignKeysQuery, table.Schema, table.ActualName))
+      return SelectToDataTable(String.Format(Resources.ForeignKeysQuery, table.Schema, table.ActualName))
         .AsEnumerable()
         .GroupBy(s => s["constraint_name"].ToString())
         .Select(dataRows => new ForeignKey(new ObjectName(table.Schema, table.ActualName),

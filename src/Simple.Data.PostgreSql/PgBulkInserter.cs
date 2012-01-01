@@ -15,7 +15,7 @@ namespace Simple.Data.PostgreSql
   [Export(typeof(IBulkInserter))]
   public class PgBulkInserter : IBulkInserter
   {
-    public IEnumerable<IDictionary<string, object>> Insert(AdoAdapter adapter, string tableName, IEnumerable<IDictionary<string, object>> data, IDbTransaction transaction)
+    public IEnumerable<IDictionary<string, object>> Insert(AdoAdapter adapter, string tableName, IEnumerable<IDictionary<string, object>> data, IDbTransaction transaction, Func<IDictionary<string,object>, Exception, bool> onError, bool resultRequired)
     {
       var table = DatabaseSchema.Get(adapter.ConnectionProvider, adapter.ProviderHelper).FindTable(tableName);
       if (table == null) throw new SimpleDataException(String.Format("Table '{0}' not found", tableName));
@@ -27,14 +27,23 @@ namespace Simple.Data.PostgreSql
       var columnsSql = insertColumns.Select(s => s.QuotedName).Aggregate((agg, next) => String.Concat(agg, ",", next));
       var valuesSql = insertColumns.Select((val, idx) => ":p" + idx.ToString()).Aggregate((agg, next) => String.Concat(agg, ",", next));
 
-      var insertSql = string.Format("INSERT INTO {0} ({1}) VALUES({2}) RETURNING *;", table.QualifiedName, columnsSql, valuesSql);
+      var insertSql = string.Format("INSERT INTO {0} ({1}) VALUES({2}){3};", table.QualifiedName, columnsSql, valuesSql, resultRequired ? " RETURNING *" : "");
+
       if (transaction != null)
       {
         using(var cmd = transaction.Connection.CreateCommand())
         {
           cmd.Transaction = transaction;
           cmd.CommandText = insertSql;
-          return insertData.Select(row => ExecuteInsert(cmd, insertColumns, row.Values.ToArray())).ToList();
+          if (resultRequired)
+          {
+            return insertData.Select(row => ExecuteInsert(cmd, insertColumns, row, onError)).ToList();
+          }
+          else
+          {
+            insertData.Select(row => ExecuteInsert(cmd, insertColumns, row, onError));
+            return null;
+          }
         }
       }
 
@@ -44,14 +53,22 @@ namespace Simple.Data.PostgreSql
         using(var cmd = conn.CreateCommand())
         {
           cmd.CommandText = insertSql;
-          return insertData.Select(row => ExecuteInsert(cmd, insertColumns, row.Values.ToArray())).ToList();
+          if (resultRequired)
+          {
+            return insertData.Select(row => ExecuteInsert(cmd, insertColumns, row, onError)).ToList();
+          }
+          else
+          {
+            insertData.Select(row => ExecuteInsert(cmd, insertColumns, row, onError));
+            return null;
+          }
         }
       }
     }
 
-    private IDictionary<string, object> ExecuteInsert(IDbCommand cmd, Column[] insertColumns, object[] insertData)
+    private IDictionary<string, object> ExecuteInsert(IDbCommand cmd, Column[] insertColumns, IDictionary<string, object> insertData, Func<IDictionary<string, object>, Exception, bool> onError)
     {
-      AddCommandParameters(cmd, insertColumns, insertData);
+      AddCommandParameters(cmd, insertColumns, insertData.Values.ToArray());
       cmd.WriteTrace();
       try
       {
@@ -65,6 +82,7 @@ namespace Simple.Data.PostgreSql
       }
       catch (DbException ex)
       {
+        if (onError(insertData, ex)) return null;
         throw new AdoAdapterException(ex.Message, cmd);
       }
 

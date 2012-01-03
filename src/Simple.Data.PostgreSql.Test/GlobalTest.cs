@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Xml.Linq;
 using NUnit.Framework;
-using Utility.Database.Management;
-using Utility.Database.Management.PostgreSql;
+using Utility.Database;
+using Utility.Database.PostgreSql;
 
 namespace Simple.Data.PostgreSql.Test
 {
@@ -21,7 +20,7 @@ namespace Simple.Data.PostgreSql.Test
     {
       try
       {
-        Database = new PgDbManager(new PgDbDescription(XElement.Parse(Resources.TestDbDescription)));
+        Database = new PgDbManager {Description = new PgDbDescription {XmlRoot = Resources.TestDbDescription}};
         Database.Create();
       }
       catch (Exception e)

@@ -14,9 +14,8 @@
     <copyright>Copyright 2011</copyright>
     <tags>postgres postgresql orm sql database data ado .net40</tags>
     <dependencies>
-      <dependency id="Npgsql" version="2.0.11.0"/>
-      <dependency id="Simple.Data.Core" version="0.11.3.1"/>
-      <dependency id="Simple.Data.Ado" version="0.11.3.1"/>
+      <dependency id="Simple.Data.Core" version="0.12.2.2"/>
+      <dependency id="Simple.Data.Ado" version="0.12.2.2"/>
     </dependencies>
   </metadata>
 </package>

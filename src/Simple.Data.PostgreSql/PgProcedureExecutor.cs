@@ -19,11 +19,23 @@ namespace Simple.Data.PostgreSql
 
     }
 
+    public IEnumerable<ResultSet> Execute(IDictionary<string, object> suppliedParameters, IDbTransaction transaction)
+    {
+      return Execute(suppliedParameters, transaction.Connection);
+    }
+
     public IEnumerable<ResultSet> Execute(IDictionary<string, object> suppliedParameters)
     {
+      using (var conn = Adapter.ConnectionProvider.CreateConnection())
+      {
+        conn.Open();
+        return Execute(suppliedParameters, conn);
+      }
+    }
+
+    IEnumerable<ResultSet> Execute(IDictionary<string, object> suppliedParameters, IDbConnection conn)
+    {
       // TODO: PostgreSql supports stored procedure overloading.  This does not.
-
-
       var procedure = DatabaseSchema.Get(Adapter.ConnectionProvider, Adapter.ProviderHelper).FindProcedure(ProcedureName);
       if (procedure == null)
       {
@@ -34,48 +46,43 @@ namespace Simple.Data.PostgreSql
                                                       p.Direction == ParameterDirection.Output ||
                                                       p.Direction == ParameterDirection.ReturnValue).Count() > 0;
 
-
-      using (var conn = Adapter.ConnectionProvider.CreateConnection())
+      using (var cmd = conn.CreateCommand())
       {
-        conn.Open();
-        using (var cmd = conn.CreateCommand())
+        cmd.CommandText = procedure.QualifiedName;
+        cmd.CommandType = CommandType.StoredProcedure;
+        AddCommandParameters(procedure, cmd, suppliedParameters);
+        try
         {
-          cmd.CommandText = procedure.QualifiedName;
-          cmd.CommandType = CommandType.StoredProcedure;
-          AddCommandParameters(procedure, cmd, suppliedParameters);
-          try
+          var result = Enumerable.Empty<ResultSet>();
+
+          cmd.WriteTrace();
+          if (executeReader)
           {
-            var result = Enumerable.Empty<ResultSet>();
-
-            cmd.WriteTrace();
-            if (executeReader)
+            using (var rdr = cmd.ExecuteReader())
             {
-              using (var rdr = cmd.ExecuteReader())
-              {
-                var rdrAdvanced = RetrieveReturnValue(procedure, rdr, suppliedParameters);
-                rdrAdvanced = RetrieveOutputParameterValues(procedure, rdr, suppliedParameters, rdrAdvanced);
+              var rdrAdvanced = RetrieveReturnValue(procedure, rdr, suppliedParameters);
+              rdrAdvanced = RetrieveOutputParameterValues(procedure, rdr, suppliedParameters, rdrAdvanced);
 
-                if (!rdrAdvanced)
-                {
-                  result = rdr.ToMultipleDictionaries();
-                }
+              if (!rdrAdvanced)
+              {
+                result = rdr.ToMultipleDictionaries();
               }
             }
-            else
-            {
-              cmd.ExecuteNonQuery();
-            }
-
-            return result;
           }
-          catch (DbException ex)
+          else
           {
-            throw new AdoAdapterException(ex.Message, cmd);
+            cmd.ExecuteNonQuery();
           }
+
+          return result;
+        }
+        catch (DbException ex)
+        {
+          throw new AdoAdapterException(ex.Message, cmd);
         }
       }
-    }
 
+    }
 
     public IEnumerable<ResultSet> ExecuteReader(IDbCommand cmd)
     {

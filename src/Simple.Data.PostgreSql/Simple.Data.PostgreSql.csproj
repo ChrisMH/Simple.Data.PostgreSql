@@ -53,6 +53,7 @@
     </Compile>
     <Compile Include="PgBulkInserter.cs" />
     <Compile Include="PgProcedureExecutor.cs" />
+    <Compile Include="PgQueryPager.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

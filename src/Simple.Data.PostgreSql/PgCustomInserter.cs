@@ -15,7 +15,7 @@ namespace Simple.Data.PostgreSql
   [Export(typeof(ICustomInserter))]
   public class PgCustomInserter : ICustomInserter
   {
-    public IDictionary<string, object> Insert(AdoAdapter adapter, string tableName, IDictionary<string, object> data, IDbTransaction transaction)
+    public IDictionary<string, object> Insert(AdoAdapter adapter, string tableName, IDictionary<string, object> data, IDbTransaction transaction, bool resultRequired = false)
     {
       var table = DatabaseSchema.Get(adapter.ConnectionProvider, adapter.ProviderHelper).FindTable(tableName);
       if (table == null) throw new SimpleDataException(String.Format("Table '{0}' not found", tableName));

@@ -76,10 +76,20 @@ namespace Simple.Data.PostgreSql
       cmd.Parameters.Clear();
       for (var idx = 0; idx < insertColumns.Length; idx++)
       {
+        object value = insertData[idx];
+        if (value != null)
+        {
+            Type valueType = value.GetType();
+            if (valueType.IsEnum)
+            {
+                value = Convert.ChangeType(value, Enum.GetUnderlyingType(valueType));
+            }
+        }
+
         var parameter = new NpgsqlParameter
                           {
                             ParameterName = String.Concat("p", idx.ToString()),
-                            Value = insertData[idx]
+                            Value = value
                           };
         cmd.Parameters.Add(parameter);
       }

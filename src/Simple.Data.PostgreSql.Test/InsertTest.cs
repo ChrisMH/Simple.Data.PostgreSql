@@ -14,6 +14,58 @@ namespace Simple.Data.PostgreSql.Test
       GlobalTest.Database.Seed();
     }
 
+    #region MA - added support for inserting enums
+
+    internal class UserWithEnum
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Password { get; set; }
+        public AgeDescription Age { get; set; }
+    }
+
+    public enum AgeDescription
+    {
+        Young = 1,
+        Old = 80
+    }
+
+    [Test]
+    public void TestInsertWithStaticTypeObjectWithEnum()
+    {
+        var db = Database.Open();
+
+        var user = new UserWithEnum
+        {
+            Name = "Zaphod",
+            Password = "zarquon",
+            Age = AgeDescription.Old
+        };
+
+        UserWithEnum actual = db.Users.Insert(user);
+
+        Assert.IsNotNull(user);
+        Assert.AreNotEqual(0, actual.Id);
+        Assert.AreEqual("Zaphod", actual.Name);
+        Assert.AreEqual("zarquon", actual.Password);
+        Assert.AreEqual(80, (int)actual.Age);
+        Assert.AreEqual(AgeDescription.Old, actual.Age);
+    }
+
+    [Test]
+    public void TestInsertWithObjectWithNullValue()
+    {
+        var db = Database.Open();
+
+        var actual = db.Customers.Insert(Name: "customername", Address: null);
+
+        Assert.AreNotEqual(0, actual.Id);
+        Assert.AreEqual("customername", actual.Name);
+        Assert.Null(actual.Address);
+    }
+
+    #endregion
+
     [Test]
     public void TestInsertWithNamedArguments()
     {

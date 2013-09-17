@@ -4,7 +4,6 @@ using System.ComponentModel.Composition;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
-using System.Text;
 using Npgsql;
 using Simple.Data.Ado;
 using Simple.Data.Ado.Schema;
@@ -76,15 +75,7 @@ namespace Simple.Data.PostgreSql
       cmd.Parameters.Clear();
       for (var idx = 0; idx < insertColumns.Length; idx++)
       {
-        object value = insertData[idx];
-        if (value != null)
-        {
-            Type valueType = value.GetType();
-            if (valueType.IsEnum)
-            {
-                value = Convert.ChangeType(value, Enum.GetUnderlyingType(valueType));
-            }
-        }
+        object value = InsertParameter.Transform(insertData[idx]);
 
         var parameter = new NpgsqlParameter
                           {

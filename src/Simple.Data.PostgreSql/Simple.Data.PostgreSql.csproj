@@ -51,6 +51,7 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="InsertParameter.cs" />
     <Compile Include="PgBulkInserter.cs" />
     <Compile Include="PgProcedureExecutor.cs" />
     <Compile Include="PgQueryPager.cs" />

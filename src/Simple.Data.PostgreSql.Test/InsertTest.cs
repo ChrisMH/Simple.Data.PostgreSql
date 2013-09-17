@@ -53,6 +53,41 @@ namespace Simple.Data.PostgreSql.Test
     }
 
     [Test]
+    public void TestInsertManyWithStaticTypeObjectWithEnum()
+    {
+        var db = Database.Open();
+
+        var user1 = new UserWithEnum
+        {
+            Name = "Zaphod",
+            Password = "zarquon",
+            Age = AgeDescription.Old
+        };
+        var user2 = new UserWithEnum
+        {
+            Name = "Zaphod2",
+            Password = "zarquon2",
+            Age = AgeDescription.Young
+        };
+
+        List<UserWithEnum> actual = db.Users.Insert(new[]{user1, user2}).ToList<UserWithEnum>();
+
+        Assert.IsNotNull(actual[0]);
+        Assert.AreNotEqual(0, actual[0].Id);
+        Assert.AreEqual("Zaphod", actual[0].Name);
+        Assert.AreEqual("zarquon", actual[0].Password);
+        Assert.AreEqual(80, (int)actual[0].Age);
+        Assert.AreEqual(AgeDescription.Old, actual[0].Age);
+
+        Assert.IsNotNull(actual[1]);
+        Assert.AreNotEqual(0, actual[1].Id);
+        Assert.AreEqual("Zaphod2", actual[1].Name);
+        Assert.AreEqual("zarquon2", actual[1].Password);
+        Assert.AreEqual(1, (int)actual[1].Age);
+        Assert.AreEqual(AgeDescription.Young, actual[1].Age);
+    }
+
+    [Test]
     public void TestInsertWithObjectWithNullValue()
     {
         var db = Database.Open();

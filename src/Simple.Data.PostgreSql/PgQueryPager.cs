@@ -21,7 +21,7 @@ namespace Simple.Data.PostgreSql
     public IEnumerable<string> ApplyPaging(string sql, string[] keys, int skip, int take)
       {
       var builder = new StringBuilder(sql);
-      builder.AppendFormat(" LIMIT {0}, {1}", skip, take);
+      builder.AppendFormat(" LIMIT {0} OFFSET {1}", take, skip);
 
       yield return builder.ToString();
     }

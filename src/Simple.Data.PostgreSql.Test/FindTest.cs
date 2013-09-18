@@ -65,12 +65,42 @@ namespace Simple.Data.PostgreSql.Test
     }
 
     [Test]
-    [Ignore("Skip does not appear to be working")]
     public void TestAllWithSkipCount()
     {
       var db = Database.Open();
       var count = db.Users.All().Skip(1).ToList().Count;
       Assert.AreEqual(2, count);
+    }
+
+    [Test]
+    public void TestAllWithSkipTake()
+    {
+      var db = Database.Open();
+      List<User> users = db.Users.All().Skip(1).Take(2).ToList<User>();
+      Assert.AreEqual(2, users.Count);
+      Assert.AreEqual("Charlie", users[0].Name);
+      Assert.AreEqual("Dave", users[1].Name);
+    }
+
+    [Test]
+    public void TestAllWithSkipTakeTotalCount()
+    {
+      var db = Database.Open();
+      Future<int> totalCount;
+      var count = db.Users.All().WithTotalCount(out totalCount).Skip(1).Take(2).ToList().Count;
+      Assert.AreEqual(3, totalCount);
+      Assert.AreEqual(2, count);
+    }
+
+    [Test]
+    public void TestAllWhereWithSkipTakeTotalCount()
+    {
+      var db = Database.Open();
+      Future<int> totalCount;
+      List<User> users = db.Users.All().Where(db.Users.Name.Like("%e")).WithTotalCount(out totalCount).Skip(1).ToList<User>();
+      Assert.AreEqual(2, totalCount);
+      Assert.AreEqual(1, users.Count);
+      Assert.AreEqual("Dave", users[0].Name);
     }
 
     [Test]

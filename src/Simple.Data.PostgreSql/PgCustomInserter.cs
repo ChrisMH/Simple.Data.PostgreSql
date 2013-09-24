@@ -4,7 +4,6 @@ using System.ComponentModel.Composition;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
-using System.Text;
 using Npgsql;
 using Simple.Data.Ado;
 using Simple.Data.Ado.Schema;
@@ -15,7 +14,7 @@ namespace Simple.Data.PostgreSql
   [Export(typeof(ICustomInserter))]
   public class PgCustomInserter : ICustomInserter
   {
-    public IDictionary<string, object> Insert(AdoAdapter adapter, string tableName, IDictionary<string, object> data, IDbTransaction transaction)
+    public IDictionary<string, object> Insert(AdoAdapter adapter, string tableName, IDictionary<string, object> data, IDbTransaction transaction, bool resultRequired = false)
     {
       var table = DatabaseSchema.Get(adapter.ConnectionProvider, adapter.ProviderHelper).FindTable(tableName);
       if (table == null) throw new SimpleDataException(String.Format("Table '{0}' not found", tableName));
@@ -76,10 +75,12 @@ namespace Simple.Data.PostgreSql
       cmd.Parameters.Clear();
       for (var idx = 0; idx < insertColumns.Length; idx++)
       {
+        object value = InsertParameter.Transform(insertData[idx]);
+
         var parameter = new NpgsqlParameter
                           {
                             ParameterName = String.Concat("p", idx.ToString()),
-                            Value = insertData[idx]
+                            Value = value
                           };
         cmd.Parameters.Add(parameter);
       }

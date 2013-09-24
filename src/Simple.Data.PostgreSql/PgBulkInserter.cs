@@ -4,7 +4,6 @@ using System.ComponentModel.Composition;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
-using System.Text;
 using Npgsql;
 using Simple.Data.Ado;
 using Simple.Data.Ado.Schema;
@@ -94,10 +93,11 @@ namespace Simple.Data.PostgreSql
       cmd.Parameters.Clear();
       for (var idx = 0; idx < insertColumns.Length; idx++)
       {
+        object value = InsertParameter.Transform(insertData[idx]);
         var parameter = new NpgsqlParameter
                           {
                             ParameterName = String.Concat("p", idx.ToString()),
-                            Value = insertData[idx]
+                            Value = value
                           };
         cmd.Parameters.Add(parameter);
       }

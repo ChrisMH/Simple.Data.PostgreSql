@@ -157,6 +157,63 @@ namespace Simple.Data.PostgreSql.Test
     }
 
     [Test]
+    public void TestMultiInsertWithStaticTypeObjectsAndNoReturn()
+    {
+        var db = Database.Open();
+
+        var users = new[]
+                  {
+                    new User {Name = "Bluetooth", Password = "bistromathics", Age = 777},
+                    new User {Name = "Bluetooth", Password = "teatime", Age = int.MaxValue}
+                  };
+
+        db.Users.Insert(users);
+        List<User> actuals = db.Users.FindAllByName("Bluetooth");
+
+        Assert.AreEqual(2, actuals.Count);
+        Assert.AreNotEqual(0, actuals[0].Id);
+        Assert.AreEqual("Bluetooth", actuals[0].Name);
+        Assert.AreEqual("bistromathics", actuals[0].Password);
+        Assert.AreEqual(777, actuals[0].Age);
+
+        Assert.AreNotEqual(0, actuals[1].Id);
+        Assert.AreEqual("Bluetooth", actuals[1].Name);
+        Assert.AreEqual("teatime", actuals[1].Password);
+        Assert.AreEqual(int.MaxValue, actuals[1].Age);
+    }
+
+    [Test]
+    public void TestTransactionMultiInsertWithStaticTypeObjectsAndNoReturn()
+    {
+        var db = Database.Open();
+
+        var users = new[]
+                  {
+                    new User {Name = "Bluetooth2", Password = "bistromathics", Age = 777},
+                    new User {Name = "Bluetooth2", Password = "teatime", Age = int.MaxValue}
+                  };
+
+        using (var tx = db.BeginTransaction())
+        {
+            tx.Users.Insert(users);
+            tx.Commit();
+        }
+
+        List<User> actuals = db.Users.FindAllByName("Bluetooth2");
+
+        Assert.AreEqual(2, actuals.Count);
+        Assert.AreNotEqual(0, actuals[0].Id);
+        Assert.AreEqual("Bluetooth2", actuals[0].Name);
+        Assert.AreEqual("bistromathics", actuals[0].Password);
+        Assert.AreEqual(777, actuals[0].Age);
+
+        Assert.AreNotEqual(0, actuals[1].Id);
+        Assert.AreEqual("Bluetooth2", actuals[1].Name);
+        Assert.AreEqual("teatime", actuals[1].Password);
+        Assert.AreEqual(int.MaxValue, actuals[1].Age);
+    }
+
+    [Test]
     public void TestInsertWithDynamicTypeObject()
     {
       var db = Database.Open();

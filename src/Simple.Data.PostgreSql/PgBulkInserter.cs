@@ -40,7 +40,7 @@ namespace Simple.Data.PostgreSql
           }
           else
           {
-            insertData.Select(row => ExecuteInsert(cmd, insertColumns, row, onError));
+            insertData.Select(row => ExecuteInsert(cmd, insertColumns, row, onError)).ToList();
             return null;
           }
         }
@@ -58,7 +58,7 @@ namespace Simple.Data.PostgreSql
           }
           else
           {
-            insertData.Select(row => ExecuteInsert(cmd, insertColumns, row, onError));
+            insertData.Select(row => ExecuteInsert(cmd, insertColumns, row, onError)).ToList();
             return null;
           }
         }

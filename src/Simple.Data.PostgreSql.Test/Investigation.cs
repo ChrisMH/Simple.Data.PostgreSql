@@ -69,7 +69,7 @@ namespace Simple.Data.PostgreSql.Test
               var values = rdr.GetValues().ToArray();
               for (var field = 0; field < values.Length; field++)
               {
-                Console.WriteLine("{0};{1};{2};{3};{4};{5}", rdr.GetName(field), rdr.GetDataTypeName(field), rdr.GetFieldDbType(field), rdr.GetFieldNpgsqlDbType(field), values[field].GetType(), values[field]);
+                Console.WriteLine("{0};{1};{2};{3};{4};{5}", rdr.GetName(field), rdr.GetDataTypeName(field), rdr.GetFieldType(field), rdr.GetProviderSpecificFieldType(field), values[field].GetType(), values[field]);
               }
               Console.WriteLine();
             }
@@ -95,7 +95,7 @@ namespace Simple.Data.PostgreSql.Test
               var values = rdr.GetValues().ToArray();
               for (var field = 0; field < values.Length; field++)
               {
-                Console.WriteLine("{0};{1};{2};{3};{4};{5}", rdr.GetName(field), rdr.GetDataTypeName(field), rdr.GetFieldDbType(field), rdr.GetFieldNpgsqlDbType(field), values[field].GetType(), values[field]);
+                Console.WriteLine("{0};{1};{2};{3};{4};{5}", rdr.GetName(field), rdr.GetDataTypeName(field), rdr.GetFieldType(field), rdr.GetProviderSpecificFieldType(field), values[field].GetType(), values[field]);
               }
               Console.WriteLine();
             }

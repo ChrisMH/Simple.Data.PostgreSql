@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
@@ -217,7 +218,7 @@ namespace Simple.Data.PostgreSql.Test
       Assert.IsAssignableFrom<System.Net.IPAddress>(result.InetField);
       Assert.IsAssignableFrom<String>(result.MacaddrField);
       Assert.IsAssignableFrom<Boolean>(result.BitField); // bit(1) is a special case.  Actual CLR type is BitString, but converts in the Npgsql driver to Boolean.
-      Assert.IsAssignableFrom<BitString>(result.Bit10Field);
+      Assert.IsAssignableFrom<BitArray>(result.Bit10Field);
       Assert.IsAssignableFrom<String>(result.BitVaryingUnlimitedField);
       Assert.IsAssignableFrom<String>(result.BitVarying10Field);
       Assert.IsAssignableFrom<String>(result.TsvectorField);

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
+
+using Buddy.Database;
+using Buddy.Database.PostgreSql;
+
 using NUnit.Framework;
-using Utility.Database;
-using Utility.Database.PostgreSql;
 
 namespace Simple.Data.PostgreSql.Test
 {

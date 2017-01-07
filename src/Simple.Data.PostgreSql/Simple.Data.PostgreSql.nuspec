@@ -11,11 +11,12 @@
     <iconUrl>http://simplefx.org/images/simpledata100x100.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>PostgreSql adapter for Simple.Data</description>
-    <copyright>Copyright 2011</copyright>
+    <copyright>Copyright 2010-2017</copyright>
     <tags>postgres postgresql orm sql database data ado .net40</tags>
     <dependencies>
-      <dependency id="Simple.Data.Core" version="0.12.2.2"/>
-      <dependency id="Simple.Data.Ado" version="0.12.2.2"/>
+      <dependency id="Simple.Data.Core" version="0.19.0.0"/>
+      <dependency id="Simple.Data.Ado" version="0.19.0.0"/>
+      <dependency id="Npgsql" version="3.1.9"/>
     </dependencies>
   </metadata>
 </package>

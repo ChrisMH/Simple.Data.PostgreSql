@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
 using NUnit.Framework;
@@ -409,8 +410,8 @@ namespace Simple.Data.PostgreSql.Test
       Assert.IsAssignableFrom<Boolean>(result.BitField);
       Assert.AreEqual(true, result.BitField);
 
-      Assert.IsAssignableFrom<BitString>(result.Bit10Field);
-      Assert.AreEqual(new BitString("1100110011"), result.Bit10Field);
+      Assert.IsAssignableFrom<BitArray>(result.Bit10Field);
+      Assert.AreEqual(new BitArray(new bool[] { true, true, false, false, true, true, false, false, true, true }), result.Bit10Field);
 
       Assert.IsAssignableFrom<String>(result.BitVaryingUnlimitedField);
       Assert.AreEqual("1111001111001100110011001010101010", result.BitVaryingUnlimitedField);

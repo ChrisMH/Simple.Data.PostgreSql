@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>Simple.Data.Npgsql</id>
+        <version>0.19.0</version>
+        <title>Simple.Data.Npgsql</title>
+        <authors>Chris Hogan,Yaroslav Tatarenko</authors>
+        <owners>yartat</owners>
+        <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
+        <projectUrl>https://github.com/yartat/Simple.Data.PostgreSql</projectUrl>
+        <iconUrl>http://simplefx.org/images/simpledata100x100.png</iconUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>PostgreSql adapter for Simple.Data</description>
+        <copyright>Copyright 2010-2017</copyright>
+        <tags>postgres postgresql orm sql database data ado .net45</tags>
+        <dependencies>
+            <dependency id="Simple.Data.Core" version="0.19.0.0" />
+            <dependency id="Simple.Data.Ado" version="0.19.0.0" />
+            <dependency id="Npgsql" version="3.1.9" />
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="bin\Release\Simple.Data.Npgsql.dll" target="lib\net45\Simple.Data.Npgsql.dll" />
+        <file src="bin\Release\Simple.Data.Npgsql.pdb" target="lib\net45\Simple.Data.Npgsql.pdb" />
+    </files>
+</package>

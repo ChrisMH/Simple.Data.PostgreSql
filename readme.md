@@ -1,4 +1,6 @@
-# Simple.Data.PostgreSql
+[![NuGet status](https://img.shields.io/nuget/v/MediaInfo.Wrapper.svg)](https://www.nuget.org/packages/MediaInfo.Wrapper)
+--
+# Simple.Data.NpgSql
 An adapter to PostgreSql databases for Simple.Data
 
 # Use
